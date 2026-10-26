@@ -1,0 +1,1232 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Viagem NY + Orlando</title>
+<meta name="theme-color" content="#F3F4F7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0F1014" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@600;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&display=swap">
+<style>
+/* Layout: uma coluna de celular, abas fixas embaixo, formulários em folhas que sobem de baixo */
+:root{
+  --bg:#F3F4F7; --surface:#FFFFFF; --surface-2:#EBEDF1; --ink:#14151A; --muted:#555963;
+  --line:#E2E4E9; --line-strong:#C8CBD2;
+  --accent:#F2B705; --on-accent:#14151A; --link:#2546D8; --danger:#B42318;
+  --hero:#14151A; --on-hero:#FFFFFF; --hero-muted:#C3C6CE; --hero-line:#43454E;
+  --info-bg:#E8EDFF; --info-fg:#1A2B7A;
+  --ok-bg:#DDF2E2; --ok-fg:#1B5A2A; --warn-bg:#FFF0BF; --warn-fg:#5A4200;
+  --plan-bg:#E8EDFF; --plan-fg:#1A2B7A; --note-bg:#EBEDF1; --note-fg:#3A3D45;
+  --c0:#2546D8; --c1:#B83A0B; --c2:#1F7A3A; --c3:#7A3FC4;
+  --scrim:rgba(10,11,14,.5);
+  --font-display:'Archivo Narrow','Arial Narrow','Roboto Condensed',sans-serif;
+  --font-body:'DM Sans',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0F1014; --surface:#1A1B21; --surface-2:#25272E; --ink:#F1F2F5; --muted:#A6AAB4;
+    --line:#2C2E36; --line-strong:#454852;
+    --accent:#F2B705; --on-accent:#14151A; --link:#9DB4FF; --danger:#FF8A80;
+    --hero:#25272F; --on-hero:#FFFFFF; --hero-muted:#BBBEC7; --hero-line:#464953;
+    --info-bg:#1E2747; --info-fg:#CAD5FF;
+    --ok-bg:#163A22; --ok-fg:#B7EBC4; --warn-bg:#3D3210; --warn-fg:#FFE08A;
+    --plan-bg:#1E2747; --plan-fg:#CAD5FF; --note-bg:#2C2E36; --note-fg:#D3D6DD;
+    --c0:#7D97FF; --c1:#FF8A5C; --c2:#5FCB82; --c3:#B98CFF;
+    --scrim:rgba(0,0,0,.6);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0F1014; --surface:#1A1B21; --surface-2:#25272E; --ink:#F1F2F5; --muted:#A6AAB4;
+  --line:#2C2E36; --line-strong:#454852;
+  --accent:#F2B705; --on-accent:#14151A; --link:#9DB4FF; --danger:#FF8A80;
+  --hero:#25272F; --on-hero:#FFFFFF; --hero-muted:#BBBEC7; --hero-line:#464953;
+  --info-bg:#1E2747; --info-fg:#CAD5FF;
+  --ok-bg:#163A22; --ok-fg:#B7EBC4; --warn-bg:#3D3210; --warn-fg:#FFE08A;
+  --plan-bg:#1E2747; --plan-fg:#CAD5FF; --note-bg:#2C2E36; --note-fg:#D3D6DD;
+  --c0:#7D97FF; --c1:#FF8A5C; --c2:#5FCB82; --c3:#B98CFF;
+  --scrim:rgba(0,0,0,.6);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{padding-top:env(safe-area-inset-top,0px)}
+body{margin:0}
+img{max-width:100%}
+[hidden]{display:none!important}
+html,body{background:var(--bg);color:var(--ink)}
+body{font-family:var(--font-body);font-size:15px;line-height:1.45;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--link);outline-offset:2px}
+.sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+.app{max-width:520px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px calc(112px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:20px}
+.top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.top-text{display:flex;flex-direction:column;gap:4px;min-width:0}
+.eyebrow{margin:0;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+h1{margin:0;font-family:var(--font-display);font-size:34px;line-height:1.05;font-weight:700;text-wrap:balance}
+.sub{margin:0;color:var(--muted);font-size:14px}
+.actions{display:flex;gap:8px;flex-shrink:0}
+.icon-btn{width:44px;height:44px;flex-shrink:0;border-radius:14px;border:0;display:grid;place-items:center;cursor:pointer;background:var(--surface);color:var(--ink);text-decoration:none}
+.icon-btn.primary{background:var(--accent);color:var(--on-accent)}
+.icon-btn.soft{background:var(--surface-2)}
+section{display:flex;flex-direction:column;gap:10px}
+.sec-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.sec{margin:0;font-size:18px;font-weight:700}
+.link-btn{background:none;border:0;color:var(--link);font-weight:500;font-size:14px;cursor:pointer;min-height:44px;padding:0 4px;display:inline-flex;align-items:center;text-decoration:none}
+.btn{min-height:48px;padding:0 18px;border-radius:14px;border:0;background:var(--ink);color:var(--bg);font-weight:700;font-size:15px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none}
+.btn[disabled]{opacity:.6;cursor:default}
+.btn.light{background:var(--on-hero);color:#14151A}
+.btn.ghost{background:var(--surface-2);color:var(--ink)}
+.btn.danger{background:var(--surface-2);color:var(--danger)}
+.btn.danger.armed{background:var(--danger);color:var(--surface)}
+.muted{color:var(--muted)}
+.num{font-variant-numeric:tabular-nums}
+
+.notice{background:var(--info-bg);color:var(--info-fg);border-radius:14px;padding:12px 14px;display:flex;gap:12px;align-items:center;justify-content:space-between;font-size:14px}
+.notice .btn{min-height:44px;padding:0 14px;font-size:14px;background:var(--info-fg);color:var(--info-bg);flex-shrink:0}
+.loading{color:var(--muted);font-size:14px;padding:8px 0}
+
+.hero{background:var(--hero);color:var(--on-hero);border-radius:20px;padding:20px;gap:10px}
+.pill{align-self:flex-start;padding:4px 10px;border-radius:999px;background:var(--accent);color:var(--on-accent);font-size:12px;font-weight:700}
+.hero-title{margin:0;font-family:var(--font-display);font-size:32px;line-height:1.05;font-weight:700;overflow-wrap:anywhere}
+.hero-sub{margin:0;font-size:14px;color:var(--hero-muted)}
+.hero-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:4px;padding-top:12px;border-top:1px dashed var(--hero-line)}
+.kv{display:flex;flex-direction:column;gap:2px;min-width:0}
+.hero .k{font-size:12px;color:var(--hero-muted)}
+.kv .v{font-weight:700;font-size:15px;overflow-wrap:anywhere}
+.hero .btn{margin-top:6px}
+.meter-dark{height:10px;border-radius:5px;background:var(--hero-line);overflow:hidden}
+.meter-dark i{display:block;height:100%;border-radius:5px;background:var(--accent)}
+.big{font-family:var(--font-display);font-size:44px;line-height:1;font-weight:700}
+
+.list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.row{width:100%;text-align:left;display:flex;gap:12px;align-items:center;padding:12px 14px;background:var(--surface);border:0;border-radius:14px;cursor:pointer;color:var(--ink)}
+.grow{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.t{font-weight:700;font-size:15px;overflow-wrap:anywhere}
+.m{font-size:13px;color:var(--muted);overflow-wrap:anywhere}
+.amt{font-weight:700;white-space:nowrap;font-variant-numeric:tabular-nums}
+.day-sep{font-size:13px;font-weight:700;color:var(--muted);padding:6px 2px 0}
+.tl{display:flex;gap:12px;align-items:flex-start}
+.tl .time{width:52px;flex-shrink:0;padding-top:14px;font-weight:700;font-size:14px;font-variant-numeric:tabular-nums}
+.row-card{flex:1;min-width:0;text-align:left;padding:12px 14px;background:var(--surface);border:0;border-radius:14px;cursor:pointer;display:flex;flex-direction:column;gap:6px;color:var(--ink)}
+.tag{align-self:flex-start;display:inline-block;padding:2px 8px;border-radius:6px;font-size:12px;font-weight:700;white-space:nowrap}
+.tag-show,.st-loteria{background:var(--warn-bg);color:var(--warn-fg)}
+.tag-plan,.st-quero{background:var(--plan-bg);color:var(--plan-fg)}
+.tag-place,.st-comprado{background:var(--ok-bg);color:var(--ok-fg)}
+.tag-note{background:var(--note-bg);color:var(--note-fg)}
+
+.empty{border:1.5px dashed var(--line-strong);border-radius:16px;padding:22px 18px;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center}
+.empty p{margin:0}
+.empty .e-title{font-weight:700;font-size:15px}
+.empty .e-text{font-size:14px;color:var(--muted);max-width:32ch}
+.empty .btn{margin-top:6px;min-height:44px;font-size:14px}
+
+.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none;margin-inline:-2px;padding-inline:2px}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex-shrink:0;min-height:44px;padding:0 14px;border-radius:22px;border:1px solid var(--line-strong);background:var(--surface);color:var(--ink);font-weight:700;font-size:14px;cursor:pointer;white-space:nowrap}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.chip .n{font-weight:500;opacity:.8;margin-left:4px}
+
+.cal{background:var(--surface);border-radius:18px;padding:12px;gap:6px}
+.cal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.cal-wd{text-align:center;font-size:12px;font-weight:700;color:var(--muted)}
+.cal-day{position:relative;height:52px;border:0;border-radius:12px;background:var(--surface-2);color:var(--ink);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;font-weight:700;font-size:16px;padding:0}
+.cal-day[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.cal-day.today{box-shadow:inset 0 0 0 2px var(--accent)}
+.cal-day .city{position:absolute;top:6px;right:6px;width:7px;height:7px;border-radius:50%}
+.cal-day .bar{width:16px;height:3px;border-radius:2px;background:currentColor}
+.cal-day .bar.none{visibility:hidden}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;padding:4px 4px 0;font-size:12px;color:var(--muted)}
+.legend span{display:flex;align-items:center;gap:6px}
+.legend i{width:8px;height:8px;border-radius:50%;display:inline-block}
+
+.ticket{width:100%;text-align:left;border:0;padding:0;background:var(--surface);border-radius:18px;overflow:hidden;cursor:pointer;color:var(--ink);display:flex;flex-direction:column}
+.ticket .main{padding:14px 16px 12px;display:flex;flex-direction:column;gap:6px}
+.ticket .line1{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.ticket .when{font-size:13px;font-weight:700;color:var(--muted)}
+.ticket .title{font-family:var(--font-display);font-size:24px;line-height:1.1;font-weight:700;overflow-wrap:anywhere}
+.ticket .stub{padding:10px 16px 12px;border-top:1px dashed var(--line-strong);display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.ticket .k{font-size:12px;color:var(--muted)}
+
+.seg{display:flex;padding:3px;gap:2px;background:var(--surface-2);border-radius:14px}
+.seg button{min-width:56px;min-height:44px;border:0;border-radius:11px;background:transparent;color:var(--muted);font-weight:700;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.15)}
+.cats{list-style:none;margin:0;padding:4px 16px;background:var(--surface);border-radius:18px}
+.cats li{padding:12px 0;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:8px}
+.cats li:last-child{border-bottom:0}
+.cats .head{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.meter{height:6px;border-radius:3px;background:var(--surface-2);overflow:hidden}
+.meter i{display:block;height:100%;border-radius:3px;background:var(--ink)}
+.meter i.over{background:var(--danger)}
+.quota{background:var(--info-bg);color:var(--info-fg);border-radius:18px;padding:16px;gap:8px}
+.quota .meter{background:var(--surface);background:color-mix(in srgb,var(--info-fg) 18%,transparent)}
+.quota .meter i{background:var(--info-fg)}
+.quota p{margin:0;font-size:13px}
+.quota h2{margin:0;font-size:16px}
+
+.place{display:flex;align-items:center;gap:6px;padding:6px 8px 6px 4px;background:var(--surface);border-radius:16px}
+.place .body{flex:1;min-width:0;text-align:left;background:none;border:0;padding:8px 10px;cursor:pointer;display:flex;flex-direction:column;gap:3px;color:var(--ink);border-radius:12px}
+.place .cat{font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+.place.done .name{text-decoration:line-through;color:var(--muted)}
+.toggle{min-width:64px;min-height:44px;padding:0 10px;border-radius:12px;border:1.5px solid var(--line-strong);background:var(--surface);color:var(--ink);font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;flex-shrink:0}
+.toggle[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+
+.rem{display:flex;align-items:center;gap:4px;background:var(--surface);border-radius:14px;padding:4px 4px 4px 4px}
+.rem .check-btn{width:44px;height:44px;border:0;background:none;display:grid;place-items:center;cursor:pointer;color:var(--ink);flex-shrink:0}
+.rem .body{flex:1;min-width:0;text-align:left;background:none;border:0;padding:8px 10px 8px 2px;cursor:pointer;display:flex;flex-direction:column;gap:2px;color:var(--ink)}
+.rem.done .t{text-decoration:line-through;color:var(--muted)}
+
+.tabs{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--surface);border-top:1px solid var(--line);padding-top:6px;padding-bottom:calc(8px + env(safe-area-inset-bottom,0px));padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.tabs-in{max-width:520px;margin:0 auto;display:grid;grid-template-columns:repeat(5,minmax(0,1fr))}
+.tab{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:54px;text-decoration:none;color:var(--muted);font-size:11px;font-weight:500}
+.tab .ic{width:52px;height:30px;border-radius:15px;display:grid;place-items:center}
+.tab[aria-current="page"]{color:var(--ink);font-weight:700}
+.tab[aria-current="page"] .ic{background:var(--accent);color:var(--on-accent)}
+
+.overlay{position:fixed;inset:0;z-index:40;display:flex;flex-direction:column;justify-content:flex-end}
+.scrim{position:absolute;inset:0;background:var(--scrim)}
+.sheet{position:relative;background:var(--surface);color:var(--ink);border-radius:24px 24px 0 0;max-height:calc(100% - 24px - env(safe-area-inset-top,0px));width:100%;max-width:560px;margin:0 auto;display:flex;flex-direction:column;padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-reduced-motion: no-preference){.sheet{animation:up .22s ease-out}@keyframes up{from{transform:translateY(24px);opacity:.6}to{transform:none;opacity:1}}}
+.grip{width:40px;height:5px;border-radius:3px;background:var(--line-strong);margin:10px auto 0}
+.sheet-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding-top:4px;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(12px,env(safe-area-inset-right,0px))}
+.sheet-head h2{margin:0;font-family:var(--font-display);font-size:28px;font-weight:700}
+.sheet-head h2:focus{outline:none}
+.sheet-body{flex:1;min-height:0;overflow-y:auto;margin:0;padding-top:12px;padding-bottom:16px;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:16px}
+.sheet-foot{display:flex;gap:10px;padding-top:12px;padding-bottom:16px;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px));border-top:1px solid var(--line)}
+.sheet-foot .save{flex:1}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.field>label,.legend{font-size:13px;font-weight:700;color:var(--muted);padding:0}
+.hint{font-size:12px;color:var(--muted);margin:0}
+.fs{margin:0;padding:0;border:0;min-width:0}
+.fs .legend{margin-bottom:8px}
+input[type=text],input[type=date],input[type=time],select,textarea{width:100%;min-width:0;height:48px;padding:0 14px;border:1.5px solid var(--line-strong);border-radius:12px;font-size:16px;color:var(--ink);background:var(--surface)}
+select{padding:0 10px}
+textarea{height:auto;min-height:88px;padding:12px 14px;resize:vertical}
+input::placeholder,textarea::placeholder{color:var(--muted);opacity:.85}
+.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.tiles{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+.tile{position:relative;min-height:66px;border:1.5px solid var(--line-strong);border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;font-size:12px;font-weight:700;cursor:pointer;padding:6px 2px;text-align:center}
+.tile input,.pill-opt input{position:absolute;inset:0;margin:0;opacity:0;cursor:pointer}
+.tile.on{border-color:var(--ink);background:var(--warn-bg);color:var(--warn-fg)}
+.tile:focus-within,.pill-opt:focus-within{outline:3px solid var(--link);outline-offset:2px}
+.pills{display:flex;flex-wrap:wrap;gap:8px}
+.pill-opt{position:relative;min-height:44px;padding:0 14px;border-radius:22px;border:1.5px solid var(--line-strong);display:flex;align-items:center;font-weight:700;font-size:14px;cursor:pointer}
+.pill-opt.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.check{display:flex;align-items:center;gap:10px;min-height:44px;font-size:15px;cursor:pointer}
+.check input{width:22px;height:22px;margin:0;accent-color:var(--ink);flex-shrink:0}
+.err{margin:0;color:var(--danger);font-size:14px;font-weight:700}
+.trecho{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr) 44px;gap:8px;align-items:center}
+
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:60;background:var(--ink);color:var(--bg);padding:12px 16px;border-radius:12px;font-weight:700;font-size:14px;max-width:calc(100% - 32px);box-shadow:0 6px 18px rgba(0,0,0,.25)}
+</style>
+</head>
+<body>
+
+<main class="app" id="app" aria-live="off"></main>
+
+<nav class="tabs" aria-label="Seções">
+  <div class="tabs-in">
+    <a class="tab" href="#hoje" data-tab="hoje"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M4 11l8-6 8 6v8a1 1 0 0 1-1 1h-4v-5h-6v5H5a1 1 0 0 1-1-1z"/></svg></span>Hoje</a>
+    <a class="tab" href="#roteiro" data-tab="roteiro"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="6" cy="19" r="2"/><circle cx="18" cy="5" r="2"/><path d="M8 19h7a3 3 0 0 0 0-6H9a3 3 0 0 1 0-6h7"/></svg></span>Roteiro</a>
+    <a class="tab" href="#shows" data-tab="shows"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16v4a2 2 0 0 0 0 4v4H4v-4a2 2 0 0 0 0-4z"/><path d="M14 6v12" stroke-dasharray="2 2"/></svg></span>Shows</a>
+    <a class="tab" href="#gastos" data-tab="gastos"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M16 14h2"/></svg></span>Gastos</a>
+    <a class="tab" href="#lugares" data-tab="lugares"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></span>Lugares</a>
+  </div>
+</nav>
+
+<div id="sheet-root"></div>
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ---------- constantes ---------- */
+  var DEFAULT_CONFIG = {
+    nome: 'Nova York + Orlando',
+    inicio: '2027-01-31',
+    fim: '2027-02-12',
+    trechos: [{ cidade: 'Nova York', desde: '2027-01-31' }, { cidade: 'Orlando', desde: '2027-02-09' }],
+    cotacao: 5.38,
+    orcamento: {}
+  };
+  var GASTO_CATS = ['Hospedagem', 'Ingressos', 'Comida', 'Compras', 'Transporte', 'Outros'];
+  var LUGAR_CATS = ['Discos', 'Livros', 'Comida', 'Demolidor', 'Passeios', 'Compras', 'Outros'];
+  var TIPOS = [
+    { id: 'show', label: 'Show' }, { id: 'programa', label: 'Programa' }, { id: 'gasto', label: 'Gasto' },
+    { id: 'lugar', label: 'Lugar' }, { id: 'lembrete', label: 'Lembrete' }
+  ];
+  var STATUS = { comprado: 'Comprado', loteria: 'Loteria / Rush', quero: 'Quero ver' };
+  var KIND = {
+    show: { cls: 'tag-show', label: 'Show' }, programa: { cls: 'tag-plan', label: 'Programa' },
+    lembrete: { cls: 'tag-note', label: 'Lembrete' }, lugar: { cls: 'tag-place', label: 'Lugar' }
+  };
+  var VIEWS = ['hoje', 'roteiro', 'shows', 'gastos', 'lugares'];
+  var WD = ['domingo', 'segunda', 'terça', 'quarta', 'quinta', 'sexta', 'sábado'];
+  var WDS = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sáb'];
+  var MES = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'];
+  var MESS = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
+
+  var I = {
+    plus: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>',
+    gear: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2.2"/><circle cx="9" cy="17" r="2.2"/></svg>',
+    show: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16v4a2 2 0 0 0 0 4v4H4v-4a2 2 0 0 0 0-4z"/><path d="M14 6v12" stroke-dasharray="2 2"/></svg>',
+    programa: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>',
+    gasto: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M16 14h2"/></svg>',
+    lugar: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>',
+    lembrete: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M6 16v-5a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg>',
+    check: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+    box: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="5"/></svg>',
+    boxOn: '<svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="5" fill="currentColor"/><path d="M8 12.5l3 3 5-6" fill="none" stroke="var(--bg)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    map: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2z"/><path d="M9 4v14M15 6v14"/></svg>',
+    x: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>'
+  };
+
+  /* ---------- estado ---------- */
+  var S = {
+    view: 'hoje', showFilter: 'todos', placeFilter: 'todos', day: null, cur: 'USD', showDone: false,
+    items: [], config: clone(DEFAULT_CONFIG), configSaved: false, configLoaded: false, loaded: false,
+    dbState: 'connecting'
+  };
+  var sheet = null;
+  var dbRef = null;
+  var dbReady;
+
+  try { var c0 = localStorage.getItem('viagem.cur'); if (c0 === 'BRL' || c0 === 'USD') S.cur = c0; } catch (e) {}
+
+  /* ---------- utilidades ---------- */
+  function clone(o) { return JSON.parse(JSON.stringify(o)); }
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (ch) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch];
+    });
+  }
+  function pad(n) { return (n < 10 ? '0' : '') + n; }
+  function todayStr() { var t = new Date(); return t.getFullYear() + '-' + pad(t.getMonth() + 1) + '-' + pad(t.getDate()); }
+  function isDate(s) { return typeof s === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(s); }
+  function parts(s) { var a = s.split('-').map(Number); return { y: a[0], m: a[1], d: a[2] }; }
+  function utc(s) { var p = parts(s); return Date.UTC(p.y, p.m - 1, p.d); }
+  function wday(s) { return new Date(utc(s)).getUTCDay(); }
+  function addDays(s, n) { return new Date(utc(s) + n * 864e5).toISOString().slice(0, 10); }
+  function diffDays(a, b) { return Math.round((utc(b) - utc(a)) / 864e5); }
+  function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+  function shortDate(s) { var p = parts(s); return WDS[wday(s)] + ' ' + p.d + '/' + MESS[p.m - 1]; }
+  function longDate(s) { var p = parts(s); return cap(WD[wday(s)]) + ', ' + p.d + ' de ' + MES[p.m - 1]; }
+  function rangeLabel(a, b) {
+    var pa = parts(a), pb = parts(b);
+    if (pa.y === pb.y) return pa.d + ' ' + MESS[pa.m - 1] + ' – ' + pb.d + ' ' + MESS[pb.m - 1] + ' ' + pb.y;
+    return pa.d + ' ' + MESS[pa.m - 1] + ' ' + pa.y + ' – ' + pb.d + ' ' + MESS[pb.m - 1] + ' ' + pb.y;
+  }
+  function fmtHora(h) { return h ? h.replace(':', 'h') : ''; }
+  function whenLabel(i) {
+    if (!isDate(i.dia)) return 'Sem data';
+    return shortDate(i.dia) + (i.hora ? ' · ' + fmtHora(i.hora) : '');
+  }
+  function sortKey(i) { return (isDate(i.dia) ? i.dia : '9999-99-99') + ' ' + (i.hora || '99:99'); }
+  function byWhen(a, b) {
+    var ka = sortKey(a), kb = sortKey(b);
+    if (ka !== kb) return ka < kb ? -1 : 1;
+    return String(a.titulo || '').localeCompare(String(b.titulo || ''), 'pt-BR');
+  }
+  function tripDays(c) {
+    if (!isDate(c.inicio) || !isDate(c.fim) || c.fim < c.inicio) return [];
+    var out = [], d = c.inicio, guard = 0;
+    while (d <= c.fim && guard < 120) { out.push(d); d = addDays(d, 1); guard++; }
+    return out;
+  }
+  function trechos() {
+    return (S.config.trechos || []).filter(function (t) { return t && t.cidade && isDate(t.desde); })
+      .slice().sort(function (a, b) { return a.desde < b.desde ? -1 : a.desde > b.desde ? 1 : 0; });
+  }
+  function cityOf(day) {
+    var tr = trechos(), idx = -1;
+    tr.forEach(function (t, i) { if (t.desde <= day) idx = i; });
+    return idx < 0 ? null : { cidade: tr[idx].cidade, i: idx % 4 };
+  }
+  function rate() { var r = Number(S.config.cotacao); return r > 0 ? r : DEFAULT_CONFIG.cotacao; }
+  function num(v) { var n = Number(v); return isFinite(n) ? n : 0; }
+  function toUSD(i) { var v = num(i.valor); return i.moeda === 'BRL' ? v / rate() : v; }
+  function inCur(usd) { return S.cur === 'BRL' ? usd * rate() : usd; }
+  function money(v, cur, dec) {
+    var d = dec == null ? 0 : dec;
+    var s = num(v).toLocaleString('pt-BR', { minimumFractionDigits: d, maximumFractionDigits: d });
+    return (cur === 'BRL' ? 'R$ ' : 'US$ ') + s;
+  }
+  function parseMoney(s) {
+    if (typeof s === 'number') return s;
+    s = String(s || '').trim().replace(/[^\d.,]/g, '');
+    if (!s) return null;
+    if (s.indexOf(',') >= 0) s = s.replace(/\./g, '').replace(',', '.');
+    var n = parseFloat(s);
+    return isFinite(n) ? Math.round(n * 100) / 100 : null;
+  }
+  function moneyInput(v) { return typeof v === 'number' ? String(v).replace('.', ',') : (v || ''); }
+  function pct(a, b) { return b > 0 ? Math.min(100, Math.round(a / b * 100)) : 0; }
+  function of(tipo) { return S.items.filter(function (i) { return i.tipo === tipo; }); }
+
+
+  /* ---------- armazenamento no aparelho ---------- */
+  var STORE_KEY = 'viagem.dados.v1';
+  function newId() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 8); }
+  function makeLocalDb() {
+    var store;
+    try {
+      store = JSON.parse(localStorage.getItem(STORE_KEY) || '{}') || {};
+      localStorage.setItem(STORE_KEY + '.teste', '1');
+      localStorage.removeItem(STORE_KEY + '.teste');
+    } catch (e) { return null; }
+    var listeners = [];
+    function emit() { listeners.slice().forEach(function (l) { l(); }); }
+    function snapDoc(path) {
+      var d = store[path];
+      return { id: path.split('/').pop(), exists: !!d, data: function () { return d ? clone(d) : undefined; }, metadata: { fromCache: false, hasPendingWrites: false } };
+    }
+    function write(fn) {
+      return new Promise(function (resolve, reject) {
+        var before = JSON.stringify(store);
+        try { fn(); localStorage.setItem(STORE_KEY, JSON.stringify(store)); }
+        catch (e) { store = JSON.parse(before); reject({ code: (e && e.code === 'invalid_argument') ? 'invalid_argument' : 'quota_exceeded', message: String(e && e.message || e) }); return; }
+        emit(); resolve();
+      });
+    }
+    function listen(fn) { listeners.push(fn); setTimeout(fn, 0); return function () { listeners = listeners.filter(function (x) { return x !== fn; }); }; }
+    function docRef(path) {
+      return {
+        id: path.split('/').pop(), path: path,
+        get: function () { return Promise.resolve(snapDoc(path)); },
+        set: function (data) { return write(function () { store[path] = clone(data); }); },
+        update: function (data) { return write(function () { if (!store[path]) throw { code: 'invalid_argument' }; Object.assign(store[path], clone(data)); }); },
+        delete: function () { return write(function () { delete store[path]; }); },
+        onSnapshot: function (next) { return listen(function () { next(snapDoc(path)); }); }
+      };
+    }
+    function colRef(name) {
+      return {
+        path: name,
+        doc: function (id) { return docRef(name + '/' + (id || newId())); },
+        onSnapshot: function (next) {
+          return listen(function () {
+            var docs = Object.keys(store).filter(function (k) { return k.indexOf(name + '/') === 0 && k.split('/').length === 2; }).sort().map(snapDoc);
+            next({ docs: docs, size: docs.length, empty: !docs.length });
+          });
+        }
+      };
+    }
+    window.addEventListener('storage', function (e) {
+      if (e.key !== STORE_KEY) return;
+      try { store = JSON.parse(e.newValue || '{}') || {}; } catch (x) {}
+      emit();
+    });
+    return {
+      doc: docRef, collection: colRef,
+      exportAll: function () { return clone(store); },
+      importAll: function (obj) { return write(function () { store = clone(obj); }); }
+    };
+  }
+
+  /* ---------- pedaços de interface ---------- */
+  function header(eyebrow, title, sub, actions) {
+    return '<header class="top"><div class="top-text">' +
+      (eyebrow ? '<p class="eyebrow">' + esc(eyebrow) + '</p>' : '') +
+      '<h1>' + esc(title) + '</h1>' +
+      (sub ? '<p class="sub">' + esc(sub) + '</p>' : '') +
+      '</div><div class="actions">' + (actions || '') + '</div></header>';
+  }
+  function addBtn(tipo, dia, label) {
+    return '<button type="button" class="icon-btn primary" data-action="new" data-tipo="' + tipo + '"' +
+      (dia ? ' data-dia="' + esc(dia) + '"' : '') + ' aria-label="' + esc(label) + '">' + I.plus + '</button>';
+  }
+  function empty(title, text, btnLabel, attrs) {
+    return '<div class="empty"><p class="e-title">' + esc(title) + '</p>' +
+      (text ? '<p class="e-text">' + esc(text) + '</p>' : '') +
+      (btnLabel ? '<button type="button" class="btn" ' + attrs + '>' + esc(btnLabel) + '</button>' : '') + '</div>';
+  }
+  function statusBlock() {
+    if (S.dbState === 'off') {
+      return '<div class="notice" role="note"><span>Este navegador não está deixando o app salvar dados. Abra no Chrome, fora da aba anônima.</span></div>';
+    }
+    if (S.dbState === 'error') {
+      return '<div class="notice" role="note"><span>Algo deu errado ao ler seus dados. Recarregue a página.</span></div>';
+    }
+    return '';
+  }
+  function isLoading() { return S.dbState === 'connecting' || (S.dbState === 'ready' && !S.loaded); }
+  function loadingLine() { return '<p class="loading">Carregando sua viagem…</p>'; }
+
+  function timelineItem(i) {
+    var k = KIND[i.tipo] || KIND.programa;
+    return '<li class="tl"><span class="time">' + (i.hora ? esc(fmtHora(i.hora)) : '<span class="muted">–</span>') + '</span>' +
+      '<button type="button" class="row-card" data-action="edit" data-id="' + esc(i.id) + '">' +
+      '<span class="tag ' + k.cls + '">' + k.label + (i.tipo === 'show' && STATUS[i.status] ? ' · ' + STATUS[i.status] : '') + '</span>' +
+      '<span class="t">' + esc(i.titulo) + '</span>' +
+      (i.local ? '<span class="m">' + esc(i.local) + '</span>' : '') +
+      '</button></li>';
+  }
+
+  /* ---------- Hoje ---------- */
+  function viewHoje() {
+    var c = S.config, t = todayStr(), days = tripDays(c);
+    var eyebrow, title, sub;
+    if (days.length) {
+      var range = rangeLabel(c.inicio, c.fim);
+      if (t < c.inicio) {
+        var n = diffDays(t, c.inicio);
+        eyebrow = n === 1 ? 'Falta 1 dia' : 'Faltam ' + n + ' dias';
+        title = c.nome || 'Minha viagem'; sub = range;
+      } else if (t <= c.fim) {
+        var city = cityOf(t);
+        eyebrow = 'Dia ' + (days.indexOf(t) + 1) + ' de ' + days.length + (city ? ' · ' + city.cidade : '');
+        title = longDate(t); sub = c.nome || '';
+      } else {
+        eyebrow = 'Viagem concluída'; title = c.nome || 'Minha viagem'; sub = range;
+      }
+    } else {
+      eyebrow = 'Viagem'; title = c.nome || 'Minha viagem'; sub = 'Defina as datas nos ajustes';
+    }
+    var h = header(eyebrow, title, sub,
+      '<button type="button" class="icon-btn" data-action="settings" aria-label="Ajustes da viagem">' + I.gear + '</button>' +
+      addBtn('show', '', 'Adicionar item'));
+    h += statusBlock();
+    if (isLoading()) return h + loadingLine();
+
+    if (S.configLoaded && !S.configSaved && S.dbState === 'ready') {
+      h += '<div class="notice"><span>As datas estão como ' + esc(rangeLabel(c.inicio, c.fim)) + ', Nova York e depois Orlando. Confira se está certo.</span>' +
+        '<button type="button" class="btn" data-action="settings">Ajustar</button></div>';
+    }
+
+    // Próximo show
+    var nextShows = of('show').filter(function (i) { return isDate(i.dia) && i.dia >= t; }).sort(byWhen);
+    var nx = nextShows[0];
+    if (nx) {
+      h += '<section class="hero" aria-label="Próximo show">' +
+        '<span class="pill">' + (nx.dia === t ? 'Hoje' : 'Próximo show') + '</span>' +
+        '<h2 class="hero-title">' + esc(nx.titulo) + '</h2>' +
+        (nx.local ? '<p class="hero-sub">' + esc(nx.local) + '</p>' : '') +
+        '<div class="hero-grid">' +
+        '<div class="kv"><span class="k">Quando</span><span class="v">' + esc(whenLabel(nx)) + '</span></div>' +
+        '<div class="kv"><span class="k">Assento</span><span class="v">' + esc(nx.assento || '—') + '</span></div>' +
+        '<div class="kv"><span class="k">Situação</span><span class="v">' + esc(STATUS[nx.status] || '—') + '</span></div>' +
+        '</div>' +
+        '<button type="button" class="btn light" data-action="edit" data-id="' + esc(nx.id) + '">Ver detalhes</button>' +
+        '</section>';
+    } else {
+      h += '<section aria-label="Próximo show">' + empty('Nenhum show com data ainda',
+        'Quando você adicionar um show com dia marcado, ele aparece aqui em destaque.',
+        'Adicionar show', 'data-action="new" data-tipo="show"') + '</section>';
+    }
+
+    // Próximos na agenda
+    var from = (days.length && t < c.inicio) ? c.inicio : t;
+    var up = S.items.filter(function (i) {
+      return (i.tipo === 'show' || i.tipo === 'programa' || i.tipo === 'lugar' || (i.tipo === 'lembrete' && !i.feito)) &&
+        isDate(i.dia) && i.dia >= from;
+    }).sort(byWhen).slice(0, 8);
+    h += '<section aria-labelledby="sec-prox"><div class="sec-head"><h2 class="sec" id="sec-prox">Próximos na agenda</h2>' +
+      '<a class="link-btn" href="#roteiro">Ver roteiro</a></div>';
+    if (up.length) {
+      var lastDay = '', rows = '';
+      up.forEach(function (i) {
+        if (i.dia !== lastDay) { rows += '<li class="day-sep">' + esc(longDate(i.dia)) + '</li>'; lastDay = i.dia; }
+        rows += timelineItem(i);
+      });
+      h += '<ul class="list">' + rows + '</ul>';
+    } else {
+      h += empty('Nada marcado ainda', 'Monte o roteiro dia a dia com shows, passeios e lembretes.', 'Abrir roteiro', 'data-action="goto" data-view="roteiro"');
+    }
+    h += '</section>';
+
+    // Lembretes
+    var lem = of('lembrete');
+    var pend = lem.filter(function (i) { return !i.feito; }).sort(byWhen);
+    var done = lem.filter(function (i) { return i.feito; }).sort(byWhen);
+    h += '<section aria-labelledby="sec-lem"><div class="sec-head"><h2 class="sec" id="sec-lem">Lembretes</h2>' +
+      '<button type="button" class="link-btn" data-action="new" data-tipo="lembrete">Adicionar</button></div>';
+    if (!lem.length) {
+      h += '<p class="sub">Coisas para não esquecer: documentos, horário de loteria, o que levar.</p>';
+    } else {
+      var list = pend.concat(S.showDone ? done : []);
+      if (list.length) h += '<ul class="list">' + list.map(reminderRow).join('') + '</ul>';
+      else h += '<p class="sub">Tudo feito por aqui.</p>';
+      if (done.length) {
+        h += '<button type="button" class="link-btn" data-action="toggle-done" style="align-self:flex-start">' +
+          (S.showDone ? 'Esconder feitos' : 'Ver feitos (' + done.length + ')') + '</button>';
+      }
+    }
+    h += '</section>';
+    return h;
+  }
+  function reminderRow(i) {
+    return '<li class="rem' + (i.feito ? ' done' : '') + '">' +
+      '<button type="button" class="check-btn" data-action="toggle-feito" data-id="' + esc(i.id) + '" aria-pressed="' + (i.feito ? 'true' : 'false') + '" aria-label="' + (i.feito ? 'Desmarcar: ' : 'Marcar como feito: ') + esc(i.titulo) + '">' + (i.feito ? I.boxOn : I.box) + '</button>' +
+      '<button type="button" class="body" data-action="edit" data-id="' + esc(i.id) + '"><span class="t">' + esc(i.titulo) + '</span>' +
+      (isDate(i.dia) ? '<span class="m">' + esc(whenLabel(i)) + '</span>' : '') + '</button></li>';
+  }
+
+  /* ---------- Roteiro ---------- */
+  function viewRoteiro() {
+    var c = S.config, days = tripDays(c), t = todayStr();
+    var sel = (S.day && days.indexOf(S.day) >= 0) ? S.day : (days.indexOf(t) >= 0 ? t : days[0]);
+    var h = header('', 'Roteiro', days.length ? rangeLabel(c.inicio, c.fim) + ' · ' + days.length + ' dias' : '',
+      addBtn('programa', sel || '', 'Adicionar ao roteiro'));
+    h += statusBlock();
+    if (isLoading()) return h + loadingLine();
+    if (!days.length) {
+      return h + empty('Defina as datas da viagem', 'Com o início e o fim marcados, o calendário aparece aqui.', 'Abrir ajustes', 'data-action="settings"');
+    }
+    var counts = {};
+    S.items.forEach(function (i) { if (i.tipo !== 'gasto' && isDate(i.dia)) counts[i.dia] = (counts[i.dia] || 0) + 1; });
+    var cells = '';
+    var lead = wday(days[0]);
+    for (var k = 0; k < lead; k++) cells += '<span aria-hidden="true"></span>';
+    days.forEach(function (d) {
+      var city = cityOf(d), n = counts[d] || 0, on = d === sel;
+      var label = longDate(d) + (city ? ', ' + city.cidade : '') + (n ? ', ' + n + (n === 1 ? ' item' : ' itens') : ', sem itens');
+      cells += '<button type="button" class="cal-day' + (d === t ? ' today' : '') + '" data-action="day" data-dia="' + d + '" aria-pressed="' + on + '" aria-label="' + esc(label) + '">' +
+        (city ? '<span class="city" style="background:var(--c' + city.i + ')"></span>' : '') +
+        '<span>' + parts(d).d + '</span><span class="bar' + (n ? '' : ' none') + '"></span></button>';
+    });
+    var legend = trechos().map(function (tr, i) {
+      return '<span><i style="background:var(--c' + (i % 4) + ')"></i>' + esc(tr.cidade) + '</span>';
+    }).join('');
+    h += '<section class="cal" aria-label="Calendário da viagem"><div class="cal-grid">' +
+      ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'].map(function (x) { return '<span class="cal-wd" aria-hidden="true">' + x + '</span>'; }).join('') +
+      '</div><div class="cal-grid">' + cells + '</div>' +
+      (legend ? '<div class="legend">' + legend + '<span><i style="background:currentColor;border-radius:2px;height:3px;width:12px"></i>tem item</span></div>' : '') +
+      '</section>';
+
+    var city = cityOf(sel);
+    var dayItems = S.items.filter(function (i) { return i.tipo !== 'gasto' && i.dia === sel; }).sort(byWhen);
+    h += '<section aria-labelledby="sec-dia"><div class="sec-head"><h2 class="sec" id="sec-dia">' + esc(longDate(sel)) + '</h2>' +
+      (city ? '<span class="m" style="font-weight:700;color:var(--c' + city.i + ')">' + esc(city.cidade) + '</span>' : '') + '</div>';
+    if (dayItems.length) {
+      h += '<ul class="list">' + dayItems.map(timelineItem).join('') + '</ul>' +
+        '<button type="button" class="link-btn" style="align-self:flex-start" data-action="new" data-tipo="programa" data-dia="' + sel + '">Adicionar a este dia</button>';
+    } else {
+      h += empty('Dia livre por enquanto', 'Adicione um show, passeio, refeição ou lembrete.', 'Adicionar ao dia', 'data-action="new" data-tipo="programa" data-dia="' + sel + '"');
+    }
+    h += '</section>';
+
+    var semDia = of('programa').filter(function (i) { return !isDate(i.dia); }).sort(byWhen);
+    if (semDia.length) {
+      h += '<section aria-labelledby="sec-semdia"><h2 class="sec" id="sec-semdia">Ideias sem dia definido</h2><ul class="list">' + semDia.map(timelineItem).join('') + '</ul></section>';
+    }
+    var fora = S.items.filter(function (i) { return i.tipo !== 'gasto' && isDate(i.dia) && (i.dia < c.inicio || i.dia > c.fim); }).sort(byWhen);
+    if (fora.length) {
+      h += '<section aria-labelledby="sec-fora"><h2 class="sec" id="sec-fora">Fora das datas da viagem</h2><ul class="list">' +
+        fora.map(function (i) { return '<li class="day-sep">' + esc(longDate(i.dia)) + '</li>' + timelineItem(i); }).join('') + '</ul></section>';
+    }
+    return h;
+  }
+
+  /* ---------- Shows ---------- */
+  function viewShows() {
+    var all = of('show').sort(byWhen);
+    var cnt = { comprado: 0, loteria: 0, quero: 0 };
+    all.forEach(function (s) { if (cnt[s.status] != null) cnt[s.status]++; });
+    var sub = all.length ? cnt.comprado + (cnt.comprado === 1 ? ' comprado' : ' comprados') + ' · ' + cnt.loteria + ' na loteria · ' + cnt.quero + ' na lista' : '';
+    var h = header('', 'Shows', sub, addBtn('show', '', 'Adicionar show'));
+    h += statusBlock();
+    if (isLoading()) return h + loadingLine();
+    if (!all.length) {
+      return h + empty('Nenhum show ainda', 'Guarde aqui os que você comprou, os que vai tentar na loteria e os que quer ver.', 'Adicionar show', 'data-action="new" data-tipo="show"');
+    }
+    var f = S.showFilter;
+    var defs = [['todos', 'Todos', all.length], ['comprado', 'Comprados', cnt.comprado], ['loteria', 'Loteria / Rush', cnt.loteria], ['quero', 'Quero ver', cnt.quero]];
+    h += '<div class="chips" role="group" aria-label="Filtrar por situação">' + defs.map(function (d) {
+      return '<button type="button" class="chip" data-action="show-filter" data-f="' + d[0] + '" aria-pressed="' + (d[0] === f) + '">' + d[1] + '<span class="n">' + d[2] + '</span></button>';
+    }).join('') + '</div>';
+    var list = all.filter(function (s) { return f === 'todos' || s.status === f; });
+    if (!list.length) {
+      h += '<p class="sub">Nenhum show nessa lista.</p>';
+      return h;
+    }
+    h += '<ul class="list">' + list.map(function (s) {
+      var st = STATUS[s.status] ? s.status : 'quero';
+      return '<li><button type="button" class="ticket" data-action="edit" data-id="' + esc(s.id) + '">' +
+        '<span class="main"><span class="line1"><span class="tag st-' + st + '">' + STATUS[st] + '</span><span class="when">' + esc(whenLabel(s)) + '</span></span>' +
+        '<span class="title">' + esc(s.titulo) + '</span>' +
+        (s.local ? '<span class="m">' + esc(s.local) + '</span>' : '') + '</span>' +
+        '<span class="stub"><span class="kv"><span class="k">Assento</span><span class="v">' + esc(s.assento || '—') + '</span></span>' +
+        '<span class="kv"><span class="k">Valor</span><span class="v num">' + (num(s.valor) > 0 ? esc(money(s.valor, s.moeda, 2)) : '—') + '</span></span></span>' +
+        '</button></li>';
+    }).join('') + '</ul>';
+    return h;
+  }
+
+  /* ---------- Gastos ---------- */
+  function viewGastos() {
+    var seg = '<div class="seg" role="group" aria-label="Moeda">' +
+      '<button type="button" data-action="cur" data-cur="USD" aria-pressed="' + (S.cur === 'USD') + '">US$</button>' +
+      '<button type="button" data-action="cur" data-cur="BRL" aria-pressed="' + (S.cur === 'BRL') + '">R$</button></div>';
+    var h = header('', 'Gastos', '', seg + addBtn('gasto', '', 'Adicionar gasto'));
+    h += statusBlock();
+    if (isLoading()) return h + loadingLine();
+
+    var gastos = of('gasto');
+    var tickets = of('show').filter(function (s) { return s.contaGasto && num(s.valor) > 0; });
+    var spent = {}, plan = S.config.orcamento || {};
+    GASTO_CATS.forEach(function (cat) { spent[cat] = 0; });
+    gastos.forEach(function (g) { var cat = GASTO_CATS.indexOf(g.categoria) >= 0 ? g.categoria : 'Outros'; spent[cat] += toUSD(g); });
+    tickets.forEach(function (s) { spent.Ingressos += toUSD(s); });
+    var total = 0, planTotal = 0;
+    GASTO_CATS.forEach(function (cat) { total += spent[cat]; planTotal += Math.max(0, num(plan[cat])); });
+
+    h += '<section class="hero" aria-label="Resumo"><span class="hero-sub">Gasto até agora</span>' +
+      '<span class="big num">' + esc(money(inCur(total), S.cur)) + '</span>';
+    if (planTotal > 0) {
+      h += '<span class="hero-sub">de ' + esc(money(inCur(planTotal), S.cur)) + ' planejados</span>' +
+        '<div class="meter-dark" aria-hidden="true"><i style="width:' + pct(total, planTotal) + '%"></i></div>';
+    } else {
+      h += '<button type="button" class="btn light" data-action="settings" style="align-self:flex-start;min-height:44px;font-size:14px">Definir orçamento</button>';
+    }
+    h += '<span class="hero-sub" style="font-size:12px">Cotação: R$ ' + esc(rate().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + ' por dólar, já com IOF</span></section>';
+
+    var catsShown = GASTO_CATS.filter(function (cat) { return spent[cat] > 0 || num(plan[cat]) > 0; });
+    if (catsShown.length) {
+      h += '<section aria-labelledby="sec-cat"><div class="sec-head"><h2 class="sec" id="sec-cat">Por categoria</h2>' +
+        '<button type="button" class="link-btn" data-action="settings">Editar orçamento</button></div><ul class="cats">' +
+        catsShown.map(function (cat) {
+          var p = num(plan[cat]);
+          return '<li><div class="head"><span class="t">' + cat + '</span><span class="m num"><strong style="color:var(--ink)">' + esc(money(inCur(spent[cat]), S.cur)) + '</strong>' +
+            (p > 0 ? ' de ' + esc(money(inCur(p), S.cur)) : '') + '</span></div>' +
+            (p > 0 ? '<div class="meter" aria-hidden="true"><i class="' + (spent[cat] > p ? 'over' : '') + '" style="width:' + pct(spent[cat], p) + '%"></i></div>' : '') + '</li>';
+        }).join('') + '</ul></section>';
+    }
+
+    var quota = gastos.filter(function (g) { return g.categoria === 'Compras' && g.cota !== false; })
+      .reduce(function (a, g) { return a + toUSD(g); }, 0);
+    h += '<section class="quota" aria-labelledby="sec-cota"><div class="sec-head"><h2 id="sec-cota">Cota da alfândega</h2>' +
+      '<span class="num" style="font-size:13px;font-weight:700">' + esc(money(quota, 'USD')) + ' de US$ 1.000</span></div>' +
+      '<div class="meter" aria-hidden="true"><i style="width:' + pct(quota, 1000) + '%"></i></div>' +
+      '<p>' + (quota > 1000 ? 'Passou da cota: o que exceder paga 50% de imposto na volta.' : 'Entram as compras marcadas como "conta na cota". Livros e roupa de uso pessoal não contam.') + '</p></section>';
+
+    var entries = gastos.map(function (g) {
+      return { id: g.id, titulo: g.titulo, dia: g.dia, meta: [isDate(g.dia) ? shortDate(g.dia) : '', g.categoria || 'Outros'].filter(Boolean).join(' · '), valor: g.valor, moeda: g.moeda, criadoEm: g.criadoEm || 0 };
+    }).concat(tickets.map(function (s) {
+      return { id: s.id, titulo: s.titulo, dia: s.dia, meta: [isDate(s.dia) ? shortDate(s.dia) : '', 'Ingresso'].filter(Boolean).join(' · '), valor: s.valor, moeda: s.moeda, criadoEm: s.criadoEm || 0 };
+    })).sort(function (a, b) {
+      var da = isDate(a.dia) ? a.dia : '0000', db = isDate(b.dia) ? b.dia : '0000';
+      if (da !== db) return da < db ? 1 : -1;
+      return b.criadoEm - a.criadoEm;
+    });
+    h += '<section aria-labelledby="sec-lanc"><h2 class="sec" id="sec-lanc">Lançamentos</h2>';
+    if (entries.length) {
+      h += '<ul class="list">' + entries.map(function (e) {
+        return '<li><button type="button" class="row" data-action="edit" data-id="' + esc(e.id) + '"><span class="grow"><span class="t">' + esc(e.titulo) + '</span>' +
+          '<span class="m">' + esc(e.meta) + '</span></span><span class="amt">' + esc(money(e.valor, e.moeda, 2)) + '</span></button></li>';
+      }).join('') + '</ul>';
+    } else {
+      h += empty('Nenhum gasto registrado', 'Lance hotel, comida, metrô e compras. Ingressos marcados nos shows entram sozinhos.', 'Registrar gasto', 'data-action="new" data-tipo="gasto"');
+    }
+    h += '</section>';
+    return h;
+  }
+
+  /* ---------- Lugares ---------- */
+  function viewLugares() {
+    var all = of('lugar').sort(function (a, b) {
+      if (!!a.feito !== !!b.feito) return a.feito ? 1 : -1;
+      return String(a.titulo || '').localeCompare(String(b.titulo || ''), 'pt-BR');
+    });
+    var visited = all.filter(function (p) { return p.feito; }).length;
+    var h = header('', 'Lugares', all.length ? visited + ' de ' + all.length + ' visitados' : '', addBtn('lugar', '', 'Adicionar lugar'));
+    h += statusBlock();
+    if (isLoading()) return h + loadingLine();
+    if (!all.length) {
+      return h + empty('Sua lista de lugares está vazia', 'Lojas de disco, sebos, comida, passeios. Vá marcando "Fui" conforme visita.', 'Adicionar lugar', 'data-action="new" data-tipo="lugar"');
+    }
+    var used = LUGAR_CATS.filter(function (cat) { return all.some(function (p) { return (p.categoria || 'Outros') === cat; }); });
+    var f = (S.placeFilter === 'todos' || used.indexOf(S.placeFilter) >= 0) ? S.placeFilter : 'todos';
+    h += '<div class="chips" role="group" aria-label="Filtrar por categoria">' +
+      [['todos', 'Todos']].concat(used.map(function (c) { return [c, c]; })).map(function (d) {
+        return '<button type="button" class="chip" data-action="place-filter" data-f="' + esc(d[0]) + '" aria-pressed="' + (d[0] === f) + '">' + esc(d[1]) + '</button>';
+      }).join('') + '</div>';
+    var list = all.filter(function (p) { return f === 'todos' || (p.categoria || 'Outros') === f; });
+    h += '<ul class="list">' + list.map(function (p) {
+      var q = [p.titulo, p.local].filter(Boolean).join(', ');
+      return '<li class="place' + (p.feito ? ' done' : '') + '">' +
+        '<button type="button" class="body" data-action="edit" data-id="' + esc(p.id) + '"><span class="cat">' + esc(p.categoria || 'Outros') + '</span>' +
+        '<span class="t name">' + esc(p.titulo) + '</span>' + (p.local ? '<span class="m">' + esc(p.local) + '</span>' : '') + '</button>' +
+        '<a class="icon-btn soft" href="https://www.google.com/maps/search/?api=1&amp;query=' + encodeURIComponent(q) + '" target="_blank" rel="noopener" aria-label="Abrir ' + esc(p.titulo) + ' no mapa">' + I.map + '</a>' +
+        '<button type="button" class="toggle" data-action="toggle-feito" data-id="' + esc(p.id) + '" aria-pressed="' + (p.feito ? 'true' : 'false') + '" aria-label="' + (p.feito ? 'Desmarcar visita: ' : 'Marcar que fui: ') + esc(p.titulo) + '">' + I.check + 'Fui</button>' +
+        '</li>';
+    }).join('') + '</ul>';
+    return h;
+  }
+
+  /* ---------- render ---------- */
+  var appEl = document.getElementById('app');
+  function render() {
+    var fn = { hoje: viewHoje, roteiro: viewRoteiro, shows: viewShows, gastos: viewGastos, lugares: viewLugares }[S.view] || viewHoje;
+    appEl.innerHTML = fn();
+    Array.prototype.forEach.call(document.querySelectorAll('.tab'), function (a) {
+      if (a.getAttribute('data-tab') === S.view) a.setAttribute('aria-current', 'page');
+      else a.removeAttribute('aria-current');
+    });
+  }
+  function setViewFromHash() {
+    var v = (location.hash || '').replace('#', '');
+    S.view = VIEWS.indexOf(v) >= 0 ? v : 'hoje';
+  }
+
+  /* ---------- folha de item ---------- */
+  var sheetRoot = document.getElementById('sheet-root');
+  function defaultsFor(tipo, d) {
+    if (tipo === 'gasto' && GASTO_CATS.indexOf(d.categoria) < 0) d.categoria = 'Comida';
+    if (tipo === 'lugar' && LUGAR_CATS.indexOf(d.categoria) < 0) d.categoria = 'Passeios';
+    if (!d.moeda) d.moeda = 'USD';
+    if (!STATUS[d.status]) d.status = 'quero';
+    if (d.contaGasto == null) d.contaGasto = true;
+    if (d.cota == null) d.cota = true;
+    return d;
+  }
+  function openItem(id, preset) {
+    var it = id ? S.items.find(function (x) { return x.id === id; }) : null;
+    var d = it ? clone(it) : { tipo: (preset && preset.tipo) || 'show', dia: (preset && preset.dia) || '' };
+    sheet = { kind: 'item', id: it ? it.id : null, draft: defaultsFor(d.tipo, d), opener: document.activeElement, armed: false };
+    renderSheet(true);
+  }
+  function openSettings() {
+    sheet = { kind: 'settings', draft: clone(S.config), opener: document.activeElement };
+    if (!sheet.draft.trechos || !sheet.draft.trechos.length) sheet.draft.trechos = [{ cidade: '', desde: '' }];
+    renderSheet(true);
+  }
+  function closeSheet() {
+    if (!sheet) return;
+    var opener = sheet.opener;
+    sheet = null;
+    sheetRoot.innerHTML = '';
+    document.body.style.overflow = '';
+    if (opener && document.body.contains(opener)) { try { opener.focus(); } catch (e) {} }
+  }
+  function fieldWrap(id, label, control, hint) {
+    return '<div class="field"><label for="' + id + '">' + esc(label) + '</label>' + control + (hint ? '<p class="hint">' + esc(hint) + '</p>' : '') + '</div>';
+  }
+  function txt(id, name, val, ph, extra) {
+    return '<input id="' + id + '" name="' + name + '" type="text" autocomplete="off" value="' + esc(val || '') + '"' + (ph ? ' placeholder="' + esc(ph) + '"' : '') + (extra || '') + '>';
+  }
+  function sel(id, name, opts, val) {
+    return '<select id="' + id + '" name="' + name + '">' + opts.map(function (o) {
+      var v = Array.isArray(o) ? o[0] : o, l = Array.isArray(o) ? o[1] : o;
+      return '<option value="' + esc(v) + '"' + (v === val ? ' selected' : '') + '>' + esc(l) + '</option>';
+    }).join('') + '</select>';
+  }
+  function dateTime(d, optional) {
+    return '<div class="two">' +
+      fieldWrap('f-dia', optional ? 'Dia (opcional)' : 'Dia', '<input id="f-dia" name="dia" type="date" value="' + esc(isDate(d.dia) ? d.dia : '') + '">') +
+      fieldWrap('f-hora', 'Horário', '<input id="f-hora" name="hora" type="time" value="' + esc(d.hora || '') + '">') + '</div>';
+  }
+  function valueRow(d, label, second) {
+    return '<div class="two">' +
+      fieldWrap('f-valor', label, txt('f-valor', 'valor', moneyInput(d.valor), '0,00', ' inputmode="decimal"')) +
+      (second || fieldWrap('f-moeda', 'Moeda', sel('f-moeda', 'moeda', [['USD', 'US$ (dólar)'], ['BRL', 'R$ (real)']], d.moeda))) + '</div>';
+  }
+  function itemForm(d) {
+    var tipo = d.tipo;
+    var h = '<fieldset class="fs"><legend class="legend">Tipo</legend><div class="tiles">' + TIPOS.map(function (t) {
+      var on = t.id === tipo;
+      return '<label class="tile' + (on ? ' on' : '') + '"><input type="radio" name="tipo" value="' + t.id + '"' + (on ? ' checked' : '') + '>' + I[t.id] + '<span>' + t.label + '</span></label>';
+    }).join('') + '</div></fieldset>';
+    var L = {
+      show: ['Nome do show', 'Ex.: Galileo'], programa: ['O que vai fazer', 'Ex.: Top of the Rock'],
+      gasto: ['Descrição', 'Ex.: Almoço'], lugar: ['Nome do lugar', 'Ex.: Strand Book Store'], lembrete: ['Lembrete', 'Ex.: Levar o passaporte']
+    }[tipo];
+    h += fieldWrap('f-titulo', L[0], txt('f-titulo', 'titulo', d.titulo, L[1]));
+    h += '<p class="err" id="f-err" role="alert" hidden></p>';
+
+    if (tipo === 'show') {
+      h += dateTime(d, true);
+      h += fieldWrap('f-local', 'Teatro ou local', txt('f-local', 'local', d.local, 'Ex.: Shubert Theatre'));
+      h += '<fieldset class="fs"><legend class="legend">Situação do ingresso</legend><div class="pills">' + Object.keys(STATUS).map(function (k) {
+        var on = d.status === k;
+        return '<label class="pill-opt' + (on ? ' on' : '') + '"><input type="radio" name="status" value="' + k + '"' + (on ? ' checked' : '') + '>' + STATUS[k] + '</label>';
+      }).join('') + '</div></fieldset>';
+      h += valueRow(d, 'Valor (opcional)');
+      h += fieldWrap('f-assento', 'Setor e assento', txt('f-assento', 'assento', d.assento, 'Ex.: Mezzanine, fila C, 104'));
+      h += '<label class="check" for="f-conta"><input id="f-conta" name="contaGasto" type="checkbox"' + (d.contaGasto !== false ? ' checked' : '') + '>Contar o valor em Gastos (Ingressos)</label>';
+    } else if (tipo === 'programa') {
+      h += dateTime(d, true);
+      h += fieldWrap('f-local', 'Onde', txt('f-local', 'local', d.local, 'Endereço ou ponto de encontro'));
+    } else if (tipo === 'gasto') {
+      h += valueRow(d, 'Valor');
+      h += '<div class="two">' + fieldWrap('f-cat', 'Categoria', sel('f-cat', 'categoria', GASTO_CATS, d.categoria)) +
+        fieldWrap('f-dia', 'Dia', '<input id="f-dia" name="dia" type="date" value="' + esc(isDate(d.dia) ? d.dia : '') + '">') + '</div>';
+      if (d.categoria === 'Compras') {
+        h += '<label class="check" for="f-cota"><input id="f-cota" name="cota" type="checkbox"' + (d.cota !== false ? ' checked' : '') + '>Conta na cota da alfândega (desmarque para livros e roupa)</label>';
+      }
+    } else if (tipo === 'lugar') {
+      h += fieldWrap('f-cat', 'Categoria', sel('f-cat', 'categoria', LUGAR_CATS, d.categoria));
+      h += fieldWrap('f-local', 'Endereço ou bairro', txt('f-local', 'local', d.local, 'Ex.: 828 Broadway'), 'Usado no botão de abrir no mapa.');
+      h += fieldWrap('f-dia', 'Quando pretende ir (opcional)', '<input id="f-dia" name="dia" type="date" value="' + esc(isDate(d.dia) ? d.dia : '') + '">');
+      h += '<label class="check" for="f-feito"><input id="f-feito" name="feito" type="checkbox"' + (d.feito ? ' checked' : '') + '>Já fui</label>';
+    } else if (tipo === 'lembrete') {
+      h += dateTime(d, true);
+    }
+    h += fieldWrap('f-nota', 'Anotação', '<textarea id="f-nota" name="nota" rows="3" placeholder="Link, código da reserva, o que levar…">' + esc(d.nota || '') + '</textarea>');
+    return h;
+  }
+  function settingsForm(c) {
+    var h = fieldWrap('s-nome', 'Nome da viagem', txt('s-nome', 'nome', c.nome, 'Ex.: Nova York + Orlando'));
+    h += '<p class="err" id="f-err" role="alert" hidden></p>';
+    h += '<div class="two">' +
+      fieldWrap('s-inicio', 'Começa em', '<input id="s-inicio" name="inicio" type="date" value="' + esc(c.inicio || '') + '">') +
+      fieldWrap('s-fim', 'Termina em', '<input id="s-fim" name="fim" type="date" value="' + esc(c.fim || '') + '">') + '</div>';
+    h += '<fieldset class="fs"><legend class="legend">Cidades</legend><div style="display:flex;flex-direction:column;gap:8px" id="trechos">' +
+      (c.trechos || []).map(function (t, i) {
+        return '<div class="trecho">' +
+          '<input type="text" class="tr-cidade" aria-label="Cidade ' + (i + 1) + '" placeholder="Cidade" value="' + esc(t.cidade || '') + '">' +
+          '<input type="date" class="tr-desde" aria-label="Chegada na cidade ' + (i + 1) + '" value="' + esc(t.desde || '') + '">' +
+          '<button type="button" class="icon-btn soft" data-action="rm-trecho" data-i="' + i + '" aria-label="Remover cidade ' + (i + 1) + '">' + I.x + '</button></div>';
+      }).join('') + '</div>' +
+      '<p class="hint" style="margin-top:6px">Cada cidade vale do dia de chegada até a chegada na próxima.</p>' +
+      '<button type="button" class="link-btn" data-action="add-trecho" style="align-self:flex-start">Adicionar cidade</button></fieldset>';
+    h += fieldWrap('s-cot', 'Cotação: reais por dólar', txt('s-cot', 'cotacao', moneyInput(c.cotacao), '5,38', ' inputmode="decimal"'), 'Use a do cartão, já com IOF. Serve para converter os gastos.');
+    h += '<fieldset class="fs"><legend class="legend">Orçamento por categoria (US$)</legend><div class="two">' +
+      GASTO_CATS.map(function (cat, i) {
+        var v = c.orcamento && num(c.orcamento[cat]) > 0 ? moneyInput(num(c.orcamento[cat])) : '';
+        return fieldWrap('s-orc' + i, cat, txt('s-orc' + i, 'orc' + i, v, '0', ' inputmode="decimal"'));
+      }).join('') + '</div></fieldset>';
+    h += '<fieldset class="fs"><legend class="legend">Backup</legend>' +
+      '<p class="hint" style="margin-bottom:10px">Seus dados ficam salvos só neste celular, neste navegador. Baixe um backup de vez em quando, principalmente antes de viajar.</p>' +
+      (sheet && sheet.importData ?
+        '<div class="notice" style="flex-direction:column;align-items:stretch"><span>Restaurar troca tudo o que está no app pelo backup (' + sheet.importData.count + (sheet.importData.count === 1 ? ' item' : ' itens') + '). Quer continuar?</span>' +
+        '<div class="two"><button type="button" class="btn" data-action="import-confirm">Restaurar</button><button type="button" class="btn ghost" data-action="import-cancel">Cancelar</button></div></div>'
+      :
+        '<div class="two"><button type="button" class="btn ghost" data-action="export">Baixar backup</button>' +
+        '<label class="btn ghost" for="s-import">Restaurar backup</label></div>' +
+        '<input id="s-import" type="file" accept="application/json,.json" class="sr">') +
+      '</fieldset>';
+    return h;
+  }
+  function renderSheet(first) {
+    if (!sheet) return;
+    var isItem = sheet.kind === 'item';
+    var title = isItem ? (sheet.id ? 'Editar item' : 'Novo item') : 'Ajustes da viagem';
+    var body = isItem ? itemForm(sheet.draft) : settingsForm(sheet.draft);
+    var del = (isItem && sheet.id) ? '<button type="button" class="btn danger' + (sheet.armed ? ' armed' : '') + '" data-action="delete">' + (sheet.armed ? 'Confirmar' : 'Apagar') + '</button>' : '';
+    var scroll = 0;
+    var oldBody = sheetRoot.querySelector('.sheet-body');
+    if (oldBody && !first) scroll = oldBody.scrollTop;
+    sheetRoot.innerHTML = '<div class="overlay"><div class="scrim" data-action="close-sheet"></div>' +
+      '<section class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title">' +
+      '<div class="grip" aria-hidden="true"></div>' +
+      '<div class="sheet-head"><h2 id="sheet-title" tabindex="-1">' + title + '</h2>' +
+      '<button type="button" class="link-btn" data-action="close-sheet">Cancelar</button></div>' +
+      '<form id="sheet-form" class="sheet-body" novalidate>' + body + '</form>' +
+      '<div class="sheet-foot">' + del + '<button type="submit" form="sheet-form" class="btn save" id="save-btn">Salvar</button></div>' +
+      '</section></div>';
+    document.body.style.overflow = 'hidden';
+    var nb = sheetRoot.querySelector('.sheet-body');
+    if (nb && scroll) nb.scrollTop = scroll;
+    if (first) { var hd = document.getElementById('sheet-title'); if (hd) hd.focus(); }
+  }
+  function readItemForm() {
+    var f = document.getElementById('sheet-form');
+    var d = clone(sheet.draft);
+    if (!f) return d;
+    var tipoEl = f.querySelector('input[name="tipo"]:checked');
+    if (tipoEl) d.tipo = tipoEl.value;
+    ['titulo', 'dia', 'hora', 'local', 'valor', 'moeda', 'assento', 'categoria', 'nota'].forEach(function (k) {
+      var el = f.elements.namedItem(k);
+      if (el && el.value !== undefined) d[k] = el.value;
+    });
+    var stEl = f.querySelector('input[name="status"]:checked');
+    if (stEl) d.status = stEl.value;
+    ['contaGasto', 'cota', 'feito'].forEach(function (k) {
+      var el = f.elements.namedItem(k);
+      if (el) d[k] = el.checked;
+    });
+    return d;
+  }
+  function readSettingsForm() {
+    var f = document.getElementById('sheet-form');
+    var c = clone(sheet.draft);
+    if (!f) return c;
+    c.nome = f.elements.namedItem('nome').value;
+    c.inicio = f.elements.namedItem('inicio').value;
+    c.fim = f.elements.namedItem('fim').value;
+    c.cotacao = f.elements.namedItem('cotacao').value;
+    c.trechos = Array.prototype.map.call(f.querySelectorAll('.trecho'), function (row) {
+      return { cidade: row.querySelector('.tr-cidade').value, desde: row.querySelector('.tr-desde').value };
+    });
+    c.orcamento = {};
+    GASTO_CATS.forEach(function (cat, i) { var v = f.elements.namedItem('orc' + i).value; c.orcamento[cat] = v; });
+    return c;
+  }
+  function showErr(msg) {
+    var e = document.getElementById('f-err');
+    if (e) { e.textContent = msg; e.hidden = false; e.scrollIntoView({ block: 'center' }); }
+  }
+  function setSaving(on) {
+    var b = document.getElementById('save-btn');
+    if (b) { b.disabled = on; b.textContent = on ? 'Salvando…' : 'Salvar'; }
+  }
+  function writeError(e) {
+    var code = e && e.code;
+    if (code === 'quota_exceeded') return 'O celular não deixou salvar (espaço cheio ou navegador bloqueando). Tente de novo.';
+    if (code === 'revoked' || code === 'not_granted') return 'Você não tem permissão para salvar neste app.';
+    return 'Não deu para salvar. Confira a conexão e tente de novo.';
+  }
+  async function getDb() {
+    var db = await dbReady;
+    if (!db) { toast('Este navegador não está deixando o app salvar dados. Abra no Chrome, fora da aba anônima.'); }
+    return db;
+  }
+  async function saveItem() {
+    var d = readItemForm();
+    sheet.draft = d;
+    var titulo = String(d.titulo || '').trim();
+    if (!titulo) return showErr('Dê um nome para o item.');
+    var out = { tipo: d.tipo, titulo: titulo, nota: String(d.nota || '').trim(), criadoEm: d.criadoEm || Date.now(), atualizadoEm: Date.now() };
+    var t = d.tipo;
+    if (t === 'show' || t === 'programa' || t === 'lembrete' || t === 'gasto' || t === 'lugar') out.dia = isDate(d.dia) ? d.dia : '';
+    if (t === 'show' || t === 'programa' || t === 'lembrete') out.hora = /^\d{2}:\d{2}$/.test(d.hora || '') ? d.hora : '';
+    if (t === 'show' || t === 'programa' || t === 'lugar') out.local = String(d.local || '').trim();
+    if (t === 'show') {
+      out.status = STATUS[d.status] ? d.status : 'quero';
+      out.valor = parseMoney(d.valor);
+      out.moeda = d.moeda === 'BRL' ? 'BRL' : 'USD';
+      out.assento = String(d.assento || '').trim();
+      out.contaGasto = d.contaGasto !== false;
+    }
+    if (t === 'gasto') {
+      var v = parseMoney(d.valor);
+      if (!(v > 0)) return showErr('Coloque o valor do gasto.');
+      out.valor = v;
+      out.moeda = d.moeda === 'BRL' ? 'BRL' : 'USD';
+      out.categoria = GASTO_CATS.indexOf(d.categoria) >= 0 ? d.categoria : 'Outros';
+      if (out.categoria === 'Compras') out.cota = d.cota !== false;
+    }
+    if (t === 'lugar') {
+      out.categoria = LUGAR_CATS.indexOf(d.categoria) >= 0 ? d.categoria : 'Outros';
+      out.feito = !!d.feito;
+    }
+    if (t === 'lembrete') out.feito = !!d.feito;
+    var db = await getDb();
+    if (!db) return;
+    setSaving(true);
+    var wasEdit = !!sheet.id;
+    try {
+      var ref = wasEdit ? db.doc('itens/' + sheet.id) : db.collection('itens').doc();
+      await ref.set(out);
+      if (t === 'show' || t === 'programa' || t === 'lembrete' || t === 'lugar') { if (out.dia) S.day = out.dia; }
+      closeSheet();
+      toast(wasEdit ? 'Atualizado' : 'Salvo');
+    } catch (e) {
+      setSaving(false);
+      showErr(writeError(e));
+    }
+  }
+  async function saveSettings() {
+    var c = readSettingsForm();
+    sheet.draft = c;
+    if (!isDate(c.inicio) || !isDate(c.fim)) return showErr('Preencha o começo e o fim da viagem.');
+    if (c.fim < c.inicio) return showErr('O fim precisa ser depois do começo.');
+    if (diffDays(c.inicio, c.fim) > 119) return showErr('A viagem pode ter no máximo 120 dias.');
+    var out = {
+      nome: String(c.nome || '').trim() || 'Minha viagem',
+      inicio: c.inicio, fim: c.fim,
+      trechos: c.trechos.filter(function (t) { return String(t.cidade || '').trim(); })
+        .map(function (t) { return { cidade: String(t.cidade).trim(), desde: isDate(t.desde) ? t.desde : c.inicio }; }),
+      cotacao: parseMoney(c.cotacao) > 0 ? parseMoney(c.cotacao) : DEFAULT_CONFIG.cotacao,
+      orcamento: {},
+      atualizadoEm: Date.now()
+    };
+    GASTO_CATS.forEach(function (cat) { var v = parseMoney(c.orcamento[cat]); if (v > 0) out.orcamento[cat] = v; });
+    var db = await getDb();
+    if (!db) return;
+    setSaving(true);
+    try {
+      await db.doc('viagem/config').set(out);
+      closeSheet();
+      toast('Ajustes salvos');
+    } catch (e) {
+      setSaving(false);
+      showErr(writeError(e));
+    }
+  }
+  async function deleteItem() {
+    if (!sheet || !sheet.id) return;
+    if (!sheet.armed) {
+      sheet.draft = readItemForm();
+      sheet.armed = true;
+      renderSheet(false);
+      var b = sheetRoot.querySelector('[data-action="delete"]');
+      if (b) b.focus();
+      setTimeout(function () {
+        if (sheet && sheet.armed) { sheet.draft = readItemForm(); sheet.armed = false; renderSheet(false); }
+      }, 4000);
+      return;
+    }
+    var db = await getDb();
+    if (!db) return;
+    var id = sheet.id;
+    try {
+      await db.doc('itens/' + id).delete();
+      closeSheet();
+      toast('Apagado');
+    } catch (e) {
+      showErr(writeError(e));
+    }
+  }
+  async function toggleFeito(id) {
+    var it = S.items.find(function (x) { return x.id === id; });
+    if (!it) return;
+    var db = await getDb();
+    if (!db) return;
+    try { await db.doc('itens/' + id).update({ feito: !it.feito, atualizadoEm: Date.now() }); }
+    catch (e) { toast(writeError(e)); }
+  }
+
+  /* ---------- backup ---------- */
+  async function exportBackup() {
+    var db = await getDb();
+    if (!db) return;
+    var payload = { app: 'viagem-ny', versao: 1, exportadoEm: new Date().toISOString(), dados: db.exportAll() };
+    var blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'viagem-backup-' + todayStr() + '.json';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1500);
+    toast('Backup baixado');
+  }
+  function readImport(file) {
+    var reader = new FileReader();
+    reader.onload = function () {
+      var obj = null;
+      try { obj = JSON.parse(String(reader.result || '')); } catch (e) {}
+      if (!obj || obj.app !== 'viagem-ny' || !obj.dados || typeof obj.dados !== 'object') {
+        showErr('Esse arquivo não é um backup deste app.');
+        return;
+      }
+      var count = Object.keys(obj.dados).filter(function (k) { return k.indexOf('itens/') === 0; }).length;
+      sheet.draft = readSettingsForm();
+      sheet.importData = { dados: obj.dados, count: count };
+      renderSheet(false);
+    };
+    reader.onerror = function () { showErr('Não consegui ler o arquivo.'); };
+    reader.readAsText(file);
+  }
+  async function confirmImport() {
+    if (!sheet || !sheet.importData) return;
+    var db = await getDb();
+    if (!db) return;
+    try {
+      await db.importAll(sheet.importData.dados);
+      closeSheet();
+      toast('Backup restaurado');
+    } catch (e) { showErr(writeError(e)); }
+  }
+
+  /* ---------- aviso rápido ---------- */
+  var toastEl = document.getElementById('toast'), toastT;
+  function toast(msg) {
+    toastEl.textContent = msg;
+    toastEl.hidden = false;
+    clearTimeout(toastT);
+    toastT = setTimeout(function () { toastEl.hidden = true; }, 2600);
+  }
+
+  /* ---------- eventos ---------- */
+  document.addEventListener('click', function (e) {
+    var el = e.target.closest('[data-action]');
+    if (!el) return;
+    var a = el.getAttribute('data-action');
+    if (a === 'new') { openItem(null, { tipo: el.getAttribute('data-tipo') || 'show', dia: el.getAttribute('data-dia') || '' }); }
+    else if (a === 'edit') { openItem(el.getAttribute('data-id')); }
+    else if (a === 'settings') { openSettings(); }
+    else if (a === 'close-sheet') { closeSheet(); }
+    else if (a === 'delete') { deleteItem(); }
+    else if (a === 'toggle-feito') { toggleFeito(el.getAttribute('data-id')); }
+    else if (a === 'toggle-done') { S.showDone = !S.showDone; render(); }
+    else if (a === 'day') { S.day = el.getAttribute('data-dia'); render(); var b = appEl.querySelector('[data-action="day"][data-dia="' + S.day + '"]'); if (b) b.focus(); }
+    else if (a === 'show-filter') { S.showFilter = el.getAttribute('data-f'); render(); }
+    else if (a === 'place-filter') { S.placeFilter = el.getAttribute('data-f'); render(); }
+    else if (a === 'cur') { S.cur = el.getAttribute('data-cur'); try { localStorage.setItem('viagem.cur', S.cur); } catch (x) {} render(); }
+    else if (a === 'goto') { location.hash = el.getAttribute('data-view'); }
+    else if (a === 'export') { exportBackup(); }
+    else if (a === 'import-confirm') { confirmImport(); }
+    else if (a === 'import-cancel') { sheet.draft = readSettingsForm(); sheet.importData = null; renderSheet(false); }
+    else if (a === 'add-trecho') {
+      sheet.draft = readSettingsForm(); sheet.draft.trechos.push({ cidade: '', desde: '' }); renderSheet(false);
+      var rows = sheetRoot.querySelectorAll('.tr-cidade'); if (rows.length) rows[rows.length - 1].focus();
+    }
+    else if (a === 'rm-trecho') {
+      sheet.draft = readSettingsForm(); sheet.draft.trechos.splice(Number(el.getAttribute('data-i')), 1);
+      if (!sheet.draft.trechos.length) sheet.draft.trechos.push({ cidade: '', desde: '' });
+      renderSheet(false);
+    }
+  });
+  document.addEventListener('change', function (e) {
+    if (sheet && sheet.kind === 'settings' && e.target.id === 's-import') {
+      if (e.target.files && e.target.files[0]) readImport(e.target.files[0]);
+      return;
+    }
+    if (!sheet || sheet.kind !== 'item') return;
+    var n = e.target.name;
+    if (n === 'tipo' || n === 'categoria') {
+      sheet.draft = defaultsFor(readItemForm().tipo, readItemForm());
+      renderSheet(false);
+      var focusEl = n === 'tipo' ? sheetRoot.querySelector('input[name="tipo"]:checked') : document.getElementById('f-cat');
+      if (focusEl) focusEl.focus();
+    } else if (n === 'status') {
+      Array.prototype.forEach.call(sheetRoot.querySelectorAll('.pill-opt'), function (p) {
+        p.classList.toggle('on', p.querySelector('input').checked);
+      });
+    }
+  });
+  document.addEventListener('submit', function (e) {
+    if (e.target.id !== 'sheet-form') return;
+    e.preventDefault();
+    if (!sheet) return;
+    if (sheet.kind === 'item') saveItem(); else saveSettings();
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && sheet) closeSheet();
+  });
+  window.addEventListener('hashchange', function () { setViewFromHash(); render(); window.scrollTo(0, 0); });
+
+  if ('serviceWorker' in navigator && location.protocol === 'https:') {
+    navigator.serviceWorker.register('sw.js').catch(function () {});
+  }
+
+  /* ---------- dados ---------- */
+  setViewFromHash();
+  render();
+
+  dbReady = Promise.resolve(makeLocalDb());
+  dbReady.then(function (db) {
+    if (!db) { S.dbState = 'off'; render(); return; }
+    dbRef = db;
+    S.dbState = 'ready';
+    render();
+    db.doc('viagem/config').onSnapshot(function (snap) {
+      S.configLoaded = true;
+      if (snap.exists) {
+        var d = snap.data() || {};
+        S.config = Object.assign(clone(DEFAULT_CONFIG), clone(d));
+        S.configSaved = true;
+      } else {
+        S.config = clone(DEFAULT_CONFIG);
+        S.configSaved = false;
+      }
+      render();
+    }, function () { S.dbState = 'error'; render(); });
+    db.collection('itens').onSnapshot(function (qs) {
+      S.items = qs.docs.map(function (d) { var o = clone(d.data() || {}); o.id = d.id; return o; })
+        .filter(function (o) { return o.tipo && o.titulo; });
+      S.loaded = true;
+      render();
+    }, function () { S.dbState = 'error'; render(); });
+  });
+})();
+</script>
+</body>
+</html>
