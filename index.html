@@ -253,6 +253,8 @@ input::placeholder,textarea::placeholder{color:var(--muted);opacity:.85}
     fim: '2027-02-12',
     trechos: [{ cidade: 'Nova York', desde: '2027-01-31' }, { cidade: 'Orlando', desde: '2027-02-09' }],
     cotacao: 5.38,
+    cotacaoAuto: true,
+    iof: 3.5,
     orcamento: {}
   };
   var GASTO_CATS = ['Hospedagem', 'Ingressos', 'Comida', 'Compras', 'Transporte', 'Outros'];
@@ -348,10 +350,93 @@ input::placeholder,textarea::placeholder{color:var(--muted);opacity:.85}
     tr.forEach(function (t, i) { if (t.desde <= day) idx = i; });
     return idx < 0 ? null : { cidade: tr[idx].cidade, i: idx % 4 };
   }
-  function rate() { var r = Number(S.config.cotacao); return r > 0 ? r : DEFAULT_CONFIG.cotacao; }
+  /* ---------- cotação do dólar ---------- */
+  var CAMBIO_KEY = 'viagem.cambio';
+  function lerCambio() {
+    try { var c = JSON.parse(localStorage.getItem(CAMBIO_KEY) || 'null'); return c && c.comercial > 0 ? c : null; }
+    catch (e) { return null; }
+  }
+  S.cambio = lerCambio();
   function num(v) { var n = Number(v); return isFinite(n) ? n : 0; }
-  function toUSD(i) { var v = num(i.valor); return i.moeda === 'BRL' ? v / rate() : v; }
+  function iofPct() { var v = Number(S.config.iof); return isFinite(v) && v >= 0 ? v : DEFAULT_CONFIG.iof; }
+  function manualRate() { var r = Number(S.config.cotacao); return r > 0 ? r : DEFAULT_CONFIG.cotacao; }
+  function rate() {
+    if (S.config.cotacaoAuto !== false && S.cambio && S.cambio.comercial > 0) {
+      return Math.round(S.cambio.comercial * (1 + iofPct() / 100) * 10000) / 10000;
+    }
+    return manualRate();
+  }
+  // Cada gasto guarda a cotação do dia em que foi lançado; os antigos sem ela usam a de hoje.
+  function itemRate(i) { var r = Number(i.cotacao); return r > 0 ? r : rate(); }
+  function amountIn(i, cur) {
+    var v = num(i.valor), from = i.moeda === 'BRL' ? 'BRL' : 'USD';
+    if (from === cur) return v;
+    return cur === 'BRL' ? v * itemRate(i) : v / itemRate(i);
+  }
+  function toUSD(i) { return amountIn(i, 'USD'); }
   function inCur(usd) { return S.cur === 'BRL' ? usd * rate() : usd; }
+  function fmtNum(v, d) { return num(v).toLocaleString('pt-BR', { minimumFractionDigits: d, maximumFractionDigits: d }); }
+  function quando(ms) {
+    var dt = new Date(ms), t = new Date();
+    var hora = pad(dt.getHours()) + 'h' + pad(dt.getMinutes());
+    if (dt.toDateString() === t.toDateString()) return 'hoje às ' + hora;
+    return dt.getDate() + '/' + MESS[dt.getMonth()] + ' às ' + hora;
+  }
+  function cambioInfo() {
+    var auto = S.config.cotacaoAuto !== false;
+    if (auto && S.cambio) {
+      return 'Dólar comercial R$ ' + fmtNum(S.cambio.comercial, 2) + ' + IOF ' + fmtNum(iofPct(), 1) + '% = R$ ' + fmtNum(rate(), 2) + ', atualizado ' + quando(S.cambio.buscadoEm);
+    }
+    if (auto) return 'Ainda não consegui buscar o dólar. Até conectar, uso R$ ' + fmtNum(rate(), 2) + '.';
+    return 'Cotação fixa: R$ ' + fmtNum(rate(), 2) + ' por dólar.';
+  }
+  var buscandoCambio = null;
+  function fetchJson(url) {
+    var ctrl = typeof AbortController === 'function' ? new AbortController() : null;
+    var timer = setTimeout(function () { if (ctrl) ctrl.abort(); }, 8000);
+    return fetch(url, { cache: 'no-store', signal: ctrl ? ctrl.signal : undefined }).then(function (r) {
+      clearTimeout(timer);
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    });
+  }
+  function valido(v) { return v > 1 && v < 20; }
+  function atualizarCambio(force) {
+    if (buscandoCambio) return buscandoCambio;
+    if (!force && S.cambio && Date.now() - S.cambio.buscadoEm < 30 * 60 * 1000) return Promise.resolve(false);
+    if (navigator.onLine === false) return Promise.resolve(false);
+    buscandoCambio = fetchJson('https://economia.awesomeapi.com.br/json/last/USD-BRL')
+      .then(function (j) {
+        var v = parseFloat(j && j.USDBRL && j.USDBRL.bid);
+        if (!valido(v)) throw new Error('sem valor');
+        return { comercial: v, fonte: 'AwesomeAPI' };
+      })
+      .catch(function () {
+        return fetchJson('https://api.frankfurter.dev/v2/rate/usd/brl').then(function (j) {
+          var v = Number(j && j.rate);
+          if (!valido(v)) throw new Error('sem valor');
+          return { comercial: v, fonte: 'Frankfurter' };
+        });
+      })
+      .then(function (c) {
+        c.comercial = Math.round(c.comercial * 10000) / 10000;
+        c.buscadoEm = Date.now();
+        S.cambio = c;
+        try { localStorage.setItem(CAMBIO_KEY, JSON.stringify(c)); } catch (e) {}
+        render();
+        return true;
+      })
+      .catch(function () { return false; })
+      .then(function (ok) { buscandoCambio = null; return ok; });
+    return buscandoCambio;
+  }
+  function refreshRate() {
+    toast('Buscando o dólar…');
+    atualizarCambio(true).then(function (ok) {
+      toast(ok ? 'Cotação atualizada' : 'Não consegui buscar agora. Confira a internet.');
+      if (sheet && sheet.kind === 'settings') { sheet.draft = readSettingsForm(); renderSheet(false); }
+    });
+  }
   function money(v, cur, dec) {
     var d = dec == null ? 0 : dec;
     var s = num(v).toLocaleString('pt-BR', { minimumFractionDigits: d, maximumFractionDigits: d });
@@ -669,22 +754,26 @@ input::placeholder,textarea::placeholder{color:var(--muted);opacity:.85}
 
     var gastos = of('gasto');
     var tickets = of('show').filter(function (s) { return s.contaGasto && num(s.valor) > 0; });
-    var spent = {}, plan = S.config.orcamento || {};
-    GASTO_CATS.forEach(function (cat) { spent[cat] = 0; });
-    gastos.forEach(function (g) { var cat = GASTO_CATS.indexOf(g.categoria) >= 0 ? g.categoria : 'Outros'; spent[cat] += toUSD(g); });
-    tickets.forEach(function (s) { spent.Ingressos += toUSD(s); });
-    var total = 0, planTotal = 0;
-    GASTO_CATS.forEach(function (cat) { total += spent[cat]; planTotal += Math.max(0, num(plan[cat])); });
+    var spent = {}, spentUSD = {}, plan = S.config.orcamento || {};
+    GASTO_CATS.forEach(function (cat) { spent[cat] = 0; spentUSD[cat] = 0; });
+    function addTo(cat, i) { spent[cat] += amountIn(i, S.cur); spentUSD[cat] += amountIn(i, 'USD'); }
+    gastos.forEach(function (g) { addTo(GASTO_CATS.indexOf(g.categoria) >= 0 ? g.categoria : 'Outros', g); });
+    tickets.forEach(function (s) { addTo('Ingressos', s); });
+    var total = 0, totalUSD = 0, planTotal = 0;
+    GASTO_CATS.forEach(function (cat) { total += spent[cat]; totalUSD += spentUSD[cat]; planTotal += Math.max(0, num(plan[cat])); });
 
     h += '<section class="hero" aria-label="Resumo"><span class="hero-sub">Gasto até agora</span>' +
-      '<span class="big num">' + esc(money(inCur(total), S.cur)) + '</span>';
+      '<span class="big num">' + esc(money(total, S.cur)) + '</span>';
     if (planTotal > 0) {
       h += '<span class="hero-sub">de ' + esc(money(inCur(planTotal), S.cur)) + ' planejados</span>' +
-        '<div class="meter-dark" aria-hidden="true"><i style="width:' + pct(total, planTotal) + '%"></i></div>';
+        '<div class="meter-dark" aria-hidden="true"><i style="width:' + pct(totalUSD, planTotal) + '%"></i></div>';
     } else {
       h += '<button type="button" class="btn light" data-action="settings" style="align-self:flex-start;min-height:44px;font-size:14px">Definir orçamento</button>';
     }
-    h += '<span class="hero-sub" style="font-size:12px">Cotação: R$ ' + esc(rate().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + ' por dólar, já com IOF</span></section>';
+    h += '<div style="display:flex;justify-content:space-between;align-items:center;gap:8px">' +
+      '<span class="hero-sub num" style="font-size:12px">' + esc(cambioInfo()) + '</span>' +
+      (S.config.cotacaoAuto !== false ? '<button type="button" class="link-btn" data-action="refresh-rate" style="color:var(--accent);flex-shrink:0">Atualizar</button>' : '') +
+      '</div></section>';
 
     var catsShown = GASTO_CATS.filter(function (cat) { return spent[cat] > 0 || num(plan[cat]) > 0; });
     if (catsShown.length) {
@@ -692,9 +781,9 @@ input::placeholder,textarea::placeholder{color:var(--muted);opacity:.85}
         '<button type="button" class="link-btn" data-action="settings">Editar orçamento</button></div><ul class="cats">' +
         catsShown.map(function (cat) {
           var p = num(plan[cat]);
-          return '<li><div class="head"><span class="t">' + cat + '</span><span class="m num"><strong style="color:var(--ink)">' + esc(money(inCur(spent[cat]), S.cur)) + '</strong>' +
+          return '<li><div class="head"><span class="t">' + cat + '</span><span class="m num"><strong style="color:var(--ink)">' + esc(money(spent[cat], S.cur)) + '</strong>' +
             (p > 0 ? ' de ' + esc(money(inCur(p), S.cur)) : '') + '</span></div>' +
-            (p > 0 ? '<div class="meter" aria-hidden="true"><i class="' + (spent[cat] > p ? 'over' : '') + '" style="width:' + pct(spent[cat], p) + '%"></i></div>' : '') + '</li>';
+            (p > 0 ? '<div class="meter" aria-hidden="true"><i class="' + (spentUSD[cat] > p ? 'over' : '') + '" style="width:' + pct(spentUSD[cat], p) + '%"></i></div>' : '') + '</li>';
         }).join('') + '</ul></section>';
     }
 
@@ -885,7 +974,15 @@ input::placeholder,textarea::placeholder{color:var(--muted);opacity:.85}
       }).join('') + '</div>' +
       '<p class="hint" style="margin-top:6px">Cada cidade vale do dia de chegada até a chegada na próxima.</p>' +
       '<button type="button" class="link-btn" data-action="add-trecho" style="align-self:flex-start">Adicionar cidade</button></fieldset>';
-    h += fieldWrap('s-cot', 'Cotação: reais por dólar', txt('s-cot', 'cotacao', moneyInput(c.cotacao), '5,38', ' inputmode="decimal"'), 'Use a do cartão, já com IOF. Serve para converter os gastos.');
+    h += '<fieldset class="fs"><legend class="legend">Cotação do dólar</legend>' +
+      '<label class="check" for="s-auto"><input id="s-auto" name="cotacaoAuto" type="checkbox"' + (c.cotacaoAuto !== false ? ' checked' : '') + '>Atualizar sozinha pela internet</label>' +
+      '<p class="hint num" style="margin-bottom:10px">' + esc(cambioInfo()) + '</p>' +
+      '<div class="two">' +
+      fieldWrap('s-iof', 'IOF do cartão (%)', txt('s-iof', 'iof', moneyInput(c.iof == null ? DEFAULT_CONFIG.iof : c.iof), '3,5', ' inputmode="decimal"')) +
+      fieldWrap('s-cot', 'Cotação fixa (R$)', txt('s-cot', 'cotacao', moneyInput(c.cotacao), '5,38', ' inputmode="decimal"')) +
+      '</div>' +
+      '<p class="hint" style="margin-top:6px">A fixa vale com a opção desligada ou enquanto o app não consegue buscar o dólar. Cada gasto guarda a cotação do dia em que foi lançado.</p>' +
+      '<button type="button" class="link-btn" data-action="refresh-rate" style="align-self:flex-start">Atualizar agora</button></fieldset>';
     h += '<fieldset class="fs"><legend class="legend">Orçamento por categoria (US$)</legend><div class="two">' +
       GASTO_CATS.map(function (cat, i) {
         var v = c.orcamento && num(c.orcamento[cat]) > 0 ? moneyInput(num(c.orcamento[cat])) : '';
@@ -951,6 +1048,8 @@ input::placeholder,textarea::placeholder{color:var(--muted);opacity:.85}
     c.inicio = f.elements.namedItem('inicio').value;
     c.fim = f.elements.namedItem('fim').value;
     c.cotacao = f.elements.namedItem('cotacao').value;
+    c.cotacaoAuto = f.elements.namedItem('cotacaoAuto').checked;
+    c.iof = f.elements.namedItem('iof').value;
     c.trechos = Array.prototype.map.call(f.querySelectorAll('.trecho'), function (row) {
       return { cidade: row.querySelector('.tr-cidade').value, desde: row.querySelector('.tr-desde').value };
     });
@@ -993,6 +1092,7 @@ input::placeholder,textarea::placeholder{color:var(--muted);opacity:.85}
       out.moeda = d.moeda === 'BRL' ? 'BRL' : 'USD';
       out.assento = String(d.assento || '').trim();
       out.contaGasto = d.contaGasto !== false;
+      out.cotacao = num(d.cotacao) > 0 ? num(d.cotacao) : rate();
     }
     if (t === 'gasto') {
       var v = parseMoney(d.valor);
@@ -1001,6 +1101,7 @@ input::placeholder,textarea::placeholder{color:var(--muted);opacity:.85}
       out.moeda = d.moeda === 'BRL' ? 'BRL' : 'USD';
       out.categoria = GASTO_CATS.indexOf(d.categoria) >= 0 ? d.categoria : 'Outros';
       if (out.categoria === 'Compras') out.cota = d.cota !== false;
+      out.cotacao = num(d.cotacao) > 0 ? num(d.cotacao) : rate();
     }
     if (t === 'lugar') {
       out.categoria = LUGAR_CATS.indexOf(d.categoria) >= 0 ? d.categoria : 'Outros';
@@ -1034,6 +1135,8 @@ input::placeholder,textarea::placeholder{color:var(--muted);opacity:.85}
       trechos: c.trechos.filter(function (t) { return String(t.cidade || '').trim(); })
         .map(function (t) { return { cidade: String(t.cidade).trim(), desde: isDate(t.desde) ? t.desde : c.inicio }; }),
       cotacao: parseMoney(c.cotacao) > 0 ? parseMoney(c.cotacao) : DEFAULT_CONFIG.cotacao,
+      cotacaoAuto: !!c.cotacaoAuto,
+      iof: (parseMoney(c.iof) !== null && parseMoney(c.iof) >= 0) ? parseMoney(c.iof) : DEFAULT_CONFIG.iof,
       orcamento: {},
       atualizadoEm: Date.now()
     };
@@ -1151,6 +1254,7 @@ input::placeholder,textarea::placeholder{color:var(--muted);opacity:.85}
     else if (a === 'place-filter') { S.placeFilter = el.getAttribute('data-f'); render(); }
     else if (a === 'cur') { S.cur = el.getAttribute('data-cur'); try { localStorage.setItem('viagem.cur', S.cur); } catch (x) {} render(); }
     else if (a === 'goto') { location.hash = el.getAttribute('data-view'); }
+    else if (a === 'refresh-rate') { refreshRate(); }
     else if (a === 'export') { exportBackup(); }
     else if (a === 'import-confirm') { confirmImport(); }
     else if (a === 'import-cancel') { sheet.draft = readSettingsForm(); sheet.importData = null; renderSheet(false); }
@@ -1200,6 +1304,12 @@ input::placeholder,textarea::placeholder{color:var(--muted);opacity:.85}
   /* ---------- dados ---------- */
   setViewFromHash();
   render();
+
+  atualizarCambio(false);
+  window.addEventListener('online', function () { atualizarCambio(false); });
+  document.addEventListener('visibilitychange', function () {
+    if (document.visibilityState === 'visible') atualizarCambio(false);
+  });
 
   dbReady = Promise.resolve(makeLocalDb());
   dbReady.then(function (db) {
