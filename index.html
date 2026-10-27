@@ -156,6 +156,20 @@ section{display:flex;flex-direction:column;gap:10px}
 .seg{display:flex;padding:3px;gap:2px;background:var(--surface-2);border-radius:14px}
 .seg button{min-width:56px;min-height:44px;border:0;border-radius:11px;background:transparent;color:var(--muted);font-weight:700;cursor:pointer}
 .seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.15)}
+.seg-wide{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+.seg-wide button{min-width:0}
+.sim-add{margin:0;background:var(--surface);border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:8px}
+.sim-add input{height:44px}
+.sim-row{display:flex;gap:8px;align-items:center}
+.sim-row input{flex:1}
+.sim-row .seg{flex-shrink:0}
+.sim-row .seg button{min-width:48px;min-height:38px}
+.sim-item{display:flex;align-items:center;gap:4px;padding:4px 4px 4px 14px;border-radius:14px;background:var(--surface);border:1.5px solid transparent}
+.sim-item.on{border-color:var(--ink)}
+.sim-item:not(.on) .t,.sim-item:not(.on) .amt{color:var(--muted)}
+.sim-check{flex:1;min-width:0;min-height:48px;display:flex;align-items:center;gap:12px;cursor:pointer}
+.sim-check input{width:22px;height:22px;margin:0;flex-shrink:0;accent-color:var(--ink)}
+.lanc-item{padding:12px 14px;border-radius:14px;background:var(--surface-2);display:flex;flex-direction:column;gap:8px}
 .cats{list-style:none;margin:0;padding:4px 16px;background:var(--surface);border-radius:18px}
 .cats li{padding:12px 0;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:8px}
 .cats li:last-child{border-bottom:0}
@@ -292,7 +306,8 @@ input::placeholder,textarea::placeholder{color:var(--muted);opacity:.85}
   /* ---------- estado ---------- */
   var S = {
     view: 'hoje', showFilter: 'todos', placeFilter: 'todos', day: null, cur: 'USD', showDone: false,
-    items: [], config: clone(DEFAULT_CONFIG), configSaved: false, configLoaded: false, loaded: false,
+    items: [], sim: [], gastosTab: 'lancados', simCur: 'USD',
+    config: clone(DEFAULT_CONFIG), configSaved: false, configLoaded: false, loaded: false,
     dbState: 'connecting'
   };
   var sheet = null;
@@ -300,6 +315,9 @@ input::placeholder,textarea::placeholder{color:var(--muted);opacity:.85}
   var dbReady;
 
   try { var c0 = localStorage.getItem('viagem.cur'); if (c0 === 'BRL' || c0 === 'USD') S.cur = c0; } catch (e) {}
+  try { var t0 = localStorage.getItem('viagem.gastosTab'); if (t0 === 'simular' || t0 === 'lancados') S.gastosTab = t0; } catch (e) {}
+  try { var s0 = localStorage.getItem('viagem.simCur'); if (s0 === 'BRL' || s0 === 'USD') S.simCur = s0; } catch (e) {}
+  function remember(key, val) { try { localStorage.setItem(key, val); } catch (e) {} }
 
   /* ---------- utilidades ---------- */
   function clone(o) { return JSON.parse(JSON.stringify(o)); }
@@ -744,11 +762,69 @@ input::placeholder,textarea::placeholder{color:var(--muted);opacity:.85}
   }
 
   /* ---------- Gastos ---------- */
+  function gastosTabs() {
+    var sim = S.gastosTab === 'simular';
+    return '<div class="seg seg-wide" role="group" aria-label="Ver">' +
+      '<button type="button" data-action="gastos-tab" data-t="lancados" aria-pressed="' + !sim + '">Lançados</button>' +
+      '<button type="button" data-action="gastos-tab" data-t="simular" aria-pressed="' + sim + '">Simular</button></div>';
+  }
+  function simBRL(i) { return i.moeda === 'BRL' ? num(i.valor) : num(i.valor) * rate(); }
+  function byCreated(a, b) { return (a.criadoEm || 0) - (b.criadoEm || 0); }
+  function viewSimular() {
+    var h = header('', 'Gastos', '', '');
+    h += gastosTabs();
+    h += statusBlock();
+    if (isLoading()) return h + loadingLine();
+    var list = S.sim.slice().sort(byCreated);
+    var r = rate();
+    var marked = list.filter(function (i) { return i.marcado; });
+    var totalBRL = marked.reduce(function (a, i) { return a + simBRL(i); }, 0);
+    h += '<section class="hero" aria-label="Total marcado">' +
+      '<div class="sec-head" style="align-items:center"><span class="hero-sub">Se eu comprar os marcados</span>' +
+      '<span class="pill">' + marked.length + ' de ' + list.length + '</span></div>' +
+      '<span class="big num">' + esc(money(totalBRL, 'BRL', 2)) + '</span>' +
+      '<span class="hero-sub num" style="font-size:13px">≈ ' + esc(money(totalBRL / r, 'USD', 2)) + ' · dólar a R$ ' + esc(fmtNum(r, 2)) + ' com IOF</span>' +
+      '<button type="button" class="btn light" data-action="lancar"' + (marked.length ? '' : ' disabled') + '>Lançar marcados em Gastos</button>' +
+      '</section>';
+    h += '<form class="sim-add" id="sim-form" aria-label="Adicionar item à simulação" novalidate>' +
+      '<label class="sr" for="sim-nome">Nome do item</label>' +
+      '<input id="sim-nome" type="text" data-keep autocomplete="off" placeholder="O que é? Ex.: Camiseta, jantar">' +
+      '<div class="sim-row">' +
+      '<label class="sr" for="sim-valor">Valor</label>' +
+      '<input id="sim-valor" type="text" data-keep inputmode="decimal" autocomplete="off" placeholder="Valor">' +
+      '<div class="seg" role="group" aria-label="Moeda do item">' +
+      '<button type="button" data-action="sim-cur" data-cur="USD" aria-pressed="' + (S.simCur === 'USD') + '">US$</button>' +
+      '<button type="button" data-action="sim-cur" data-cur="BRL" aria-pressed="' + (S.simCur === 'BRL') + '">R$</button></div>' +
+      '<button type="submit" class="icon-btn primary" aria-label="Adicionar à simulação">' + I.plus + '</button>' +
+      '</div><p class="err" id="sim-err" role="alert" hidden></p></form>';
+    h += '<section aria-labelledby="sec-sim"><div class="sec-head" style="align-items:center"><h2 class="sec" id="sec-sim">Itens</h2>';
+    if (list.length) {
+      h += '<div style="display:flex;gap:4px"><button type="button" class="link-btn" data-action="sim-all">Marcar todos</button>' +
+        '<button type="button" class="link-btn" data-action="sim-none">Limpar</button></div>';
+    }
+    h += '</div>';
+    if (!list.length) {
+      h += '<p class="sub">Coloque aqui o que você está pensando em comprar ou pagar. Marque e desmarque para ver quanto dá em reais antes de decidir.</p>';
+    } else {
+      h += '<ul class="list" style="gap:6px">' + list.map(function (i) {
+        return '<li class="sim-item' + (i.marcado ? ' on' : '') + '">' +
+          '<label class="sim-check" for="sim-' + esc(i.id) + '">' +
+          '<input type="checkbox" id="sim-' + esc(i.id) + '" data-sim-toggle="' + esc(i.id) + '"' + (i.marcado ? ' checked' : '') + '>' +
+          '<span class="grow"><span class="t">' + esc(i.nome) + '</span><span class="m num">' + (i.moeda === 'BRL' ? 'Em reais' : esc(money(i.valor, 'USD', 2))) + '</span></span>' +
+          '<span class="amt">' + esc(money(simBRL(i), 'BRL', 2)) + '</span></label>' +
+          '<button type="button" class="icon-btn" style="background:none;color:var(--muted)" data-action="sim-rm" data-id="' + esc(i.id) + '" aria-label="Tirar ' + esc(i.nome) + ' da simulação">' + I.x + '</button></li>';
+      }).join('') + '</ul>';
+    }
+    h += '</section>';
+    return h;
+  }
   function viewGastos() {
+    if (S.gastosTab === 'simular') return viewSimular();
     var seg = '<div class="seg" role="group" aria-label="Moeda">' +
       '<button type="button" data-action="cur" data-cur="USD" aria-pressed="' + (S.cur === 'USD') + '">US$</button>' +
       '<button type="button" data-action="cur" data-cur="BRL" aria-pressed="' + (S.cur === 'BRL') + '">R$</button></div>';
     var h = header('', 'Gastos', '', seg + addBtn('gasto', '', 'Adicionar gasto'));
+    h += gastosTabs();
     h += statusBlock();
     if (isLoading()) return h + loadingLine();
 
@@ -852,7 +928,23 @@ input::placeholder,textarea::placeholder{color:var(--muted);opacity:.85}
   var appEl = document.getElementById('app');
   function render() {
     var fn = { hoje: viewHoje, roteiro: viewRoteiro, shows: viewShows, gastos: viewGastos, lugares: viewLugares }[S.view] || viewHoje;
+    // guarda o que está sendo digitado e o foco, para não perder ao redesenhar
+    var keep = {}, focusId = null, selS = null, selE = null;
+    Array.prototype.forEach.call(appEl.querySelectorAll('[data-keep]'), function (el) { keep[el.id] = el.value; });
+    var ae = document.activeElement;
+    if (ae && ae.id && appEl.contains(ae)) {
+      focusId = ae.id;
+      try { selS = ae.selectionStart; selE = ae.selectionEnd; } catch (x) {}
+    }
     appEl.innerHTML = fn();
+    Object.keys(keep).forEach(function (id) { var el = document.getElementById(id); if (el) el.value = keep[id]; });
+    if (focusId) {
+      var fe = document.getElementById(focusId);
+      if (fe && appEl.contains(fe)) {
+        try { fe.focus({ preventScroll: true }); } catch (x) { fe.focus(); }
+        try { if (selS != null) fe.setSelectionRange(selS, selE); } catch (x) {}
+      }
+    }
     Array.prototype.forEach.call(document.querySelectorAll('.tab'), function (a) {
       if (a.getAttribute('data-tab') === S.view) a.setAttribute('aria-current', 'page');
       else a.removeAttribute('aria-current');
@@ -1000,11 +1092,34 @@ input::placeholder,textarea::placeholder{color:var(--muted);opacity:.85}
       '</fieldset>';
     return h;
   }
+  function lancarForm() {
+    var items = sheet.ids.map(function (id) { return S.sim.find(function (x) { return x.id === id; }); }).filter(Boolean);
+    var total = items.reduce(function (a, i) { return a + simBRL(i); }, 0);
+    var h = '<p class="sub">Eles entram em Gastos com a cotação de hoje (R$ ' + esc(fmtNum(rate(), 2)) + '). Escolha a categoria de cada um.</p>';
+    h += '<p class="err" id="f-err" role="alert" hidden></p>';
+    h += '<ul class="list">' + items.map(function (i, k) {
+      return '<li class="lanc-item"><div class="sec-head"><span class="t">' + esc(i.nome) + '</span><span class="amt">' + esc(money(i.valor, i.moeda, 2)) + '</span></div>' +
+        '<label class="sr" for="l-cat-' + k + '">Categoria de ' + esc(i.nome) + '</label>' +
+        sel('l-cat-' + k, 'cat' + k, GASTO_CATS, 'Compras') + '</li>';
+    }).join('') + '</ul>';
+    h += fieldWrap('l-dia', 'Dia da compra', '<input id="l-dia" name="dia" type="date" value="' + todayStr() + '">');
+    h += '<label class="check" for="l-tirar"><input id="l-tirar" name="tirar" type="checkbox" checked>Tirar da simulação depois de lançar</label>';
+    h += '<div class="sec-head"><span class="m">Total</span><span class="amt">' + esc(money(total, 'BRL', 2)) + '</span></div>';
+    return h;
+  }
+  function openLancar() {
+    var marked = S.sim.filter(function (i) { return i.marcado; }).sort(byCreated);
+    if (!marked.length) return;
+    sheet = { kind: 'lancar', ids: marked.map(function (i) { return i.id; }), opener: document.activeElement };
+    renderSheet(true);
+  }
   function renderSheet(first) {
     if (!sheet) return;
-    var isItem = sheet.kind === 'item';
-    var title = isItem ? (sheet.id ? 'Editar item' : 'Novo item') : 'Ajustes da viagem';
-    var body = isItem ? itemForm(sheet.draft) : settingsForm(sheet.draft);
+    var isItem = sheet.kind === 'item', isLanc = sheet.kind === 'lancar';
+    var n = isLanc ? sheet.ids.length : 0;
+    var title = isLanc ? 'Lançar ' + n + (n === 1 ? ' item' : ' itens') : isItem ? (sheet.id ? 'Editar item' : 'Novo item') : 'Ajustes da viagem';
+    var body = isLanc ? lancarForm() : isItem ? itemForm(sheet.draft) : settingsForm(sheet.draft);
+    var saveLabel = isLanc ? 'Lançar ' + n + (n === 1 ? ' gasto' : ' gastos') : 'Salvar';
     var del = (isItem && sheet.id) ? '<button type="button" class="btn danger' + (sheet.armed ? ' armed' : '') + '" data-action="delete">' + (sheet.armed ? 'Confirmar' : 'Apagar') + '</button>' : '';
     var scroll = 0;
     var oldBody = sheetRoot.querySelector('.sheet-body');
@@ -1015,7 +1130,7 @@ input::placeholder,textarea::placeholder{color:var(--muted);opacity:.85}
       '<div class="sheet-head"><h2 id="sheet-title" tabindex="-1">' + title + '</h2>' +
       '<button type="button" class="link-btn" data-action="close-sheet">Cancelar</button></div>' +
       '<form id="sheet-form" class="sheet-body" novalidate>' + body + '</form>' +
-      '<div class="sheet-foot">' + del + '<button type="submit" form="sheet-form" class="btn save" id="save-btn">Salvar</button></div>' +
+      '<div class="sheet-foot">' + del + '<button type="submit" form="sheet-form" class="btn save" id="save-btn" data-label="' + saveLabel + '">' + saveLabel + '</button></div>' +
       '</section></div>';
     document.body.style.overflow = 'hidden';
     var nb = sheetRoot.querySelector('.sheet-body');
@@ -1063,7 +1178,7 @@ input::placeholder,textarea::placeholder{color:var(--muted);opacity:.85}
   }
   function setSaving(on) {
     var b = document.getElementById('save-btn');
-    if (b) { b.disabled = on; b.textContent = on ? 'Salvando…' : 'Salvar'; }
+    if (b) { b.disabled = on; b.textContent = on ? 'Salvando…' : (b.getAttribute('data-label') || 'Salvar'); }
   }
   function writeError(e) {
     var code = e && e.code;
@@ -1186,6 +1301,73 @@ input::placeholder,textarea::placeholder{color:var(--muted);opacity:.85}
     catch (e) { toast(writeError(e)); }
   }
 
+  /* ---------- simulação ---------- */
+  async function simAdd() {
+    var nomeEl = document.getElementById('sim-nome'), valEl = document.getElementById('sim-valor'), err = document.getElementById('sim-err');
+    if (!nomeEl || !valEl) return;
+    var nome = String(nomeEl.value || '').trim(), v = parseMoney(valEl.value);
+    function fail(m, el) { if (err) { err.textContent = m; err.hidden = false; } el.focus(); }
+    if (!nome) return fail('Escreva o nome do item.', nomeEl);
+    if (!(v > 0)) return fail('Coloque o valor.', valEl);
+    var db = await getDb();
+    if (!db) return;
+    nomeEl.value = ''; valEl.value = '';
+    if (err) err.hidden = true;
+    nomeEl.focus();
+    try { await db.collection('simulacao').doc().set({ nome: nome, valor: v, moeda: S.simCur, marcado: true, criadoEm: Date.now() }); }
+    catch (e) { toast(writeError(e)); }
+  }
+  async function simSet(id, val) {
+    var db = await getDb();
+    if (!db) return;
+    try { await db.doc('simulacao/' + id).update({ marcado: !!val }); } catch (e) { toast(writeError(e)); }
+  }
+  async function simAll(val) {
+    var db = await getDb();
+    if (!db) return;
+    var ids = S.sim.filter(function (i) { return !!i.marcado !== val; }).map(function (i) { return i.id; });
+    try { for (var k = 0; k < ids.length; k++) await db.doc('simulacao/' + ids[k]).update({ marcado: val }); }
+    catch (e) { toast(writeError(e)); }
+  }
+  async function simRm(id) {
+    var db = await getDb();
+    if (!db) return;
+    try { await db.doc('simulacao/' + id).delete(); toast('Item tirado da simulação'); } catch (e) { toast(writeError(e)); }
+  }
+  async function saveLancar() {
+    var f = document.getElementById('sheet-form');
+    var items = sheet.ids.map(function (id) { return S.sim.find(function (x) { return x.id === id; }); }).filter(Boolean);
+    if (!f || !items.length) { closeSheet(); return; }
+    var dia = f.elements.namedItem('dia').value;
+    var tirar = f.elements.namedItem('tirar').checked;
+    var cats = items.map(function (i, k) { var c = f.elements.namedItem('cat' + k).value; return GASTO_CATS.indexOf(c) >= 0 ? c : 'Outros'; });
+    var db = await getDb();
+    if (!db) return;
+    setSaving(true);
+    var r = rate(), now = Date.now();
+    try {
+      for (var k = 0; k < items.length; k++) {
+        var i = items[k];
+        var out = {
+          tipo: 'gasto', titulo: i.nome, nota: '', dia: isDate(dia) ? dia : '',
+          valor: num(i.valor), moeda: i.moeda === 'BRL' ? 'BRL' : 'USD', categoria: cats[k],
+          cotacao: r, criadoEm: now + k, atualizadoEm: now + k
+        };
+        if (out.categoria === 'Compras') out.cota = true;
+        await db.collection('itens').doc().set(out);
+        if (tirar) await db.doc('simulacao/' + i.id).delete();
+      }
+      var n = items.length;
+      closeSheet();
+      S.gastosTab = 'lancados'; remember('viagem.gastosTab', 'lancados');
+      render();
+      toast(n === 1 ? '1 gasto lançado' : n + ' gastos lançados');
+    } catch (e) {
+      setSaving(false);
+      showErr(writeError(e));
+    }
+  }
+
   /* ---------- backup ---------- */
   async function exportBackup() {
     var db = await getDb();
@@ -1254,6 +1436,12 @@ input::placeholder,textarea::placeholder{color:var(--muted);opacity:.85}
     else if (a === 'place-filter') { S.placeFilter = el.getAttribute('data-f'); render(); }
     else if (a === 'cur') { S.cur = el.getAttribute('data-cur'); try { localStorage.setItem('viagem.cur', S.cur); } catch (x) {} render(); }
     else if (a === 'goto') { location.hash = el.getAttribute('data-view'); }
+    else if (a === 'gastos-tab') { S.gastosTab = el.getAttribute('data-t') === 'simular' ? 'simular' : 'lancados'; remember('viagem.gastosTab', S.gastosTab); render(); }
+    else if (a === 'sim-cur') { S.simCur = el.getAttribute('data-cur') === 'BRL' ? 'BRL' : 'USD'; remember('viagem.simCur', S.simCur); render(); }
+    else if (a === 'sim-all') { simAll(true); }
+    else if (a === 'sim-none') { simAll(false); }
+    else if (a === 'sim-rm') { simRm(el.getAttribute('data-id')); }
+    else if (a === 'lancar') { openLancar(); }
     else if (a === 'refresh-rate') { refreshRate(); }
     else if (a === 'export') { exportBackup(); }
     else if (a === 'import-confirm') { confirmImport(); }
@@ -1269,6 +1457,8 @@ input::placeholder,textarea::placeholder{color:var(--muted);opacity:.85}
     }
   });
   document.addEventListener('change', function (e) {
+    var simId = e.target.getAttribute && e.target.getAttribute('data-sim-toggle');
+    if (simId) { simSet(simId, e.target.checked); return; }
     if (sheet && sheet.kind === 'settings' && e.target.id === 's-import') {
       if (e.target.files && e.target.files[0]) readImport(e.target.files[0]);
       return;
@@ -1287,10 +1477,13 @@ input::placeholder,textarea::placeholder{color:var(--muted);opacity:.85}
     }
   });
   document.addEventListener('submit', function (e) {
+    if (e.target.id === 'sim-form') { e.preventDefault(); simAdd(); return; }
     if (e.target.id !== 'sheet-form') return;
     e.preventDefault();
     if (!sheet) return;
-    if (sheet.kind === 'item') saveItem(); else saveSettings();
+    if (sheet.kind === 'item') saveItem();
+    else if (sheet.kind === 'lancar') saveLancar();
+    else saveSettings();
   });
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape' && sheet) closeSheet();
@@ -1333,6 +1526,11 @@ input::placeholder,textarea::placeholder{color:var(--muted);opacity:.85}
       S.items = qs.docs.map(function (d) { var o = clone(d.data() || {}); o.id = d.id; return o; })
         .filter(function (o) { return o.tipo && o.titulo; });
       S.loaded = true;
+      render();
+    }, function () { S.dbState = 'error'; render(); });
+    db.collection('simulacao').onSnapshot(function (qs) {
+      S.sim = qs.docs.map(function (d) { var o = clone(d.data() || {}); o.id = d.id; return o; })
+        .filter(function (o) { return o.nome; });
       render();
     }, function () { S.dbState = 'error'; render(); });
   });
