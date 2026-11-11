@@ -1,0 +1,2628 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Viagem NY + Orlando</title>
+<meta name="theme-color" content="#F3F4F7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0F1014" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@600;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&display=swap">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" crossorigin="anonymous">
+<style>
+/* Layout: uma coluna de celular, abas fixas embaixo, formulários em folhas que sobem de baixo */
+:root{
+  --bg:#F3F4F7; --surface:#FFFFFF; --surface-2:#EBEDF1; --ink:#14151A; --muted:#555963;
+  --line:#E2E4E9; --line-strong:#C8CBD2;
+  --accent:#F2B705; --on-accent:#14151A; --link:#2546D8; --danger:#B42318;
+  --hero:#14151A; --on-hero:#FFFFFF; --hero-muted:#C3C6CE; --hero-line:#43454E;
+  --info-bg:#E8EDFF; --info-fg:#1A2B7A;
+  --ok-bg:#DDF2E2; --ok-fg:#1B5A2A; --warn-bg:#FFF0BF; --warn-fg:#5A4200;
+  --plan-bg:#E8EDFF; --plan-fg:#1A2B7A; --note-bg:#EBEDF1; --note-fg:#3A3D45;
+  --c0:#2546D8; --c1:#B83A0B; --c2:#1F7A3A; --c3:#7A3FC4;
+  --scrim:rgba(10,11,14,.5);
+  --font-display:'Archivo Narrow','Arial Narrow','Roboto Condensed',sans-serif;
+  --font-body:'DM Sans',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0F1014; --surface:#1A1B21; --surface-2:#25272E; --ink:#F1F2F5; --muted:#A6AAB4;
+    --line:#2C2E36; --line-strong:#454852;
+    --accent:#F2B705; --on-accent:#14151A; --link:#9DB4FF; --danger:#FF8A80;
+    --hero:#25272F; --on-hero:#FFFFFF; --hero-muted:#BBBEC7; --hero-line:#464953;
+    --info-bg:#1E2747; --info-fg:#CAD5FF;
+    --ok-bg:#163A22; --ok-fg:#B7EBC4; --warn-bg:#3D3210; --warn-fg:#FFE08A;
+    --plan-bg:#1E2747; --plan-fg:#CAD5FF; --note-bg:#2C2E36; --note-fg:#D3D6DD;
+    --c0:#7D97FF; --c1:#FF8A5C; --c2:#5FCB82; --c3:#B98CFF;
+    --scrim:rgba(0,0,0,.6);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0F1014; --surface:#1A1B21; --surface-2:#25272E; --ink:#F1F2F5; --muted:#A6AAB4;
+  --line:#2C2E36; --line-strong:#454852;
+  --accent:#F2B705; --on-accent:#14151A; --link:#9DB4FF; --danger:#FF8A80;
+  --hero:#25272F; --on-hero:#FFFFFF; --hero-muted:#BBBEC7; --hero-line:#464953;
+  --info-bg:#1E2747; --info-fg:#CAD5FF;
+  --ok-bg:#163A22; --ok-fg:#B7EBC4; --warn-bg:#3D3210; --warn-fg:#FFE08A;
+  --plan-bg:#1E2747; --plan-fg:#CAD5FF; --note-bg:#2C2E36; --note-fg:#D3D6DD;
+  --c0:#7D97FF; --c1:#FF8A5C; --c2:#5FCB82; --c3:#B98CFF;
+  --scrim:rgba(0,0,0,.6);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{padding-top:env(safe-area-inset-top,0px)}
+body{margin:0}
+img{max-width:100%}
+[hidden]{display:none!important}
+html,body{background:var(--bg);color:var(--ink)}
+body{font-family:var(--font-body);font-size:15px;line-height:1.45;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--link);outline-offset:2px}
+.sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+.app{max-width:520px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px calc(112px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:20px}
+.top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.top-text{display:flex;flex-direction:column;gap:4px;min-width:0}
+.eyebrow{margin:0;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+h1{margin:0;font-family:var(--font-display);font-size:34px;line-height:1.05;font-weight:700;text-wrap:balance}
+.sub{margin:0;color:var(--muted);font-size:14px}
+.actions{display:flex;gap:8px;flex-shrink:0}
+.icon-btn{width:44px;height:44px;flex-shrink:0;border-radius:14px;border:0;display:grid;place-items:center;cursor:pointer;background:var(--surface);color:var(--ink);text-decoration:none}
+.icon-btn.primary{background:var(--accent);color:var(--on-accent)}
+.icon-btn.soft{background:var(--surface-2)}
+section{display:flex;flex-direction:column;gap:10px}
+.sec-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.sec{margin:0;font-size:18px;font-weight:700}
+.link-btn{background:none;border:0;color:var(--link);font-weight:500;font-size:14px;cursor:pointer;min-height:44px;padding:0 4px;display:inline-flex;align-items:center;text-decoration:none}
+.btn{min-height:48px;padding:0 18px;border-radius:14px;border:0;background:var(--ink);color:var(--bg);font-weight:700;font-size:15px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none}
+.btn[disabled]{opacity:.6;cursor:default}
+.btn.light{background:var(--on-hero);color:#14151A}
+.btn.ghost{background:var(--surface-2);color:var(--ink)}
+.btn.danger{background:var(--surface-2);color:var(--danger)}
+.btn.danger.armed{background:var(--danger);color:var(--surface)}
+.muted{color:var(--muted)}
+.num{font-variant-numeric:tabular-nums}
+
+.notice{background:var(--info-bg);color:var(--info-fg);border-radius:14px;padding:12px 14px;display:flex;gap:12px;align-items:center;justify-content:space-between;font-size:14px}
+.notice .btn{min-height:44px;padding:0 14px;font-size:14px;background:var(--info-fg);color:var(--info-bg);flex-shrink:0}
+.loading{color:var(--muted);font-size:14px;padding:8px 0}
+
+.hero{background:var(--hero);color:var(--on-hero);border-radius:20px;padding:20px;gap:10px}
+.pill{align-self:flex-start;padding:4px 10px;border-radius:999px;background:var(--accent);color:var(--on-accent);font-size:12px;font-weight:700}
+.hero-title{margin:0;font-family:var(--font-display);font-size:32px;line-height:1.05;font-weight:700;overflow-wrap:anywhere}
+.hero-sub{margin:0;font-size:14px;color:var(--hero-muted)}
+.hero-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:4px;padding-top:12px;border-top:1px dashed var(--hero-line)}
+.kv{display:flex;flex-direction:column;gap:2px;min-width:0}
+.hero .k{font-size:12px;color:var(--hero-muted)}
+.kv .v{font-weight:700;font-size:15px;overflow-wrap:anywhere}
+.hero .btn{margin-top:6px}
+.meter-dark{height:10px;border-radius:5px;background:var(--hero-line);overflow:hidden}
+.meter-dark i{display:block;height:100%;border-radius:5px;background:var(--accent)}
+.big{font-family:var(--font-display);font-size:44px;line-height:1;font-weight:700}
+
+.list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.row{width:100%;text-align:left;display:flex;gap:12px;align-items:center;padding:12px 14px;background:var(--surface);border:0;border-radius:14px;cursor:pointer;color:var(--ink)}
+.grow{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.t{font-weight:700;font-size:15px;overflow-wrap:anywhere}
+.m{font-size:13px;color:var(--muted);overflow-wrap:anywhere}
+.amt{font-weight:700;white-space:nowrap;font-variant-numeric:tabular-nums}
+.day-sep{font-size:13px;font-weight:700;color:var(--muted);padding:6px 2px 0}
+.tl{display:flex;gap:12px;align-items:flex-start}
+.tl .time{width:52px;flex-shrink:0;padding-top:14px;font-weight:700;font-size:14px;font-variant-numeric:tabular-nums}
+.row-card{flex:1;min-width:0;text-align:left;padding:12px 14px;background:var(--surface);border:0;border-radius:14px;cursor:pointer;display:flex;flex-direction:column;gap:6px;color:var(--ink)}
+.tag{align-self:flex-start;display:inline-block;padding:2px 8px;border-radius:6px;font-size:12px;font-weight:700;white-space:nowrap}
+.tag-show,.st-loteria{background:var(--warn-bg);color:var(--warn-fg)}
+.tag-plan,.st-quero{background:var(--plan-bg);color:var(--plan-fg)}
+.tag-place,.st-comprado{background:var(--ok-bg);color:var(--ok-fg)}
+.tag-note{background:var(--note-bg);color:var(--note-fg)}
+
+.empty{border:1.5px dashed var(--line-strong);border-radius:16px;padding:22px 18px;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center}
+.empty p{margin:0}
+.empty .e-title{font-weight:700;font-size:15px}
+.empty .e-text{font-size:14px;color:var(--muted);max-width:32ch}
+.empty .btn{margin-top:6px;min-height:44px;font-size:14px}
+
+.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none;margin-inline:-2px;padding-inline:2px}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex-shrink:0;min-height:44px;padding:0 14px;border-radius:22px;border:1px solid var(--line-strong);background:var(--surface);color:var(--ink);font-weight:700;font-size:14px;cursor:pointer;white-space:nowrap}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.chip .n{font-weight:500;opacity:.8;margin-left:4px}
+
+.cal{background:var(--surface);border-radius:18px;padding:12px;gap:6px}
+.cal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.cal-wd{text-align:center;font-size:12px;font-weight:700;color:var(--muted)}
+.cal-day{position:relative;height:52px;border:0;border-radius:12px;background:var(--surface-2);color:var(--ink);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;font-weight:700;font-size:16px;padding:0}
+.cal-day[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.cal-day.today{box-shadow:inset 0 0 0 2px var(--accent)}
+.cal-day .city{position:absolute;top:6px;right:6px;width:7px;height:7px;border-radius:50%}
+.cal-day .bar{width:16px;height:3px;border-radius:2px;background:currentColor}
+.cal-day .bar.none{visibility:hidden}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;padding:4px 4px 0;font-size:12px;color:var(--muted)}
+.legend span{display:flex;align-items:center;gap:6px}
+.legend i{width:8px;height:8px;border-radius:50%;display:inline-block}
+
+.ticket{width:100%;text-align:left;border:0;padding:0;background:var(--surface);border-radius:18px;overflow:hidden;cursor:pointer;color:var(--ink);display:flex;flex-direction:column}
+.ticket .main{padding:14px 16px 12px;display:flex;flex-direction:column;gap:6px}
+.ticket .line1{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.ticket .when{font-size:13px;font-weight:700;color:var(--muted)}
+.ticket .title{font-family:var(--font-display);font-size:24px;line-height:1.1;font-weight:700;overflow-wrap:anywhere}
+.ticket .stub{padding:10px 16px 12px;border-top:1px dashed var(--line-strong);display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.ticket .k{font-size:12px;color:var(--muted)}
+
+.seg{display:flex;padding:3px;gap:2px;background:var(--surface-2);border-radius:14px}
+.seg button{min-width:56px;min-height:44px;border:0;border-radius:11px;background:transparent;color:var(--muted);font-weight:700;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.15)}
+.seg-wide{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+.seg-wide button{min-width:0}
+.sim-add{margin:0;background:var(--surface);border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:8px}
+.sim-add input{height:44px}
+.sim-row{display:flex;gap:8px;align-items:center}
+.sim-row input{flex:1}
+.sim-row .seg{flex-shrink:0}
+.sim-row .seg button{min-width:48px;min-height:38px}
+.sim-item{display:flex;align-items:center;gap:4px;padding:4px 4px 4px 14px;border-radius:14px;background:var(--surface);border:1.5px solid transparent}
+.sim-item.on{border-color:var(--ink)}
+.sim-item:not(.on) .t,.sim-item:not(.on) .amt{color:var(--muted)}
+.sim-check{flex:1;min-width:0;min-height:48px;display:flex;align-items:center;gap:12px;cursor:pointer}
+.sim-check input{width:22px;height:22px;margin:0;flex-shrink:0;accent-color:var(--ink)}
+.lanc-item{padding:12px 14px;border-radius:14px;background:var(--surface-2);display:flex;flex-direction:column;gap:8px}
+:root{--per-manha:#8A5A00;--per-tarde:#B83A0B;--per-noite:#3B2FC9}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--per-manha:#F0B44C;--per-tarde:#FF8A5C;--per-noite:#A9A2FF}}
+:root[data-theme="dark"]{--per-manha:#F0B44C;--per-tarde:#FF8A5C;--per-noite:#A9A2FF}
+.chip{display:inline-flex;align-items:center;gap:6px}
+.chip-ic{padding-left:6px}
+.chips-wrap{display:flex;flex-wrap:wrap;gap:8px}
+.nbadge{position:absolute;top:3px;right:3px;min-width:18px;height:18px;padding:0 4px;border-radius:9px;background:var(--accent);color:var(--on-accent);font-size:11px;font-weight:700;display:grid;place-items:center;box-sizing:border-box}
+.map-tools{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.map-tools .seg button{min-width:72px}
+.dias-btn{min-height:44px;padding:0 14px;border-radius:14px;border:0;background:var(--accent);color:var(--on-accent);font-weight:700;font-size:15px;display:inline-flex;align-items:center;gap:6px;cursor:pointer}
+.dias-btn[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.mapwrap{position:relative;height:calc(100dvh - 330px);min-height:340px;border-radius:18px;overflow:hidden;background:var(--surface-2);isolation:isolate}
+.mapwrap.compact{height:300px;min-height:0}
+.map-slot,.map-host{position:absolute;inset:0}
+.map-msg{position:absolute;inset:0;display:grid;place-items:center;padding:20px;text-align:center;color:var(--muted);font-size:14px}
+.leaflet-container{font-family:var(--font-body)}
+.leaflet-div-icon.pin-wrap{background:none;border:0}
+.pin{box-sizing:border-box;width:100%;height:100%;border-radius:50%;border:2px solid #FFFFFF;box-shadow:0 2px 6px rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center;color:#FFFFFF;font-weight:700;font-size:14px}
+.pin.sel{box-shadow:0 0 0 3px var(--accent),0 2px 8px rgba(0,0,0,.4)}
+.cat-dot{flex-shrink:0;border-radius:50%;color:#FFFFFF;display:inline-flex;align-items:center;justify-content:center}
+.map-card{position:absolute;left:10px;right:10px;bottom:24px;z-index:1000;background:var(--surface);color:var(--ink);border-radius:16px;padding:12px;box-shadow:0 8px 24px rgba(0,0,0,.28);display:flex;flex-direction:column;gap:8px}
+.mc-top{display:flex;gap:10px;align-items:flex-start}
+.mc-top .cat-dot{border-radius:12px}
+.mc-name{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.mc-name .pname{font-family:var(--font-display);font-size:22px;font-weight:700;line-height:1.1}
+.mc-chips{display:flex;gap:6px;flex-wrap:wrap}
+.mc-chip{display:inline-flex;align-items:center;gap:5px;padding:4px 9px;border-radius:8px;background:var(--surface-2);font-size:13px;font-weight:700}
+.mc-note{margin:0;font-size:13px;color:var(--muted)}
+.mc-acts{display:flex;gap:8px}
+.mc-acts .btn{flex:1;min-height:44px;font-size:14px;padding:0 10px}
+.fb{display:inline-block;flex-shrink:0;padding:0 6px;border-radius:5px;font-size:11px;font-weight:700;line-height:18px}
+.fb.g{background:var(--ok-bg);color:var(--ok-fg)}
+.fb.p{background:var(--surface-2);color:var(--muted)}
+.day-strip{position:relative;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:2px}
+.day-strip::-webkit-scrollbar{display:none}
+.day-chip{flex-shrink:0;width:64px;min-height:56px;border-radius:14px;border:1px solid var(--line-strong);background:var(--surface);color:var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;cursor:pointer;padding:0}
+.day-chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.day-chip .dn{font-weight:700;font-size:14px}
+.day-chip .dd{font-size:11px;opacity:.85}
+.day-chip .dm{height:14px;display:flex;align-items:center}
+.day-chip .dm i{width:5px;height:5px;border-radius:50%;background:currentColor;display:block}
+.dia-painel{display:flex;flex-direction:column;gap:10px}
+.legend-per{margin:0;display:flex;gap:12px;flex-wrap:wrap;font-size:12px;font-weight:700}
+.stops{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.stops li{display:flex;align-items:center;gap:6px;padding:4px 10px 4px 2px;background:var(--surface);border-radius:14px}
+.stops li.dragging{position:relative;z-index:5;box-shadow:0 10px 24px rgba(0,0,0,.25)}
+.drag-handle{width:40px;height:44px;flex-shrink:0;border:0;background:none;color:var(--muted);display:grid;place-items:center;cursor:grab;touch-action:none}
+.stop-n{width:28px;height:28px;flex-shrink:0;border-radius:50%;color:#FFFFFF;font-weight:700;font-size:14px;display:grid;place-items:center}
+.stop-body{flex:1;min-width:0;text-align:left;background:none;border:0;padding:6px 4px;cursor:pointer;color:var(--ink);display:flex;flex-direction:column;gap:2px}
+.stop-name{display:flex;align-items:center;gap:6px;min-width:0}
+.stop-name .pname{font-weight:700;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dia-acts{display:flex;gap:8px;flex-wrap:wrap}
+.dia-acts .btn{flex:1;min-height:44px;font-size:14px;white-space:nowrap}
+.place.done{opacity:.65}
+.tiles.tiles4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.pills-col{flex-direction:column;align-items:stretch}
+.pills-col .pill-opt{border-radius:12px}
+.per-manha{color:var(--per-manha)}
+.per-tarde{color:var(--per-tarde)}
+.per-noite{color:var(--per-noite)}
+.pill-opt.per-manha.on,.chip.per-manha[aria-pressed="true"]{background:var(--per-manha);border-color:var(--per-manha);color:var(--surface)}
+.pill-opt.per-tarde.on,.chip.per-tarde[aria-pressed="true"]{background:var(--per-tarde);border-color:var(--per-tarde);color:var(--surface)}
+.pill-opt.per-noite.on,.chip.per-noite[aria-pressed="true"]{background:var(--per-noite);border-color:var(--per-noite);color:var(--surface)}
+.back-btn{align-self:flex-start;margin-left:-6px;min-height:36px;gap:2px}
+.sheet .row{background:var(--surface-2)}
+.sheet .row[aria-pressed="true"]{box-shadow:inset 0 0 0 2px var(--ink)}
+.place .body.place-body{flex-direction:row;align-items:center;gap:10px;padding:6px 6px}
+.place-body .grow{gap:3px}
+.map-card:focus{outline:none}
+.map-card:focus-visible{outline:3px solid var(--link);outline-offset:2px}
+.mc-note{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.mc-acts .btn svg{flex-shrink:0}
+.mc-acts .btn{white-space:nowrap;padding:0 8px}
+.mc-acts a.btn{flex:0 0 auto;padding:0 12px}
+.place-body .stop-name{align-items:flex-start}
+.place-body .pname{white-space:normal;overflow-wrap:anywhere}
+.place-body .fb{margin-top:2px}
+.map-notes{display:flex;flex-direction:column;gap:6px;margin-top:-8px}
+.map-notes p{margin:0;font-size:13px;color:var(--muted)}
+.inline-link{background:none;border:0;padding:0;color:var(--link);font:inherit;font-weight:700;cursor:pointer;text-decoration:underline}
+.stops li.flash{box-shadow:0 0 0 2px var(--accent)}
+.stop-body .m{display:flex;align-items:center;gap:4px}
+.stop-body .m svg{flex-shrink:0}
+.leaflet-control-attribution{font-size:10px}
+.leaflet-tile-pane{filter:saturate(.45)}
+.sheet-body .fs .chips-wrap .chip{min-height:44px}
+.sub-sheet{margin:0 0 4px}
+.seg-wide.seg3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.seg3 button{font-size:14px;padding:0 4px}
+.busca{display:flex;flex-direction:column;gap:6px}
+.busca label{font-size:13px;font-weight:700;color:var(--muted)}
+.busca input{min-height:48px;border-radius:14px;border:1.5px solid var(--line-strong);background:var(--surface);color:var(--ink);padding:0 14px;font:inherit;font-size:16px;width:100%;box-sizing:border-box}
+.sh-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.sh-card{background:var(--surface);border-radius:16px;padding:12px 14px;display:flex;flex-direction:column;gap:3px}
+.sh-top{display:flex;align-items:center;gap:8px}
+.sh-name{font-family:var(--font-display);font-size:21px;font-weight:700;line-height:1.15;margin-top:2px}
+.tag-off{background:var(--surface-2);color:var(--ink)}
+.score{margin-left:auto;font-size:12px;font-weight:700;padding:2px 8px;border-radius:6px;background:var(--ok-bg);color:var(--ok-fg);white-space:nowrap}
+.quando{font-size:13px;font-weight:700}
+.quando.ok{color:var(--ok-fg)}
+.quando.confira{color:var(--warn-fg)}
+.quando.depois{color:var(--muted)}
+.sh-acts{display:flex;gap:8px;margin-top:8px}
+.sh-acts .btn{flex:1;min-height:44px;font-size:14px;padding:0 10px;white-space:nowrap}
+.sh-acts .btn.int[aria-pressed="true"]{background:var(--ok-bg);color:var(--ok-fg);border-color:transparent}
+.sh-acts a.btn{flex:0 0 auto}
+.stops .stop-n.rank{background:var(--ink);color:var(--bg)}
+.stop-body .m .tag{align-self:center}
+.cats{list-style:none;margin:0;padding:4px 16px;background:var(--surface);border-radius:18px}
+.cats li{padding:12px 0;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:8px}
+.cats li:last-child{border-bottom:0}
+.cats .head{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.meter{height:6px;border-radius:3px;background:var(--surface-2);overflow:hidden}
+.meter i{display:block;height:100%;border-radius:3px;background:var(--ink)}
+.meter i.over{background:var(--danger)}
+.quota{background:var(--info-bg);color:var(--info-fg);border-radius:18px;padding:16px;gap:8px}
+.quota .meter{background:var(--surface);background:color-mix(in srgb,var(--info-fg) 18%,transparent)}
+.quota .meter i{background:var(--info-fg)}
+.quota p{margin:0;font-size:13px}
+.quota h2{margin:0;font-size:16px}
+
+.place{display:flex;align-items:center;gap:6px;padding:6px 8px 6px 4px;background:var(--surface);border-radius:16px}
+.place .body{flex:1;min-width:0;text-align:left;background:none;border:0;padding:8px 10px;cursor:pointer;display:flex;flex-direction:column;gap:3px;color:var(--ink);border-radius:12px}
+.place .cat{font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+.place.done .name{text-decoration:line-through;color:var(--muted)}
+.toggle{min-width:64px;min-height:44px;padding:0 10px;border-radius:12px;border:1.5px solid var(--line-strong);background:var(--surface);color:var(--ink);font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;flex-shrink:0}
+.toggle[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+
+.rem{display:flex;align-items:center;gap:4px;background:var(--surface);border-radius:14px;padding:4px 4px 4px 4px}
+.rem .check-btn{width:44px;height:44px;border:0;background:none;display:grid;place-items:center;cursor:pointer;color:var(--ink);flex-shrink:0}
+.rem .body{flex:1;min-width:0;text-align:left;background:none;border:0;padding:8px 10px 8px 2px;cursor:pointer;display:flex;flex-direction:column;gap:2px;color:var(--ink)}
+.rem.done .t{text-decoration:line-through;color:var(--muted)}
+
+.tabs{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--surface);border-top:1px solid var(--line);padding-top:6px;padding-bottom:calc(8px + env(safe-area-inset-bottom,0px));padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.tabs-in{max-width:520px;margin:0 auto;display:grid;grid-template-columns:repeat(5,minmax(0,1fr))}
+.tab{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:54px;text-decoration:none;color:var(--muted);font-size:11px;font-weight:500}
+.tab .ic{width:52px;height:30px;border-radius:15px;display:grid;place-items:center}
+.tab[aria-current="page"]{color:var(--ink);font-weight:700}
+.tab[aria-current="page"] .ic{background:var(--accent);color:var(--on-accent)}
+
+.overlay{position:fixed;inset:0;z-index:40;display:flex;flex-direction:column;justify-content:flex-end}
+.scrim{position:absolute;inset:0;background:var(--scrim)}
+.sheet{position:relative;background:var(--surface);color:var(--ink);border-radius:24px 24px 0 0;max-height:calc(100% - 24px - env(safe-area-inset-top,0px));width:100%;max-width:560px;margin:0 auto;display:flex;flex-direction:column;padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-reduced-motion: no-preference){.sheet.anim{animation:up .22s ease-out}@keyframes up{from{transform:translateY(24px);opacity:.6}to{transform:none;opacity:1}}}
+.grip{width:40px;height:5px;border-radius:3px;background:var(--line-strong);margin:10px auto 0}
+.sheet-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding-top:4px;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(12px,env(safe-area-inset-right,0px))}
+.sheet-head h2{margin:0;font-family:var(--font-display);font-size:28px;font-weight:700}
+.sheet-head h2:focus{outline:none}
+.sheet-body{flex:1;min-height:0;overflow-y:auto;margin:0;padding-top:12px;padding-bottom:16px;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:16px}
+.sheet-foot{display:flex;gap:10px;padding-top:12px;padding-bottom:16px;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px));border-top:1px solid var(--line)}
+.sheet-foot .save{flex:1}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.field>label,.legend{font-size:13px;font-weight:700;color:var(--muted);padding:0}
+.hint{font-size:12px;color:var(--muted);margin:0}
+.fs{margin:0;padding:0;border:0;min-width:0}
+.fs .legend{margin-bottom:8px}
+input[type=text],input[type=date],input[type=time],select,textarea{width:100%;min-width:0;height:48px;padding:0 14px;border:1.5px solid var(--line-strong);border-radius:12px;font-size:16px;color:var(--ink);background:var(--surface)}
+select{padding:0 10px}
+textarea{height:auto;min-height:88px;padding:12px 14px;resize:vertical}
+input::placeholder,textarea::placeholder{color:var(--muted);opacity:.85}
+.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.tiles{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+.tile{position:relative;min-height:66px;border:1.5px solid var(--line-strong);border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;font-size:12px;font-weight:700;cursor:pointer;padding:6px 2px;text-align:center}
+.tile input,.pill-opt input{position:absolute;inset:0;margin:0;opacity:0;cursor:pointer}
+.tile.on{border-color:var(--ink);background:var(--warn-bg);color:var(--warn-fg)}
+.tile:focus-within,.pill-opt:focus-within{outline:3px solid var(--link);outline-offset:2px}
+.pills{display:flex;flex-wrap:wrap;gap:8px}
+.pill-opt{position:relative;min-height:44px;padding:0 14px;border-radius:22px;border:1.5px solid var(--line-strong);display:flex;align-items:center;font-weight:700;font-size:14px;cursor:pointer}
+.pill-opt.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.check{display:flex;align-items:center;gap:10px;min-height:44px;font-size:15px;cursor:pointer}
+.check input{width:22px;height:22px;margin:0;accent-color:var(--ink);flex-shrink:0}
+.err{margin:0;color:var(--danger);font-size:14px;font-weight:700}
+.trecho{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr) 44px;gap:8px;align-items:center}
+
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:60;background:var(--ink);color:var(--bg);padding:12px 16px;border-radius:12px;font-weight:700;font-size:14px;max-width:calc(100% - 32px);box-shadow:0 6px 18px rgba(0,0,0,.25)}
+</style>
+</head>
+<body>
+
+<main class="app" id="app" aria-live="off"></main>
+
+<nav class="tabs" aria-label="Seções">
+  <div class="tabs-in">
+    <a class="tab" href="#hoje" data-tab="hoje"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M4 11l8-6 8 6v8a1 1 0 0 1-1 1h-4v-5h-6v5H5a1 1 0 0 1-1-1z"/></svg></span>Hoje</a>
+    <a class="tab" href="#roteiro" data-tab="roteiro"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="6" cy="19" r="2"/><circle cx="18" cy="5" r="2"/><path d="M8 19h7a3 3 0 0 0 0-6H9a3 3 0 0 1 0-6h7"/></svg></span>Roteiro</a>
+    <a class="tab" href="#shows" data-tab="shows"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16v4a2 2 0 0 0 0 4v4H4v-4a2 2 0 0 0 0-4z"/><path d="M14 6v12" stroke-dasharray="2 2"/></svg></span>Shows</a>
+    <a class="tab" href="#gastos" data-tab="gastos"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M16 14h2"/></svg></span>Gastos</a>
+    <a class="tab" href="#lugares" data-tab="lugares"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></span>Lugares</a>
+  </div>
+</nav>
+
+<div id="sheet-root"></div>
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ---------- constantes ---------- */
+  var DEFAULT_CONFIG = {
+    nome: 'Nova York + Orlando',
+    inicio: '2027-01-31',
+    fim: '2027-02-12',
+    trechos: [{ cidade: 'Nova York', desde: '2027-01-31' }, { cidade: 'Orlando', desde: '2027-02-09' }],
+    cotacao: 5.38,
+    cotacaoAuto: true,
+    iof: 3.5,
+    orcamento: {}
+  };
+  var GASTO_CATS = ['Hospedagem', 'Ingressos', 'Comida', 'Compras', 'Transporte', 'Outros'];
+  var LUGAR_CATS = ['Teatro', 'Compras', 'Comida', 'Museu', 'Passeio', 'Bar', 'Hotel', 'Outros'];
+  var CAT_INFO = {
+    Teatro: { color: '#C92A6B', d: 'M4 6h16v4a2 2 0 0 0 0 4v4H4v-4a2 2 0 0 0 0-4z M14 6v12' },
+    Compras: { color: '#2546D8', d: 'M6 8h12l-1 12H7z M9 8a3 3 0 0 1 6 0' },
+    Comida: { color: '#C2410C', d: 'M7 3v8 M5 3v4a2 2 0 0 0 4 0V3 M7 11v10 M16 3c-2 1-3 4-3 7h3v11' },
+    Museu: { color: '#6741D9', d: 'M3 9l9-5 9 5 M5 9v9 M10 9v9 M14 9v9 M19 9v9 M3 20h18' },
+    Passeio: { color: '#237A35', d: 'M4 8h3l2-3h6l2 3h3v11H4z M12 10.5a3.5 3.5 0 1 0 0 7a3.5 3.5 0 1 0 0-7' },
+    Bar: { color: '#0C7489', d: 'M9 18V5l11-2v13 M9 18a3 3 0 1 1-6 0a3 3 0 1 1 6 0 M20 16a3 3 0 1 1-6 0a3 3 0 1 1 6 0' },
+    Hotel: { color: '#14151A', d: 'M3 19V6 M3 14h18v5 M21 14v-1a3 3 0 0 0-3-3h-7v4 M7 9a1.8 1.8 0 1 0 0 3.6a1.8 1.8 0 1 0 0-3.6' },
+    Outros: { color: '#5F636C', d: 'M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.5 2.9 1-6.1L3.2 9.5l6.1-.9z' }
+  };
+  var OLD_CATS = { Discos: 'Compras', Livros: 'Compras', Demolidor: 'Passeio', Passeios: 'Passeio' };
+  function catOf(p) { var c = OLD_CATS[p.categoria] || p.categoria; return CAT_INFO[c] ? c : 'Outros'; }
+  var PERIODOS = {
+    manha: { label: 'Manhã', d: 'M12 3v2 M12 19v2 M3 12h2 M19 12h2 M5.6 5.6l1.4 1.4 M17 17l1.4 1.4 M5.6 18.4L7 17 M17 7l1.4-1.4 M12 8.5a3.5 3.5 0 1 0 0 7a3.5 3.5 0 1 0 0-7' },
+    tarde: { label: 'Tarde', d: 'M3 18h18 M6 18a6 6 0 0 1 12 0 M12 6v3 M5.6 10.6l1.6 1.2 M18.4 10.6l-1.6 1.2' },
+    noite: { label: 'Noite', d: 'M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z' }
+  };
+  var MTA_CORES = {
+    '1': '#EE352E', '2': '#EE352E', '3': '#EE352E', '4': '#00933C', '5': '#00933C', '6': '#00933C', '6X': '#00933C', '7': '#B933AD', '7X': '#B933AD',
+    'A': '#0039A6', 'C': '#0039A6', 'E': '#0039A6', 'B': '#FF6319', 'D': '#FF6319', 'F': '#FF6319', 'FX': '#FF6319', 'M': '#FF6319',
+    'G': '#6CBE45', 'J': '#996633', 'Z': '#996633', 'L': '#A7A9AC', 'N': '#FCCC0A', 'Q': '#FCCC0A', 'R': '#FCCC0A', 'W': '#FCCC0A',
+    'S': '#808183', 'GS': '#808183', 'FS': '#808183', 'H': '#808183', 'SI': '#0039A6', 'SIR': '#0039A6'
+  };
+  function pathSvg(d, size, sw) {
+    return '<svg width="' + size + '" height="' + size + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="' + (sw || 2) + '" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="' + d + '"/></svg>';
+  }
+
+  /* Lugares da sua lista do Google Maps: entram no app uma vez, na primeira abertura desta versão. */
+  /* Espetáculos em cartaz perto da viagem (31/jan a 9/fev/2027).
+     Notas: público do Show-Score. Listas: Broadway.org, Broadway.com (fevereiro/2027), Playbill e NY Theatre Guide.
+     q: 'ok' = em cartaz na viagem · 'confira' = datas incertas · 'depois' = começa depois de 9/fev */
+  var CATALOGO_DATA = '11/nov/2026';
+  var SS = 'https://www.show-score.com';
+  var BO = 'https://www.broadway.org/shows/';
+  var CATALOGO_SHOWS = [
+    { nome: '860 (Billy Crystal)', tipo: 'B', teatro: 'Imperial Theatre', nota: 97, q: 'ok', info: 'Temporada limitada até fev/2027. Confira a data final.', url: SS + '/broadway-shows/billy-crystal-860-broadway' },
+    { nome: 'Aladdin', tipo: 'B', teatro: 'New Amsterdam Theatre', q: 'ok', info: 'Sem data pra acabar', url: BO + 'aladdin' },
+    { nome: 'Awake and Sing!', tipo: 'B', teatro: 'Samuel J. Friedman Theatre', q: 'ok', info: 'Estreia 7/jan/2027', url: BO + 'awake-and-sing' },
+    { nome: 'Chicago', tipo: 'B', teatro: 'Ambassador Theatre', q: 'ok', info: 'Sem data pra acabar', url: BO + 'chicago' },
+    { nome: 'Dirty Dancing: The Musical', tipo: 'B', teatro: 'Lena Horne Theatre', q: 'depois', info: 'Prévias a partir de 12/fev/2027', url: BO + 'dirty-dancing-the-musical' },
+    { nome: 'DOLLY: A True Original Musical', tipo: 'B', teatro: 'St. James Theatre', q: 'ok', info: 'Estreia 19/jan/2027', url: BO + 'dolly-a-true-original-musical' },
+    { nome: 'Evita', tipo: 'B', teatro: 'Winter Garden Theatre', q: 'depois', info: 'Prévias a partir de 27/fev/2027', url: BO + 'evita' },
+    { nome: 'Galileo', tipo: 'B', teatro: 'Shubert Theatre', q: 'ok', info: 'Em cartaz em fevereiro', url: BO + 'galileo' },
+    { nome: 'Hadestown', tipo: 'B', teatro: 'Walter Kerr Theatre', nota: 92, q: 'ok', info: 'Sem data pra acabar', url: SS + '/broadway-shows/hadestown-broadway' },
+    { nome: 'Hamilton', tipo: 'B', teatro: 'Richard Rodgers Theatre', nota: 96, q: 'ok', info: 'Sem data pra acabar', url: SS + '/broadway-shows/hamilton' },
+    { nome: 'Harry Potter and the Cursed Child', tipo: 'B', teatro: 'Lyric Theatre', nota: 92, q: 'ok', info: 'Sem data pra acabar', url: SS + '/broadway-shows/harry-potter-and-the-cursed-child' },
+    { nome: 'Inter Alia', tipo: 'B', teatro: 'Music Box Theatre', q: 'ok', info: 'Em cartaz em fevereiro', url: BO + 'inter-alia' },
+    { nome: 'Just in Time', tipo: 'B', teatro: 'Circle in the Square Theatre', nota: 95, q: 'ok', info: 'Sem data pra acabar', url: SS + '/broadway-shows/just-in-time-broadway' },
+    { nome: 'Maybe Happy Ending', tipo: 'B', teatro: 'Belasco Theatre', nota: 95, q: 'ok', info: 'Sem data pra acabar', url: SS + '/broadway-shows/maybe-happy-ending-broadway' },
+    { nome: 'MJ The Musical', tipo: 'B', teatro: 'Neil Simon Theatre', nota: 93, q: 'ok', info: 'Sem data pra acabar', url: SS + '/broadway-shows/mj' },
+    { nome: 'Oh, Mary!', tipo: 'B', teatro: 'Lyceum Theatre', nota: 91, q: 'ok', info: 'Sem data pra acabar', url: SS + '/broadway-shows/oh-mary-broadway' },
+    { nome: 'Operation Mincemeat', tipo: 'B', teatro: 'John Golden Theatre', q: 'ok', info: 'Sem data pra acabar', url: BO + 'operation-mincemeat' },
+    { nome: 'Paranormal Activity', tipo: 'B', teatro: 'August Wilson Theatre', nota: 91, q: 'ok', info: 'Sem data pra acabar', url: SS + '/broadway-shows/paranormal-activity-broadway' },
+    { nome: 'Schmigadoon!', tipo: 'B', teatro: 'Nederlander Theatre', nota: 92, q: 'ok', info: 'Até abr/2027', url: SS + '/broadway-shows/schmigadoon-broadway' },
+    { nome: 'Small Mouth Sounds', tipo: 'B', teatro: 'Ethel Barrymore Theatre', q: 'depois', info: 'Começa 10/fev/2027', url: BO + 'small-mouth-sounds' },
+    { nome: 'The Amish Project', tipo: 'B', teatro: 'Broadhurst Theatre', q: 'ok', info: 'Em cartaz em fevereiro', url: BO + 'the-amish-project' },
+    { nome: 'The Book of Mormon', tipo: 'B', teatro: "Eugene O'Neill Theatre", nota: 91, q: 'ok', info: 'Sem data pra acabar', url: SS + '/broadway-shows/the-book-of-mormon' },
+    { nome: 'The Fantasticks', tipo: 'B', teatro: 'Hayes Theater', q: 'ok', info: 'Em cartaz em fevereiro', url: BO + 'the-fantasticks' },
+    { nome: 'The Great Gatsby', tipo: 'B', teatro: 'Broadway Theatre', nota: 90, q: 'ok', info: 'Sem data pra acabar', url: SS + '/broadway-shows/the-great-gatsby-broadway' },
+    { nome: 'The Lion King', tipo: 'B', teatro: 'Minskoff Theatre', nota: 92, q: 'ok', info: 'Sem data pra acabar', url: SS + '/broadway-shows/the-lion-king' },
+    { nome: 'The Lost Boys', tipo: 'B', teatro: 'Palace Theatre', nota: 92, q: 'ok', info: 'Sem data pra acabar', url: SS + '/broadway-shows/the-lost-boys-broadway' },
+    { nome: 'The Outsiders', tipo: 'B', teatro: 'Bernard B. Jacobs Theatre', nota: 93, q: 'ok', info: 'Sem data pra acabar', url: SS + '/broadway-shows/the-outsiders-broadway' },
+    { nome: 'The Rocky Horror Show', tipo: 'B', teatro: 'Studio 54', nota: 93, q: 'ok', info: 'Até mai/2027', url: SS + '/broadway-shows/the-rocky-horror-show-broadway' },
+    { nome: 'Three Days of Rain', tipo: 'B', teatro: 'Longacre Theatre', q: 'confira', info: 'Estreia 1º/mar/2027. Confira se já tem prévias na sua data.', url: BO + 'three-days-of-rain' },
+    { nome: 'Wanted', tipo: 'B', teatro: 'James Earl Jones Theatre', q: 'ok', info: 'Em cartaz em fevereiro', url: BO + 'wanted' },
+    { nome: 'Wicked', tipo: 'B', teatro: 'Gershwin Theatre', nota: 94, q: 'ok', info: 'Sem data pra acabar', url: SS + '/broadway-shows/wicked' },
+    { nome: 'Little Shop of Horrors', tipo: 'O', teatro: 'Westside Theatre', nota: 93, q: 'ok', info: 'Sem data pra acabar', url: SS + '/off-broadway-shows/little-shop-of-horrors-westside-theatre' },
+    { nome: 'The Play That Goes Wrong', tipo: 'O', teatro: 'New World Stages', nota: 87, q: 'ok', info: 'Sem data pra acabar', url: SS + '/off-broadway-shows/the-play-that-goes-wrong' },
+    { nome: 'Masquerade', tipo: 'O', teatro: 'Midtown', nota: 95, q: 'ok', info: 'Experiência imersiva, até mai/2027', url: SS + '/theatre-shows/masquerade' },
+    { nome: 'Drunk Shakespeare', tipo: 'O', teatro: 'Midtown', nota: 88, q: 'ok', info: 'Sem data pra acabar' },
+    { nome: 'Tosca (Metropolitan Opera)', tipo: 'O', teatro: 'Metropolitan Opera House', nota: 93, q: 'confira', info: 'Ópera. Temporada até mai/2027, as datas variam.', url: SS + '/off-broadway-shows/tosca' },
+    { nome: 'La Bohème (Metropolitan Opera)', tipo: 'O', teatro: 'Metropolitan Opera House', nota: 91, q: 'confira', info: 'Ópera. Temporada até abr/2027, as datas variam.', url: SS + '/off-broadway-shows/la-boheme' },
+    { nome: 'AMAZE (Jamie Allan)', tipo: 'O', teatro: 'New World Stages', nota: 93, q: 'confira', info: 'Termina em jan/2027. Confira a data final.', url: SS + '/off-broadway-shows/amaze-magic' },
+    { nome: 'Heated Rivalry: The Unauthorized Musical Parody', tipo: 'O', teatro: 'The Club', nota: 93, q: 'confira', info: 'Termina em jan/2027. Confira a data final.', url: SS + '/theatre-shows/heated-rivalry-the-unauthorized-musical-parody' },
+    { nome: 'Spring Awakening', tipo: 'O', teatro: 'Studio Seaview', q: 'confira', info: 'Estreia 17/dez/2026. Confira se segue em fevereiro.' },
+    { nome: 'A View from the Bridge', tipo: 'O', teatro: 'La MaMa', q: 'confira', info: 'Estreia 13/dez/2026. Confira se segue em fevereiro.' },
+    { nome: 'The Conversation', tipo: 'O', teatro: 'Astor Place Theatre', q: 'confira', info: 'Estreia 7/dez/2026. Confira se segue em fevereiro.' },
+    { nome: 'Othello', tipo: 'O', teatro: 'West End Theatre', q: 'confira', info: 'Datas a confirmar' },
+    { nome: 'In the Heights', tipo: 'O', teatro: 'New York City Center', q: 'confira', info: 'Datas a confirmar' },
+    { nome: "You're a Good Man, Charlie Brown", tipo: 'O', teatro: 'New York City Center', q: 'confira', info: 'Datas a confirmar' }
+  ].map(function (c) { c.id = c.nome.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''); return c; });
+
+  /* geo 'aprox': coordenada aproximada, o app refina pelo endereço quando tiver internet. */
+  var SEED_VERSAO = 1;
+  var SEED_LUGARES = [
+    { titulo: 'American Museum of Natural History', categoria: 'Museu', entrada: 'pago', local: '200 Central Park West, New York', lat: 40.7813, lng: -73.9740, geo: 'ok' },
+    { titulo: 'The Metropolitan Museum of Art', categoria: 'Museu', entrada: 'pago', local: '1000 5th Ave, New York', lat: 40.7794, lng: -73.9632, geo: 'ok' },
+    { titulo: 'Solomon R. Guggenheim Museum', categoria: 'Museu', entrada: 'pago', local: '1071 5th Ave, New York', lat: 40.7830, lng: -73.9590, geo: 'ok' },
+    { titulo: 'Governors Island', categoria: 'Passeio', entrada: 'pago', local: 'Balsa no Battery Maritime Building, 10 South St', lat: 40.6895, lng: -74.0168, geo: 'ok', nota: 'A balsa sai do Battery Maritime Building, do lado do terminal da Staten Island Ferry.' },
+    { titulo: 'Roosevelt Island Tramway', categoria: 'Passeio', entrada: 'pago', local: 'E 59th St & 2nd Ave, New York', lat: 40.7613, lng: -73.9644, geo: 'ok', nota: 'Bondinho até a Roosevelt Island. A estação de Manhattan fica na 59th St com a 2nd Ave.' },
+    { titulo: 'Bryant Park', categoria: 'Passeio', entrada: 'gratis', local: '6th Ave & W 42nd St, New York', lat: 40.7536, lng: -73.9832, geo: 'ok' },
+    { titulo: "Cleo's Yarn Shop + Cafe", categoria: 'Compras', entrada: 'gratis', local: '222 Varet St, Brooklyn, NY', lat: 40.7035, lng: -73.9345, geo: 'aprox', nota: 'Fica em Bushwick, no Brooklyn.' },
+    { titulo: 'Friends NYC', categoria: 'Compras', entrada: 'gratis', local: '56 Bogart St, Brooklyn, NY', lat: 40.7050, lng: -73.9336, geo: 'aprox', nota: 'Fica em Bushwick, no Brooklyn, dentro do prédio The BogArt.' },
+    { titulo: 'Playhouse', categoria: 'Bar', periodo: 'noite', local: '100A 7th Ave S, New York', lat: 40.7330, lng: -74.0029, geo: 'aprox', nota: 'Balada LGBTQ+ no West Village.' },
+    { titulo: '81 St–Museum of Natural History (metrô)', categoria: 'Passeio', local: 'Central Park West & W 81st St, New York', lat: 40.7816, lng: -73.9721, geo: 'ok', nota: 'Estação das linhas B e C, embaixo do museu, com mosaicos de fósseis e bichos nas paredes.' },
+    { titulo: 'Strand Bookstore', categoria: 'Compras', entrada: 'gratis', local: '828 Broadway, New York', lat: 40.7333, lng: -73.9907, geo: 'aprox' },
+    { titulo: 'The High Line', categoria: 'Passeio', entrada: 'gratis', local: 'Gansevoort St & Washington St, New York', lat: 40.7398, lng: -74.0080, geo: 'ok', nota: 'O pino marca o começo, na Gansevoort St. O parque vai até a 34th St.' },
+    { titulo: 'New York Public Library (Stephen A. Schwarzman)', categoria: 'Museu', entrada: 'gratis', local: '476 5th Ave, New York', lat: 40.7532, lng: -73.9822, geo: 'ok' },
+    { titulo: 'Pebble Beach', categoria: 'Passeio', entrada: 'gratis', local: 'Brooklyn Bridge Park, DUMBO, Brooklyn', lat: 40.7039, lng: -73.9900, geo: 'ok', nota: 'Prainha no Brooklyn Bridge Park, entre a Brooklyn Bridge e a Manhattan Bridge.' },
+    { titulo: 'Brooklyn Bridge', categoria: 'Passeio', entrada: 'gratis', local: 'Brooklyn Bridge, New York', lat: 40.7061, lng: -73.9969, geo: 'ok' },
+    { titulo: 'Staten Island Ferry', categoria: 'Passeio', entrada: 'gratis', local: 'Whitehall Terminal, 4 Whitehall St, New York', lat: 40.7014, lng: -74.0131, geo: 'ok', nota: 'Barco grátis que passa perto da Estátua da Liberdade.' },
+    { titulo: '54 Below', categoria: 'Teatro', entrada: 'pago', periodo: 'noite', local: '254 W 54th St, New York', lat: 40.7644, lng: -73.9837, geo: 'aprox' },
+    { titulo: "Marie's Crisis Café", categoria: 'Bar', entrada: 'gratis', periodo: 'noite', local: '59 Grove St, New York', lat: 40.7333, lng: -74.0034, geo: 'aprox', nota: 'Piano bar onde todo mundo canta música de musical. Sem couvert, você paga só o que beber.' },
+    { titulo: "NYC AIDS Memorial Park at St. Vincent's Triangle", categoria: 'Passeio', entrada: 'gratis', local: '76 Greenwich Ave, New York', lat: 40.7372, lng: -74.0012, geo: 'aprox' },
+    { titulo: 'Stonewall National Monument Visitor Center', categoria: 'Museu', entrada: 'gratis', local: '51 Christopher St, New York', lat: 40.7337, lng: -74.0021, geo: 'aprox' },
+    { titulo: 'Theatre Circle', categoria: 'Compras', entrada: 'gratis', local: '268 W 44th St, New York', lat: 40.7584, lng: -73.9879, geo: 'aprox' },
+    { titulo: 'Midtown Comics Times Square', categoria: 'Compras', entrada: 'gratis', local: '200 W 40th St, New York', lat: 40.7547, lng: -73.9878, geo: 'aprox' },
+    { titulo: "Turkey's Nest", categoria: 'Bar', entrada: 'gratis', local: '94 Bedford Ave, Brooklyn, NY', lat: 40.7213, lng: -73.9555, geo: 'aprox', nota: 'Fica em Williamsburg, no Brooklyn.' },
+    { titulo: "The Parish of Calvary St. George's", categoria: 'Passeio', entrada: 'gratis', local: '61 Gramercy Park N, New York', lat: 40.7380, lng: -73.9868, geo: 'aprox' },
+    { titulo: 'The Drama Book Shop', categoria: 'Compras', entrada: 'gratis', local: '266 W 39th St, New York', lat: 40.7548, lng: -73.9903, geo: 'aprox' },
+    { titulo: 'Museum of Broadway', categoria: 'Museu', entrada: 'pago', local: '145 W 45th St, New York', lat: 40.7573, lng: -73.9846, geo: 'aprox' },
+    { titulo: 'Academy Records & CDs', categoria: 'Compras', entrada: 'gratis', local: '12 W 18th St, New York', lat: 40.7386, lng: -73.9929, geo: 'aprox' },
+    { titulo: 'Barnes & Noble', categoria: 'Compras', entrada: 'gratis', local: '33 E 17th St, New York', lat: 40.7370, lng: -73.9896, geo: 'aprox', nota: 'Coloquei a loja da Union Square. Se for outra, é só trocar o endereço.' },
+    { titulo: 'Carnegie Hall', categoria: 'Teatro', entrada: 'pago', periodo: 'noite', local: '881 7th Ave, New York', lat: 40.7651, lng: -73.9799, geo: 'ok', dia: '2027-02-08', ordem: 1, nota: 'Falsettos 10 anos, segunda 8/fev às 19h.' }
+  ];
+  var TIPOS = [
+    { id: 'show', label: 'Show' }, { id: 'programa', label: 'Programa' }, { id: 'gasto', label: 'Gasto' },
+    { id: 'lugar', label: 'Lugar' }, { id: 'lembrete', label: 'Lembrete' }
+  ];
+  var STATUS = { comprado: 'Comprado', loteria: 'Loteria / Rush', quero: 'Quero ver' };
+  var KIND = {
+    show: { cls: 'tag-show', label: 'Show' }, programa: { cls: 'tag-plan', label: 'Programa' },
+    lembrete: { cls: 'tag-note', label: 'Lembrete' }, lugar: { cls: 'tag-place', label: 'Lugar' }
+  };
+  var VIEWS = ['hoje', 'roteiro', 'shows', 'gastos', 'lugares'];
+  var WD = ['domingo', 'segunda', 'terça', 'quarta', 'quinta', 'sexta', 'sábado'];
+  var WDS = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sáb'];
+  var MES = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'];
+  var MESS = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
+
+  var I = {
+    plus: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>',
+    gear: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2.2"/><circle cx="9" cy="17" r="2.2"/></svg>',
+    show: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16v4a2 2 0 0 0 0 4v4H4v-4a2 2 0 0 0 0-4z"/><path d="M14 6v12" stroke-dasharray="2 2"/></svg>',
+    programa: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>',
+    gasto: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M16 14h2"/></svg>',
+    lugar: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>',
+    lembrete: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M6 16v-5a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg>',
+    check: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+    box: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="5"/></svg>',
+    boxOn: '<svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="5" fill="currentColor"/><path d="M8 12.5l3 3 5-6" fill="none" stroke="var(--bg)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    map: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2z"/><path d="M9 4v14M15 6v14"/></svg>',
+    x: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>',
+    filter: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16l-6 7.5V18l-4 2v-7.5z"/></svg>',
+    cal: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>',
+    back: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>',
+    grip: '<svg width="14" height="20" viewBox="0 0 14 20" fill="currentColor" aria-hidden="true"><circle cx="4" cy="4" r="1.6"/><circle cx="10" cy="4" r="1.6"/><circle cx="4" cy="10" r="1.6"/><circle cx="10" cy="10" r="1.6"/><circle cx="4" cy="16" r="1.6"/><circle cx="10" cy="16" r="1.6"/></svg>',
+    checkSm: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+    ext: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>'
+  };
+
+  /* ---------- estado ---------- */
+  var S = {
+    view: 'hoje', showFilter: 'todos', placeFilter: 'todos', day: null, cur: 'USD', showDone: false,
+    items: [], sim: [], gastosTab: 'lancados', simCur: 'USD',
+    lugaresView: 'mapa', mapModo: 'todos', mapDay: null, mapSel: null,
+    mapFilter: { cat: {}, preco: {}, per: {}, rot: {} }, diasOk: {},
+    showsTab: 'meus', buscaShow: '', buscaTipo: 'todos',
+    config: clone(DEFAULT_CONFIG), configSaved: false, configLoaded: false, loaded: false,
+    dbState: 'connecting'
+  };
+  var sheet = null;
+  var dbRef = null;
+  var dbReady;
+
+  try { var c0 = localStorage.getItem('viagem.cur'); if (c0 === 'BRL' || c0 === 'USD') S.cur = c0; } catch (e) {}
+  try { var t0 = localStorage.getItem('viagem.gastosTab'); if (t0 === 'simular' || t0 === 'lancados') S.gastosTab = t0; } catch (e) {}
+  try { var s0 = localStorage.getItem('viagem.simCur'); if (s0 === 'BRL' || s0 === 'USD') S.simCur = s0; } catch (e) {}
+  try { var t0 = localStorage.getItem('viagem.showsTab'); if (t0 === 'meus' || t0 === 'buscar' || t0 === 'interesse') S.showsTab = t0; } catch (e) {}
+  try { var l0 = localStorage.getItem('viagem.lugaresView'); if (l0 === 'lista' || l0 === 'mapa') S.lugaresView = l0; } catch (e) {}
+  try {
+    var f0 = JSON.parse(localStorage.getItem('viagem.mapFilter') || 'null');
+    if (f0 && typeof f0 === 'object') ['cat', 'preco', 'per', 'rot'].forEach(function (g) { if (f0[g] && typeof f0[g] === 'object') S.mapFilter[g] = f0[g]; });
+  } catch (e) {}
+  function remember(key, val) { try { localStorage.setItem(key, val); } catch (e) {} }
+
+  /* ---------- utilidades ---------- */
+  function clone(o) { return JSON.parse(JSON.stringify(o)); }
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (ch) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch];
+    });
+  }
+  function pad(n) { return (n < 10 ? '0' : '') + n; }
+  function todayStr() { var t = new Date(); return t.getFullYear() + '-' + pad(t.getMonth() + 1) + '-' + pad(t.getDate()); }
+  function isDate(s) { return typeof s === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(s); }
+  function parts(s) { var a = s.split('-').map(Number); return { y: a[0], m: a[1], d: a[2] }; }
+  function utc(s) { var p = parts(s); return Date.UTC(p.y, p.m - 1, p.d); }
+  function wday(s) { return new Date(utc(s)).getUTCDay(); }
+  function addDays(s, n) { return new Date(utc(s) + n * 864e5).toISOString().slice(0, 10); }
+  function diffDays(a, b) { return Math.round((utc(b) - utc(a)) / 864e5); }
+  function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+  function shortDate(s) { var p = parts(s); return WDS[wday(s)] + ' ' + p.d + '/' + MESS[p.m - 1]; }
+  function longDate(s) { var p = parts(s); return cap(WD[wday(s)]) + ', ' + p.d + ' de ' + MES[p.m - 1]; }
+  function rangeLabel(a, b) {
+    var pa = parts(a), pb = parts(b);
+    if (pa.y === pb.y) return pa.d + ' ' + MESS[pa.m - 1] + ' – ' + pb.d + ' ' + MESS[pb.m - 1] + ' ' + pb.y;
+    return pa.d + ' ' + MESS[pa.m - 1] + ' ' + pa.y + ' – ' + pb.d + ' ' + MESS[pb.m - 1] + ' ' + pb.y;
+  }
+  function fmtHora(h) { return h ? h.replace(':', 'h') : ''; }
+  function whenLabel(i) {
+    if (!isDate(i.dia)) return 'Sem data';
+    return shortDate(i.dia) + (i.hora ? ' · ' + fmtHora(i.hora) : '');
+  }
+  function sortKey(i) { return (isDate(i.dia) ? i.dia : '9999-99-99') + ' ' + (i.hora || '99:99') + ' ' + ('000' + (Number(i.ordem) > 0 ? Number(i.ordem) : 999)).slice(-3); }
+  function byWhen(a, b) {
+    var ka = sortKey(a), kb = sortKey(b);
+    if (ka !== kb) return ka < kb ? -1 : 1;
+    return String(a.titulo || '').localeCompare(String(b.titulo || ''), 'pt-BR');
+  }
+  function tripDays(c) {
+    if (!isDate(c.inicio) || !isDate(c.fim) || c.fim < c.inicio) return [];
+    var out = [], d = c.inicio, guard = 0;
+    while (d <= c.fim && guard < 120) { out.push(d); d = addDays(d, 1); guard++; }
+    return out;
+  }
+  function trechos() {
+    return (S.config.trechos || []).filter(function (t) { return t && t.cidade && isDate(t.desde); })
+      .slice().sort(function (a, b) { return a.desde < b.desde ? -1 : a.desde > b.desde ? 1 : 0; });
+  }
+  function cityOf(day) {
+    var tr = trechos(), idx = -1;
+    tr.forEach(function (t, i) { if (t.desde <= day) idx = i; });
+    return idx < 0 ? null : { cidade: tr[idx].cidade, i: idx % 4 };
+  }
+  /* ---------- cotação do dólar ---------- */
+  var CAMBIO_KEY = 'viagem.cambio';
+  function lerCambio() {
+    try { var c = JSON.parse(localStorage.getItem(CAMBIO_KEY) || 'null'); return c && c.comercial > 0 ? c : null; }
+    catch (e) { return null; }
+  }
+  S.cambio = lerCambio();
+  function num(v) { var n = Number(v); return isFinite(n) ? n : 0; }
+  function iofPct() { var v = Number(S.config.iof); return isFinite(v) && v >= 0 ? v : DEFAULT_CONFIG.iof; }
+  function manualRate() { var r = Number(S.config.cotacao); return r > 0 ? r : DEFAULT_CONFIG.cotacao; }
+  function rate() {
+    if (S.config.cotacaoAuto !== false && S.cambio && S.cambio.comercial > 0) {
+      return Math.round(S.cambio.comercial * (1 + iofPct() / 100) * 10000) / 10000;
+    }
+    return manualRate();
+  }
+  // Cada gasto guarda a cotação do dia em que foi lançado; os antigos sem ela usam a de hoje.
+  function itemRate(i) { var r = Number(i.cotacao); return r > 0 ? r : rate(); }
+  function amountIn(i, cur) {
+    var v = num(i.valor), from = i.moeda === 'BRL' ? 'BRL' : 'USD';
+    if (from === cur) return v;
+    return cur === 'BRL' ? v * itemRate(i) : v / itemRate(i);
+  }
+  function toUSD(i) { return amountIn(i, 'USD'); }
+  function inCur(usd) { return S.cur === 'BRL' ? usd * rate() : usd; }
+  function fmtNum(v, d) { return num(v).toLocaleString('pt-BR', { minimumFractionDigits: d, maximumFractionDigits: d }); }
+  function quando(ms) {
+    var dt = new Date(ms), t = new Date();
+    var hora = pad(dt.getHours()) + 'h' + pad(dt.getMinutes());
+    if (dt.toDateString() === t.toDateString()) return 'hoje às ' + hora;
+    return dt.getDate() + '/' + MESS[dt.getMonth()] + ' às ' + hora;
+  }
+  function cambioInfo() {
+    var auto = S.config.cotacaoAuto !== false;
+    if (auto && S.cambio) {
+      return 'Dólar comercial R$ ' + fmtNum(S.cambio.comercial, 2) + ' + IOF ' + fmtNum(iofPct(), 1) + '% = R$ ' + fmtNum(rate(), 2) + ', atualizado ' + quando(S.cambio.buscadoEm);
+    }
+    if (auto) return 'Ainda não consegui buscar o dólar. Até conectar, uso R$ ' + fmtNum(rate(), 2) + '.';
+    return 'Cotação fixa: R$ ' + fmtNum(rate(), 2) + ' por dólar.';
+  }
+  var buscandoCambio = null;
+  function fetchJson(url) {
+    var ctrl = typeof AbortController === 'function' ? new AbortController() : null;
+    var timer = setTimeout(function () { if (ctrl) ctrl.abort(); }, 8000);
+    return fetch(url, { cache: 'no-store', signal: ctrl ? ctrl.signal : undefined }).then(function (r) {
+      clearTimeout(timer);
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    });
+  }
+  function valido(v) { return v > 1 && v < 20; }
+  function atualizarCambio(force) {
+    if (buscandoCambio) return buscandoCambio;
+    if (!force && S.cambio && Date.now() - S.cambio.buscadoEm < 30 * 60 * 1000) return Promise.resolve(false);
+    if (navigator.onLine === false) return Promise.resolve(false);
+    buscandoCambio = fetchJson('https://economia.awesomeapi.com.br/json/last/USD-BRL')
+      .then(function (j) {
+        var v = parseFloat(j && j.USDBRL && j.USDBRL.bid);
+        if (!valido(v)) throw new Error('sem valor');
+        return { comercial: v, fonte: 'AwesomeAPI' };
+      })
+      .catch(function () {
+        return fetchJson('https://api.frankfurter.dev/v2/rate/usd/brl').then(function (j) {
+          var v = Number(j && j.rate);
+          if (!valido(v)) throw new Error('sem valor');
+          return { comercial: v, fonte: 'Frankfurter' };
+        });
+      })
+      .then(function (c) {
+        c.comercial = Math.round(c.comercial * 10000) / 10000;
+        c.buscadoEm = Date.now();
+        S.cambio = c;
+        try { localStorage.setItem(CAMBIO_KEY, JSON.stringify(c)); } catch (e) {}
+        render();
+        return true;
+      })
+      .catch(function () { return false; })
+      .then(function (ok) { buscandoCambio = null; return ok; });
+    return buscandoCambio;
+  }
+  function refreshRate() {
+    toast('Buscando o dólar…');
+    atualizarCambio(true).then(function (ok) {
+      toast(ok ? 'Cotação atualizada' : 'Não consegui buscar agora. Confira a internet.');
+      if (sheet && sheet.kind === 'settings') { sheet.draft = readSettingsForm(); renderSheet(false); }
+    });
+  }
+  function money(v, cur, dec) {
+    var d = dec == null ? 0 : dec;
+    var s = num(v).toLocaleString('pt-BR', { minimumFractionDigits: d, maximumFractionDigits: d });
+    return (cur === 'BRL' ? 'R$ ' : 'US$ ') + s;
+  }
+  function parseMoney(s) {
+    if (typeof s === 'number') return s;
+    s = String(s || '').trim().replace(/[^\d.,]/g, '');
+    if (!s) return null;
+    if (s.indexOf(',') >= 0) s = s.replace(/\./g, '').replace(',', '.');
+    var n = parseFloat(s);
+    return isFinite(n) ? Math.round(n * 100) / 100 : null;
+  }
+  function moneyInput(v) { return typeof v === 'number' ? String(v).replace('.', ',') : (v || ''); }
+  function pct(a, b) { return b > 0 ? Math.min(100, Math.round(a / b * 100)) : 0; }
+  function of(tipo) { return S.items.filter(function (i) { return i.tipo === tipo; }); }
+
+
+  /* ---------- armazenamento no aparelho ---------- */
+  var STORE_KEY = 'viagem.dados.v1';
+  function newId() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 8); }
+  function makeLocalDb() {
+    var store;
+    try {
+      store = JSON.parse(localStorage.getItem(STORE_KEY) || '{}') || {};
+      localStorage.setItem(STORE_KEY + '.teste', '1');
+      localStorage.removeItem(STORE_KEY + '.teste');
+    } catch (e) { return null; }
+    var listeners = [];
+    function emit() { listeners.slice().forEach(function (l) { l(); }); }
+    function snapDoc(path) {
+      var d = store[path];
+      return { id: path.split('/').pop(), exists: !!d, data: function () { return d ? clone(d) : undefined; }, metadata: { fromCache: false, hasPendingWrites: false } };
+    }
+    function write(fn) {
+      return new Promise(function (resolve, reject) {
+        var before = JSON.stringify(store);
+        try { fn(); localStorage.setItem(STORE_KEY, JSON.stringify(store)); }
+        catch (e) { store = JSON.parse(before); reject({ code: (e && e.code === 'invalid_argument') ? 'invalid_argument' : 'quota_exceeded', message: String(e && e.message || e) }); return; }
+        emit(); resolve();
+      });
+    }
+    function listen(fn) { listeners.push(fn); setTimeout(fn, 0); return function () { listeners = listeners.filter(function (x) { return x !== fn; }); }; }
+    function docRef(path) {
+      return {
+        id: path.split('/').pop(), path: path,
+        get: function () { return Promise.resolve(snapDoc(path)); },
+        set: function (data) { return write(function () { store[path] = clone(data); }); },
+        update: function (data) { return write(function () { if (!store[path]) throw { code: 'invalid_argument' }; Object.assign(store[path], clone(data)); }); },
+        delete: function () { return write(function () { delete store[path]; }); },
+        onSnapshot: function (next) { return listen(function () { next(snapDoc(path)); }); }
+      };
+    }
+    function colRef(name) {
+      return {
+        path: name,
+        doc: function (id) { return docRef(name + '/' + (id || newId())); },
+        onSnapshot: function (next) {
+          return listen(function () {
+            var docs = Object.keys(store).filter(function (k) { return k.indexOf(name + '/') === 0 && k.split('/').length === 2; }).sort().map(snapDoc);
+            next({ docs: docs, size: docs.length, empty: !docs.length });
+          });
+        }
+      };
+    }
+    window.addEventListener('storage', function (e) {
+      if (e.key !== STORE_KEY) return;
+      try { store = JSON.parse(e.newValue || '{}') || {}; } catch (x) {}
+      emit();
+    });
+    return {
+      doc: docRef, collection: colRef,
+      exportAll: function () { return clone(store); },
+      importAll: function (obj) { return write(function () { store = clone(obj); }); }
+    };
+  }
+
+  /* ---------- pedaços de interface ---------- */
+  function header(eyebrow, title, sub, actions) {
+    return '<header class="top"><div class="top-text">' +
+      (eyebrow ? '<p class="eyebrow">' + esc(eyebrow) + '</p>' : '') +
+      '<h1>' + esc(title) + '</h1>' +
+      (sub ? '<p class="sub">' + esc(sub) + '</p>' : '') +
+      '</div><div class="actions">' + (actions || '') + '</div></header>';
+  }
+  function addBtn(tipo, dia, label) {
+    return '<button type="button" class="icon-btn primary" data-action="new" data-tipo="' + tipo + '"' +
+      (dia ? ' data-dia="' + esc(dia) + '"' : '') + ' aria-label="' + esc(label) + '">' + I.plus + '</button>';
+  }
+  function empty(title, text, btnLabel, attrs) {
+    return '<div class="empty"><p class="e-title">' + esc(title) + '</p>' +
+      (text ? '<p class="e-text">' + esc(text) + '</p>' : '') +
+      (btnLabel ? '<button type="button" class="btn" ' + attrs + '>' + esc(btnLabel) + '</button>' : '') + '</div>';
+  }
+  function statusBlock() {
+    if (S.dbState === 'off') {
+      return '<div class="notice" role="note"><span>Este navegador não está deixando o app salvar dados. Abra no Chrome, fora da aba anônima.</span></div>';
+    }
+    if (S.dbState === 'error') {
+      return '<div class="notice" role="note"><span>Algo deu errado ao ler seus dados. Recarregue a página.</span></div>';
+    }
+    return '';
+  }
+  function isLoading() { return S.dbState === 'connecting' || (S.dbState === 'ready' && !S.loaded); }
+  function loadingLine() { return '<p class="loading">Carregando sua viagem…</p>'; }
+
+  function timelineItem(i) {
+    var k = KIND[i.tipo] || KIND.programa;
+    return '<li class="tl"><span class="time">' + (i.hora ? esc(fmtHora(i.hora)) : '<span class="muted">–</span>') + '</span>' +
+      '<button type="button" class="row-card" data-action="edit" data-id="' + esc(i.id) + '">' +
+      '<span class="tag ' + k.cls + '">' + k.label + (i.tipo === 'show' && STATUS[i.status] ? ' · ' + STATUS[i.status] : '') + '</span>' +
+      '<span class="t">' + esc(i.titulo) + '</span>' +
+      (i.local ? '<span class="m">' + esc(i.local) + '</span>' : '') +
+      '</button></li>';
+  }
+
+  /* ---------- Hoje ---------- */
+  function viewHoje() {
+    var c = S.config, t = todayStr(), days = tripDays(c);
+    var eyebrow, title, sub;
+    if (days.length) {
+      var range = rangeLabel(c.inicio, c.fim);
+      if (t < c.inicio) {
+        var n = diffDays(t, c.inicio);
+        eyebrow = n === 1 ? 'Falta 1 dia' : 'Faltam ' + n + ' dias';
+        title = c.nome || 'Minha viagem'; sub = range;
+      } else if (t <= c.fim) {
+        var city = cityOf(t);
+        eyebrow = 'Dia ' + (days.indexOf(t) + 1) + ' de ' + days.length + (city ? ' · ' + city.cidade : '');
+        title = longDate(t); sub = c.nome || '';
+      } else {
+        eyebrow = 'Viagem concluída'; title = c.nome || 'Minha viagem'; sub = range;
+      }
+    } else {
+      eyebrow = 'Viagem'; title = c.nome || 'Minha viagem'; sub = 'Defina as datas nos ajustes';
+    }
+    var h = header(eyebrow, title, sub,
+      '<button type="button" class="icon-btn" data-action="settings" aria-label="Ajustes da viagem">' + I.gear + '</button>' +
+      addBtn('show', '', 'Adicionar item'));
+    h += statusBlock();
+    if (isLoading()) return h + loadingLine();
+
+    if (S.configLoaded && !S.configSaved && S.dbState === 'ready') {
+      h += '<div class="notice"><span>As datas estão como ' + esc(rangeLabel(c.inicio, c.fim)) + ', Nova York e depois Orlando. Confira se está certo.</span>' +
+        '<button type="button" class="btn" data-action="settings">Ajustar</button></div>';
+    }
+
+    // Próximo show
+    var nextShows = of('show').filter(function (i) { return isDate(i.dia) && i.dia >= t; }).sort(byWhen);
+    var nx = nextShows[0];
+    if (nx) {
+      h += '<section class="hero" aria-label="Próximo show">' +
+        '<span class="pill">' + (nx.dia === t ? 'Hoje' : 'Próximo show') + '</span>' +
+        '<h2 class="hero-title">' + esc(nx.titulo) + '</h2>' +
+        (nx.local ? '<p class="hero-sub">' + esc(nx.local) + '</p>' : '') +
+        '<div class="hero-grid">' +
+        '<div class="kv"><span class="k">Quando</span><span class="v">' + esc(whenLabel(nx)) + '</span></div>' +
+        '<div class="kv"><span class="k">Assento</span><span class="v">' + esc(nx.assento || '—') + '</span></div>' +
+        '<div class="kv"><span class="k">Situação</span><span class="v">' + esc(STATUS[nx.status] || '—') + '</span></div>' +
+        '</div>' +
+        '<button type="button" class="btn light" data-action="edit" data-id="' + esc(nx.id) + '">Ver detalhes</button>' +
+        '</section>';
+    } else {
+      h += '<section aria-label="Próximo show">' + empty('Nenhum show com data ainda',
+        'Quando você adicionar um show com dia marcado, ele aparece aqui em destaque.',
+        'Adicionar show', 'data-action="new" data-tipo="show"') + '</section>';
+    }
+
+    // Próximos na agenda
+    var from = (days.length && t < c.inicio) ? c.inicio : t;
+    var up = S.items.filter(function (i) {
+      return (i.tipo === 'show' || i.tipo === 'programa' || i.tipo === 'lugar' || (i.tipo === 'lembrete' && !i.feito)) &&
+        isDate(i.dia) && i.dia >= from;
+    }).sort(byWhen).slice(0, 8);
+    h += '<section aria-labelledby="sec-prox"><div class="sec-head"><h2 class="sec" id="sec-prox">Próximos na agenda</h2>' +
+      '<a class="link-btn" href="#roteiro">Ver roteiro</a></div>';
+    if (up.length) {
+      var lastDay = '', rows = '';
+      up.forEach(function (i) {
+        if (i.dia !== lastDay) { rows += '<li class="day-sep">' + esc(longDate(i.dia)) + '</li>'; lastDay = i.dia; }
+        rows += timelineItem(i);
+      });
+      h += '<ul class="list">' + rows + '</ul>';
+    } else {
+      h += empty('Nada marcado ainda', 'Monte o roteiro dia a dia com shows, passeios e lembretes.', 'Abrir roteiro', 'data-action="goto" data-view="roteiro"');
+    }
+    h += '</section>';
+
+    // Lembretes
+    var lem = of('lembrete');
+    var pend = lem.filter(function (i) { return !i.feito; }).sort(byWhen);
+    var done = lem.filter(function (i) { return i.feito; }).sort(byWhen);
+    h += '<section aria-labelledby="sec-lem"><div class="sec-head"><h2 class="sec" id="sec-lem">Lembretes</h2>' +
+      '<button type="button" class="link-btn" data-action="new" data-tipo="lembrete">Adicionar</button></div>';
+    if (!lem.length) {
+      h += '<p class="sub">Coisas para não esquecer: documentos, horário de loteria, o que levar.</p>';
+    } else {
+      var list = pend.concat(S.showDone ? done : []);
+      if (list.length) h += '<ul class="list">' + list.map(reminderRow).join('') + '</ul>';
+      else h += '<p class="sub">Tudo feito por aqui.</p>';
+      if (done.length) {
+        h += '<button type="button" class="link-btn" data-action="toggle-done" style="align-self:flex-start">' +
+          (S.showDone ? 'Esconder feitos' : 'Ver feitos (' + done.length + ')') + '</button>';
+      }
+    }
+    h += '</section>';
+    return h;
+  }
+  function reminderRow(i) {
+    return '<li class="rem' + (i.feito ? ' done' : '') + '">' +
+      '<button type="button" class="check-btn" data-action="toggle-feito" data-id="' + esc(i.id) + '" aria-pressed="' + (i.feito ? 'true' : 'false') + '" aria-label="' + (i.feito ? 'Desmarcar: ' : 'Marcar como feito: ') + esc(i.titulo) + '">' + (i.feito ? I.boxOn : I.box) + '</button>' +
+      '<button type="button" class="body" data-action="edit" data-id="' + esc(i.id) + '"><span class="t">' + esc(i.titulo) + '</span>' +
+      (isDate(i.dia) ? '<span class="m">' + esc(whenLabel(i)) + '</span>' : '') + '</button></li>';
+  }
+
+  /* ---------- Roteiro ---------- */
+  function viewRoteiro() {
+    var c = S.config, days = tripDays(c), t = todayStr();
+    var sel = (S.day && days.indexOf(S.day) >= 0) ? S.day : (days.indexOf(t) >= 0 ? t : days[0]);
+    var h = header('', 'Roteiro', days.length ? rangeLabel(c.inicio, c.fim) + ' · ' + days.length + ' dias' : '',
+      addBtn('programa', sel || '', 'Adicionar ao roteiro'));
+    h += statusBlock();
+    if (isLoading()) return h + loadingLine();
+    if (!days.length) {
+      return h + empty('Defina as datas da viagem', 'Com o início e o fim marcados, o calendário aparece aqui.', 'Abrir ajustes', 'data-action="settings"');
+    }
+    var counts = {};
+    S.items.forEach(function (i) { if (i.tipo !== 'gasto' && isDate(i.dia)) counts[i.dia] = (counts[i.dia] || 0) + 1; });
+    var cells = '';
+    var lead = wday(days[0]);
+    for (var k = 0; k < lead; k++) cells += '<span aria-hidden="true"></span>';
+    days.forEach(function (d) {
+      var city = cityOf(d), n = counts[d] || 0, on = d === sel;
+      var label = longDate(d) + (city ? ', ' + city.cidade : '') + (n ? ', ' + n + (n === 1 ? ' item' : ' itens') : ', sem itens');
+      cells += '<button type="button" class="cal-day' + (d === t ? ' today' : '') + '" data-action="day" data-dia="' + d + '" aria-pressed="' + on + '" aria-label="' + esc(label) + '">' +
+        (city ? '<span class="city" style="background:var(--c' + city.i + ')"></span>' : '') +
+        '<span>' + parts(d).d + '</span><span class="bar' + (n ? '' : ' none') + '"></span></button>';
+    });
+    var legend = trechos().map(function (tr, i) {
+      return '<span><i style="background:var(--c' + (i % 4) + ')"></i>' + esc(tr.cidade) + '</span>';
+    }).join('');
+    h += '<section class="cal" aria-label="Calendário da viagem"><div class="cal-grid">' +
+      ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'].map(function (x) { return '<span class="cal-wd" aria-hidden="true">' + x + '</span>'; }).join('') +
+      '</div><div class="cal-grid">' + cells + '</div>' +
+      (legend ? '<div class="legend">' + legend + '<span><i style="background:currentColor;border-radius:2px;height:3px;width:12px"></i>tem item</span></div>' : '') +
+      '</section>';
+
+    var city = cityOf(sel);
+    var dayItems = S.items.filter(function (i) { return i.tipo !== 'gasto' && i.dia === sel; }).sort(byWhen);
+    h += '<section aria-labelledby="sec-dia"><div class="sec-head"><h2 class="sec" id="sec-dia">' + esc(longDate(sel)) + '</h2>' +
+      (city ? '<span class="m" style="font-weight:700;color:var(--c' + city.i + ')">' + esc(city.cidade) + '</span>' : '') + '</div>';
+    if (dayItems.length) {
+      h += '<ul class="list">' + dayItems.map(timelineItem).join('') + '</ul>' +
+        '<button type="button" class="link-btn" style="align-self:flex-start" data-action="new" data-tipo="programa" data-dia="' + sel + '">Adicionar a este dia</button>';
+    } else {
+      h += empty('Dia livre por enquanto', 'Adicione um show, passeio, refeição ou lembrete.', 'Adicionar ao dia', 'data-action="new" data-tipo="programa" data-dia="' + sel + '"');
+    }
+    h += '</section>';
+
+    var semDia = of('programa').filter(function (i) { return !isDate(i.dia); }).sort(byWhen);
+    if (semDia.length) {
+      h += '<section aria-labelledby="sec-semdia"><h2 class="sec" id="sec-semdia">Ideias sem dia definido</h2><ul class="list">' + semDia.map(timelineItem).join('') + '</ul></section>';
+    }
+    var fora = S.items.filter(function (i) { return i.tipo !== 'gasto' && isDate(i.dia) && (i.dia < c.inicio || i.dia > c.fim); }).sort(byWhen);
+    if (fora.length) {
+      h += '<section aria-labelledby="sec-fora"><h2 class="sec" id="sec-fora">Fora das datas da viagem</h2><ul class="list">' +
+        fora.map(function (i) { return '<li class="day-sep">' + esc(longDate(i.dia)) + '</li>' + timelineItem(i); }).join('') + '</ul></section>';
+    }
+    return h;
+  }
+
+  /* ---------- Shows ---------- */
+  /* ---------- buscar shows e lista de interesse ---------- */
+  function rankOf(s) { var n = Number(s.rank); return n > 0 ? n : 9999; }
+  function interesses() {
+    return of('show').filter(function (s) { return s.status !== 'comprado'; }).sort(function (a, b) {
+      return (rankOf(a) - rankOf(b)) || ((a.criadoEm || 0) - (b.criadoEm || 0));
+    });
+  }
+  function proximoRank() {
+    return interesses().reduce(function (m, s) { return Math.max(m, Number(s.rank) > 0 ? Number(s.rank) : 0); }, 0) + 1;
+  }
+  function catDoShow(s) {
+    if (s.catalogo) { var c = CATALOGO_SHOWS.find(function (x) { return x.id === s.catalogo; }); if (c) return c; }
+    var n = normTitulo(s.titulo);
+    return CATALOGO_SHOWS.find(function (x) { return normTitulo(x.nome) === n; }) || null;
+  }
+  function showDoCatalogo(c) {
+    var n = normTitulo(c.nome);
+    return of('show').find(function (s) { return s.catalogo === c.id || normTitulo(s.titulo) === n; }) || null;
+  }
+  var Q_ORDEM = { ok: 0, confira: 1, depois: 2 };
+  function buscaLista() {
+    var termos = normTitulo(S.buscaShow).split(' ').filter(Boolean);
+    return CATALOGO_SHOWS.filter(function (c) {
+      if (S.buscaTipo === 'B' && c.tipo !== 'B') return false;
+      if (S.buscaTipo === 'O' && c.tipo !== 'O') return false;
+      var alvo = normTitulo(c.nome + ' ' + (c.teatro || ''));
+      return termos.every(function (t) { return alvo.indexOf(t) >= 0; });
+    }).sort(function (a, b) {
+      return (Q_ORDEM[a.q] - Q_ORDEM[b.q]) || ((b.nota || 0) - (a.nota || 0)) || a.nome.localeCompare(b.nome, 'pt-BR');
+    });
+  }
+  function quandoTxt(c) {
+    var pre = c.q === 'ok' ? 'Em cartaz na sua viagem' : c.q === 'depois' ? 'Começa depois da viagem' : 'Confira as datas';
+    return '<span class="quando ' + c.q + '">' + pre + '</span><span class="m">' + esc(c.info || '') + '</span>';
+  }
+  function detalhesUrl(c) {
+    return c.url || ('https://www.google.com/search?q=' + encodeURIComponent(c.nome + (c.tipo === 'B' ? ' Broadway' : ' Off-Broadway') + ' NYC'));
+  }
+  function buscaResultados() {
+    var lista = buscaLista();
+    var h = '<p class="hint" role="status">' + (lista.length ? lista.length + (lista.length === 1 ? ' espetáculo' : ' espetáculos') : 'Nada encontrado') + '</p>';
+    if (!lista.length) {
+      var q = String(S.buscaShow || '').trim();
+      return h + '<div class="empty"><p class="e-title">Não achei esse na lista</p><p class="e-text">Pode ser uma peça nova ou pequena. Dá pra pôr na sua lista de interesse mesmo assim.</p>' +
+        (q ? '<button type="button" class="btn" data-action="interesse-novo">Pôr "' + esc(q) + '" na lista</button>' : '') + '</div>';
+    }
+    return h + '<ul class="sh-list">' + lista.map(function (c) {
+      var ja = showDoCatalogo(c);
+      return '<li class="sh-card"><div class="sh-top"><span class="tag ' + (c.tipo === 'B' ? 'tag-show' : 'tag-off') + '">' + (c.tipo === 'B' ? 'Broadway' : 'Off-Broadway') + '</span>' +
+        (c.nota ? '<span class="score" title="Nota do público no Show-Score">Nota ' + c.nota + '</span>' : '') + '</div>' +
+        '<span class="sh-name">' + esc(c.nome) + '</span>' +
+        (c.teatro ? '<span class="m">' + esc(c.teatro) + '</span>' : '') + quandoTxt(c) +
+        '<div class="sh-acts"><button type="button" class="btn ghost int" data-action="interesse" data-cat="' + c.id + '" aria-pressed="' + !!ja + '">' +
+        (ja ? I.check + 'Na sua lista' : I.plus + 'Tenho interesse') + '</button>' +
+        '<a class="btn ghost" href="' + esc(detalhesUrl(c)) + '" target="_blank" rel="noopener" aria-label="Detalhes de ' + esc(c.nome) + ' (abre o site)">' + I.ext + 'Detalhes</a></div></li>';
+    }).join('') + '</ul>';
+  }
+  function viewBuscaShows() {
+    var h = '<div class="busca"><label for="busca-show">Buscar espetáculo</label>' +
+      '<input id="busca-show" type="search" data-keep autocomplete="off" enterkeyhint="search" placeholder="Nome do show ou do teatro" value="' + esc(S.buscaShow) + '"></div>';
+    h += '<div class="chips" role="group" aria-label="Tipo">' + [['todos', 'Todos'], ['B', 'Broadway'], ['O', 'Off-Broadway']].map(function (d) {
+      return '<button type="button" class="chip" data-action="busca-tipo" data-t="' + d[0] + '" aria-pressed="' + (S.buscaTipo === d[0]) + '">' + d[1] + '</button>';
+    }).join('') + '</div>';
+    h += '<div id="busca-res" class="busca-res">' + buscaResultados() + '</div>';
+    h += '<p class="hint">Lista de ' + CATALOGO_DATA + ', com as notas do público do Show-Score e as programações da Broadway.org e da Broadway.com. As peças off-Broadway de fevereiro ainda estão sendo anunciadas.</p>';
+    return h;
+  }
+  function interesseRow(s, i) {
+    var c = catDoShow(s);
+    var st = STATUS[s.status] ? s.status : 'quero';
+    var meta = [s.local || (c && c.teatro) || ''].filter(Boolean);
+    if (isDate(s.dia)) meta.push(whenLabel(s));
+    else if (c) meta.push(c.q === 'ok' ? 'em cartaz na viagem' : c.q === 'depois' ? 'começa depois da viagem' : 'confira as datas');
+    return '<li data-id="' + esc(s.id) + '">' +
+      '<button type="button" class="drag-handle" id="h-' + esc(s.id) + '" data-id="' + esc(s.id) + '" aria-label="Mover ' + esc(s.titulo) + ', posição ' + (i + 1) + '. Use as setas pra cima e pra baixo.">' + I.grip + '</button>' +
+      '<span class="stop-n rank" aria-hidden="true">' + (i + 1) + '</span>' +
+      '<button type="button" class="stop-body" data-action="edit" data-id="' + esc(s.id) + '">' +
+      '<span class="stop-name"><span class="pname">' + esc(s.titulo) + '</span></span>' +
+      '<span class="m"><span class="tag st-' + st + '">' + STATUS[st] + '</span><span class="muted">' + esc(meta.join(' · ')) + '</span></span></button></li>';
+  }
+  function viewInteresse() {
+    var lista = interesses();
+    if (!lista.length) {
+      return empty('Nenhum show marcado ainda', 'Busque um espetáculo e toque em "Tenho interesse". Depois é só arrastar pra deixar na ordem que você quer.', 'Buscar shows', 'data-action="shows-tab" data-t="buscar"');
+    }
+    return '<p class="hint">Os que você mais quer ficam em cima. Arraste pela alça ⋮⋮ pra mudar a ordem. Os comprados ficam em "Meus shows".</p>' +
+      '<ol class="stops" id="stops" data-campo="rank" data-noun="Agora está na posição " aria-label="Shows de interesse, em ordem">' + lista.map(interesseRow).join('') + '</ol>';
+  }
+  async function novoInteresse(titulo, c) {
+    if (!dbRef) return;
+    var now = Date.now();
+    var out = { tipo: 'show', titulo: titulo, nota: '', dia: '', hora: '', local: c ? (c.teatro || '') : '', status: 'quero', valor: 0, moeda: 'USD', assento: '', contaGasto: true, cotacao: rate(), rank: proximoRank(), criadoEm: now, atualizadoEm: now };
+    if (c) out.catalogo = c.id;
+    try { await dbRef.collection('itens').doc().set(out); toast(titulo + ' entrou na sua lista de interesse'); }
+    catch (e) { toast(writeError(e)); }
+  }
+  async function toggleInteresse(catId) {
+    var c = CATALOGO_SHOWS.find(function (x) { return x.id === catId; });
+    if (!c || !dbRef) return;
+    var ja = showDoCatalogo(c);
+    if (!ja) return novoInteresse(c.nome, c);
+    if (ja.status === 'comprado' || isDate(ja.dia) || num(ja.valor) > 0 || String(ja.nota || '').trim()) {
+      toast('Esse já tem ingresso, dia ou anotação. Pra tirar, abra ele em "Meus shows".');
+      return;
+    }
+    try { await dbRef.doc('itens/' + ja.id).delete(); toast(c.nome + ' saiu da sua lista'); }
+    catch (e) { toast(writeError(e)); }
+  }
+  function showsTabs() {
+    var n = interesses().length;
+    return '<div class="seg seg-wide seg3" role="group" aria-label="Ver">' +
+      '<button type="button" data-action="shows-tab" data-t="meus" aria-pressed="' + (S.showsTab === 'meus') + '">Meus shows</button>' +
+      '<button type="button" data-action="shows-tab" data-t="buscar" aria-pressed="' + (S.showsTab === 'buscar') + '">Buscar</button>' +
+      '<button type="button" data-action="shows-tab" data-t="interesse" aria-pressed="' + (S.showsTab === 'interesse') + '">Interesse' + (n ? ' (' + n + ')' : '') + '</button></div>';
+  }
+
+  function viewShows() {
+    var all = of('show').sort(byWhen);
+    var cnt = { comprado: 0, loteria: 0, quero: 0 };
+    all.forEach(function (s) { if (cnt[s.status] != null) cnt[s.status]++; });
+    var sub = all.length ? cnt.comprado + (cnt.comprado === 1 ? ' comprado' : ' comprados') + ' · ' + cnt.loteria + ' na loteria · ' + cnt.quero + ' na lista' : '';
+    var h = header('', 'Shows', sub, addBtn('show', '', 'Adicionar show'));
+    h += statusBlock();
+    if (isLoading()) return h + loadingLine();
+    h += showsTabs();
+    if (S.showsTab === 'buscar') return h + viewBuscaShows();
+    if (S.showsTab === 'interesse') return h + viewInteresse();
+    if (!all.length) {
+      return h + empty('Nenhum show ainda', 'Guarde aqui os que você comprou, os que vai tentar na loteria e os que quer ver.', 'Buscar shows', 'data-action="shows-tab" data-t="buscar"');
+    }
+    var f = S.showFilter;
+    var defs = [['todos', 'Todos', all.length], ['comprado', 'Comprados', cnt.comprado], ['loteria', 'Loteria / Rush', cnt.loteria], ['quero', 'Quero ver', cnt.quero]];
+    h += '<div class="chips" role="group" aria-label="Filtrar por situação">' + defs.map(function (d) {
+      return '<button type="button" class="chip" data-action="show-filter" data-f="' + d[0] + '" aria-pressed="' + (d[0] === f) + '">' + d[1] + '<span class="n">' + d[2] + '</span></button>';
+    }).join('') + '</div>';
+    var list = all.filter(function (s) { return f === 'todos' || s.status === f; });
+    if (!list.length) {
+      h += '<p class="sub">Nenhum show nessa lista.</p>';
+      return h;
+    }
+    h += '<ul class="list">' + list.map(function (s) {
+      var st = STATUS[s.status] ? s.status : 'quero';
+      return '<li><button type="button" class="ticket" data-action="edit" data-id="' + esc(s.id) + '">' +
+        '<span class="main"><span class="line1"><span class="tag st-' + st + '">' + STATUS[st] + '</span><span class="when">' + esc(whenLabel(s)) + '</span></span>' +
+        '<span class="title">' + esc(s.titulo) + '</span>' +
+        (s.local ? '<span class="m">' + esc(s.local) + '</span>' : '') + '</span>' +
+        '<span class="stub"><span class="kv"><span class="k">Assento</span><span class="v">' + esc(s.assento || '—') + '</span></span>' +
+        '<span class="kv"><span class="k">Valor</span><span class="v num">' + (num(s.valor) > 0 ? esc(money(s.valor, s.moeda, 2)) : '—') + '</span></span></span>' +
+        '</button></li>';
+    }).join('') + '</ul>';
+    return h;
+  }
+
+  /* ---------- Gastos ---------- */
+  function gastosTabs() {
+    var sim = S.gastosTab === 'simular';
+    return '<div class="seg seg-wide" role="group" aria-label="Ver">' +
+      '<button type="button" data-action="gastos-tab" data-t="lancados" aria-pressed="' + !sim + '">Lançados</button>' +
+      '<button type="button" data-action="gastos-tab" data-t="simular" aria-pressed="' + sim + '">Simular</button></div>';
+  }
+  function simBRL(i) { return i.moeda === 'BRL' ? num(i.valor) : num(i.valor) * rate(); }
+  function byCreated(a, b) { return (a.criadoEm || 0) - (b.criadoEm || 0); }
+  function viewSimular() {
+    var h = header('', 'Gastos', '', '');
+    h += gastosTabs();
+    h += statusBlock();
+    if (isLoading()) return h + loadingLine();
+    var list = S.sim.slice().sort(byCreated);
+    var r = rate();
+    var marked = list.filter(function (i) { return i.marcado; });
+    var totalBRL = marked.reduce(function (a, i) { return a + simBRL(i); }, 0);
+    h += '<section class="hero" aria-label="Total marcado">' +
+      '<div class="sec-head" style="align-items:center"><span class="hero-sub">Se eu comprar os marcados</span>' +
+      '<span class="pill">' + marked.length + ' de ' + list.length + '</span></div>' +
+      '<span class="big num">' + esc(money(totalBRL, 'BRL', 2)) + '</span>' +
+      '<span class="hero-sub num" style="font-size:13px">≈ ' + esc(money(totalBRL / r, 'USD', 2)) + ' · dólar a R$ ' + esc(fmtNum(r, 2)) + ' com IOF</span>' +
+      '<button type="button" class="btn light" data-action="lancar"' + (marked.length ? '' : ' disabled') + '>Lançar marcados em Gastos</button>' +
+      '</section>';
+    h += '<form class="sim-add" id="sim-form" aria-label="Adicionar item à simulação" novalidate>' +
+      '<label class="sr" for="sim-nome">Nome do item</label>' +
+      '<input id="sim-nome" type="text" data-keep autocomplete="off" placeholder="O que é? Ex.: Camiseta, jantar">' +
+      '<div class="sim-row">' +
+      '<label class="sr" for="sim-valor">Valor</label>' +
+      '<input id="sim-valor" type="text" data-keep inputmode="decimal" autocomplete="off" placeholder="Valor">' +
+      '<div class="seg" role="group" aria-label="Moeda do item">' +
+      '<button type="button" data-action="sim-cur" data-cur="USD" aria-pressed="' + (S.simCur === 'USD') + '">US$</button>' +
+      '<button type="button" data-action="sim-cur" data-cur="BRL" aria-pressed="' + (S.simCur === 'BRL') + '">R$</button></div>' +
+      '<button type="submit" class="icon-btn primary" aria-label="Adicionar à simulação">' + I.plus + '</button>' +
+      '</div><p class="err" id="sim-err" role="alert" hidden></p></form>';
+    h += '<section aria-labelledby="sec-sim"><div class="sec-head" style="align-items:center"><h2 class="sec" id="sec-sim">Itens</h2>';
+    if (list.length) {
+      h += '<div style="display:flex;gap:4px"><button type="button" class="link-btn" data-action="sim-all">Marcar todos</button>' +
+        '<button type="button" class="link-btn" data-action="sim-none">Limpar</button></div>';
+    }
+    h += '</div>';
+    if (!list.length) {
+      h += '<p class="sub">Coloque aqui o que você está pensando em comprar ou pagar. Marque e desmarque para ver quanto dá em reais antes de decidir.</p>';
+    } else {
+      h += '<ul class="list" style="gap:6px">' + list.map(function (i) {
+        return '<li class="sim-item' + (i.marcado ? ' on' : '') + '">' +
+          '<label class="sim-check" for="sim-' + esc(i.id) + '">' +
+          '<input type="checkbox" id="sim-' + esc(i.id) + '" data-sim-toggle="' + esc(i.id) + '"' + (i.marcado ? ' checked' : '') + '>' +
+          '<span class="grow"><span class="t">' + esc(i.nome) + '</span><span class="m num">' + (i.moeda === 'BRL' ? 'Em reais' : esc(money(i.valor, 'USD', 2))) + '</span></span>' +
+          '<span class="amt">' + esc(money(simBRL(i), 'BRL', 2)) + '</span></label>' +
+          '<button type="button" class="icon-btn" style="background:none;color:var(--muted)" data-action="sim-rm" data-id="' + esc(i.id) + '" aria-label="Tirar ' + esc(i.nome) + ' da simulação">' + I.x + '</button></li>';
+      }).join('') + '</ul>';
+    }
+    h += '</section>';
+    return h;
+  }
+  function viewGastos() {
+    if (S.gastosTab === 'simular') return viewSimular();
+    var seg = '<div class="seg" role="group" aria-label="Moeda">' +
+      '<button type="button" data-action="cur" data-cur="USD" aria-pressed="' + (S.cur === 'USD') + '">US$</button>' +
+      '<button type="button" data-action="cur" data-cur="BRL" aria-pressed="' + (S.cur === 'BRL') + '">R$</button></div>';
+    var h = header('', 'Gastos', '', seg + addBtn('gasto', '', 'Adicionar gasto'));
+    h += gastosTabs();
+    h += statusBlock();
+    if (isLoading()) return h + loadingLine();
+
+    var gastos = of('gasto');
+    var tickets = of('show').filter(function (s) { return s.contaGasto && num(s.valor) > 0; });
+    var spent = {}, spentUSD = {}, plan = S.config.orcamento || {};
+    GASTO_CATS.forEach(function (cat) { spent[cat] = 0; spentUSD[cat] = 0; });
+    function addTo(cat, i) { spent[cat] += amountIn(i, S.cur); spentUSD[cat] += amountIn(i, 'USD'); }
+    gastos.forEach(function (g) { addTo(GASTO_CATS.indexOf(g.categoria) >= 0 ? g.categoria : 'Outros', g); });
+    tickets.forEach(function (s) { addTo('Ingressos', s); });
+    var total = 0, totalUSD = 0, planTotal = 0;
+    GASTO_CATS.forEach(function (cat) { total += spent[cat]; totalUSD += spentUSD[cat]; planTotal += Math.max(0, num(plan[cat])); });
+
+    h += '<section class="hero" aria-label="Resumo"><span class="hero-sub">Gasto até agora</span>' +
+      '<span class="big num">' + esc(money(total, S.cur)) + '</span>';
+    if (planTotal > 0) {
+      h += '<span class="hero-sub">de ' + esc(money(inCur(planTotal), S.cur)) + ' planejados</span>' +
+        '<div class="meter-dark" aria-hidden="true"><i style="width:' + pct(totalUSD, planTotal) + '%"></i></div>';
+    } else {
+      h += '<button type="button" class="btn light" data-action="settings" style="align-self:flex-start;min-height:44px;font-size:14px">Definir orçamento</button>';
+    }
+    h += '<div style="display:flex;justify-content:space-between;align-items:center;gap:8px">' +
+      '<span class="hero-sub num" style="font-size:12px">' + esc(cambioInfo()) + '</span>' +
+      (S.config.cotacaoAuto !== false ? '<button type="button" class="link-btn" data-action="refresh-rate" style="color:var(--accent);flex-shrink:0">Atualizar</button>' : '') +
+      '</div></section>';
+
+    var catsShown = GASTO_CATS.filter(function (cat) { return spent[cat] > 0 || num(plan[cat]) > 0; });
+    if (catsShown.length) {
+      h += '<section aria-labelledby="sec-cat"><div class="sec-head"><h2 class="sec" id="sec-cat">Por categoria</h2>' +
+        '<button type="button" class="link-btn" data-action="settings">Editar orçamento</button></div><ul class="cats">' +
+        catsShown.map(function (cat) {
+          var p = num(plan[cat]);
+          return '<li><div class="head"><span class="t">' + cat + '</span><span class="m num"><strong style="color:var(--ink)">' + esc(money(spent[cat], S.cur)) + '</strong>' +
+            (p > 0 ? ' de ' + esc(money(inCur(p), S.cur)) : '') + '</span></div>' +
+            (p > 0 ? '<div class="meter" aria-hidden="true"><i class="' + (spentUSD[cat] > p ? 'over' : '') + '" style="width:' + pct(spentUSD[cat], p) + '%"></i></div>' : '') + '</li>';
+        }).join('') + '</ul></section>';
+    }
+
+    var quota = gastos.filter(function (g) { return g.categoria === 'Compras' && g.cota !== false; })
+      .reduce(function (a, g) { return a + toUSD(g); }, 0);
+    h += '<section class="quota" aria-labelledby="sec-cota"><div class="sec-head"><h2 id="sec-cota">Cota da alfândega</h2>' +
+      '<span class="num" style="font-size:13px;font-weight:700">' + esc(money(quota, 'USD')) + ' de US$ 1.000</span></div>' +
+      '<div class="meter" aria-hidden="true"><i style="width:' + pct(quota, 1000) + '%"></i></div>' +
+      '<p>' + (quota > 1000 ? 'Passou da cota: o que exceder paga 50% de imposto na volta.' : 'Entram as compras marcadas como "conta na cota". Livros e roupa de uso pessoal não contam.') + '</p></section>';
+
+    var entries = gastos.map(function (g) {
+      return { id: g.id, titulo: g.titulo, dia: g.dia, meta: [isDate(g.dia) ? shortDate(g.dia) : '', g.categoria || 'Outros'].filter(Boolean).join(' · '), valor: g.valor, moeda: g.moeda, criadoEm: g.criadoEm || 0 };
+    }).concat(tickets.map(function (s) {
+      return { id: s.id, titulo: s.titulo, dia: s.dia, meta: [isDate(s.dia) ? shortDate(s.dia) : '', 'Ingresso'].filter(Boolean).join(' · '), valor: s.valor, moeda: s.moeda, criadoEm: s.criadoEm || 0 };
+    })).sort(function (a, b) {
+      var da = isDate(a.dia) ? a.dia : '0000', db = isDate(b.dia) ? b.dia : '0000';
+      if (da !== db) return da < db ? 1 : -1;
+      return b.criadoEm - a.criadoEm;
+    });
+    h += '<section aria-labelledby="sec-lanc"><h2 class="sec" id="sec-lanc">Lançamentos</h2>';
+    if (entries.length) {
+      h += '<ul class="list">' + entries.map(function (e) {
+        return '<li><button type="button" class="row" data-action="edit" data-id="' + esc(e.id) + '"><span class="grow"><span class="t">' + esc(e.titulo) + '</span>' +
+          '<span class="m">' + esc(e.meta) + '</span></span><span class="amt">' + esc(money(e.valor, e.moeda, 2)) + '</span></button></li>';
+      }).join('') + '</ul>';
+    } else {
+      h += empty('Nenhum gasto registrado', 'Lance hotel, comida, metrô e compras. Ingressos marcados nos shows entram sozinhos.', 'Registrar gasto', 'data-action="new" data-tipo="gasto"');
+    }
+    h += '</section>';
+    return h;
+  }
+
+  /* ---------- Lugares ---------- */
+  /* ---------- lugares: mapa, lista e roteiro por dia ---------- */
+  function hasGeo(p) { return typeof p.lat === 'number' && typeof p.lng === 'number' && isFinite(p.lat) && isFinite(p.lng); }
+  function perOf(p) { return PERIODOS[p.periodo] ? p.periodo : ''; }
+  function anyOn(o) { for (var k in o) { if (o[k]) return true; } return false; }
+  function filtroCount() {
+    var f = S.mapFilter, n = 0;
+    ['cat', 'preco', 'per', 'rot'].forEach(function (g) { for (var k in f[g]) { if (f[g][k]) n++; } });
+    return n;
+  }
+  function passaFiltro(p) {
+    var f = S.mapFilter;
+    if (anyOn(f.cat) && !f.cat[catOf(p)]) return false;
+    if (anyOn(f.preco) && !f.preco[p.entrada === 'gratis' ? 'gratis' : p.entrada === 'pago' ? 'pago' : '-']) return false;
+    if (anyOn(f.per) && !f.per[perOf(p) || '-']) return false;
+    if (anyOn(f.rot) && !f.rot[isDate(p.dia) ? 'com' : 'sem']) return false;
+    return true;
+  }
+  function diaOk(d) { return isDate(d) && !!(S.diasOk && S.diasOk[d]); }
+  function ordemOf(p) { var n = Number(p.ordem); return n > 0 ? n : 999; }
+  function lugaresDoDia(d) {
+    return of('lugar').filter(function (p) { return p.dia === d; }).sort(function (a, b) {
+      return (ordemOf(a) - ordemOf(b)) || String(a.titulo || '').localeCompare(String(b.titulo || ''), 'pt-BR');
+    });
+  }
+  function proximaOrdem(d, skipId) {
+    return lugaresDoDia(d).filter(function (p) { return p.id !== skipId; }).reduce(function (m, p) { return Math.max(m, Number(p.ordem) > 0 ? Number(p.ordem) : 0); }, 0) + 1;
+  }
+  function diasMapa() {
+    var days = tripDays(S.config);
+    of('lugar').forEach(function (p) { if (isDate(p.dia) && days.indexOf(p.dia) < 0) days.push(p.dia); });
+    return days.sort();
+  }
+  function dayNum(d) { var i = diasMapa().indexOf(d); return i >= 0 ? i + 1 : ''; }
+  function dayLabel(d) { var n = dayNum(d); return (n ? 'Dia ' + n + ' · ' : '') + shortDate(d); }
+  function byTitulo(a, b) { return String(a.titulo || '').localeCompare(String(b.titulo || ''), 'pt-BR'); }
+  function catDot(p, size, cat) {
+    var c = CAT_INFO[cat || catOf(p)];
+    return '<span class="cat-dot" style="width:' + size + 'px;height:' + size + 'px;background:' + c.color + '" aria-hidden="true">' + pathSvg(c.d, Math.round(size * 0.52), 2.2) + '</span>';
+  }
+  function freeBadge(p) {
+    if (p.entrada === 'gratis') return '<span class="fb g">grátis</span>';
+    if (p.entrada === 'pago') return '<span class="fb p"><span aria-hidden="true">$</span><span class="sr">pago</span></span>';
+    return '';
+  }
+  function pname(p, extraCls) {
+    var per = perOf(p);
+    return '<span class="pname' + (extraCls ? ' ' + extraCls : '') + (per ? ' per-' + per : '') + '">' + esc(p.titulo) + '</span>';
+  }
+  function gmaps(p) {
+    var q = [p.titulo, p.local || 'New York'].filter(Boolean).join(', ');
+    return 'https://www.google.com/maps/search/?api=1&amp;query=' + encodeURIComponent(q);
+  }
+  function lugaresHeader(all) {
+    var comDia = all.filter(function (p) { return isDate(p.dia); }).length;
+    var sub = all.length ? all.length + (all.length === 1 ? ' lugar' : ' lugares') + ' · ' + comDia + ' com dia' : '';
+    return header('', 'Lugares', sub,
+      (all.length ? '<button type="button" class="dias-btn" data-action="map-mode" data-m="dias" aria-label="Dias do roteiro">' + I.cal + 'Dias</button>' : '') +
+      addBtn('lugar', '', 'Adicionar lugar'));
+  }
+  function lugaresTools() {
+    var fc = filtroCount();
+    return '<div class="map-tools">' +
+      '<div class="seg" role="group" aria-label="Ver lugares como">' +
+      '<button type="button" data-action="lug-view" data-v="mapa" aria-pressed="' + (S.lugaresView === 'mapa') + '">Mapa</button>' +
+      '<button type="button" data-action="lug-view" data-v="lista" aria-pressed="' + (S.lugaresView === 'lista') + '">Lista</button></div>' +
+      '<button type="button" class="chip chip-ic" data-action="filtros" aria-pressed="' + (fc > 0) + '">' + I.filter + 'Filtros' +
+      (fc ? '<span class="n">' + fc + '</span>' : '') + '</button></div>';
+  }
+  function mapMsg() {
+    if (leafletState === 'ok') return '';
+    return '<div class="map-msg" role="status">' + (leafletState === 'erro'
+      ? 'O mapa precisa de internet pra abrir da primeira vez. A lista continua funcionando.'
+      : 'Carregando o mapa…') + '</div>';
+  }
+  function placeCard(p) {
+    var per = perOf(p);
+    var chips = [];
+    if (per) chips.push('<span class="mc-chip per-' + per + '">' + pathSvg(PERIODOS[per].d, 14, 2.2) + PERIODOS[per].label + '</span>');
+    chips.push('<span class="mc-chip">' + esc(isDate(p.dia) ? dayLabel(p.dia) : 'Sem dia') + '</span>');
+    if (p.entrada === 'pago' && p.preco) chips.push('<span class="mc-chip">' + esc(p.preco) + '</span>');
+    return '<div class="map-card" tabindex="-1" role="region" aria-label="' + esc(p.titulo) + '">' +
+      '<div class="mc-top">' + catDot(p, 40) +
+      '<div class="grow"><div class="mc-name">' + pname(p) + freeBadge(p) + '</div>' +
+      '<span class="m">' + esc(catOf(p)) + (p.local ? ' · ' + esc(p.local) : '') + '</span></div>' +
+      '<button type="button" class="icon-btn soft" data-action="map-unsel" aria-label="Fechar detalhes">' + I.x + '</button></div>' +
+      '<div class="mc-chips">' + chips.join('') + '</div>' +
+      (p.nota ? '<p class="mc-note">' + esc(p.nota) + '</p>' : '') +
+      '<div class="mc-acts">' +
+      '<button type="button" class="btn ghost" data-action="pordia" data-id="' + esc(p.id) + '">' + (isDate(p.dia) ? 'Trocar dia' : 'Pôr num dia') + '</button>' +
+      '<button type="button" class="btn ghost" data-action="edit" data-id="' + esc(p.id) + '">Editar</button>' +
+      '<a class="btn ghost" href="' + gmaps(p) + '" target="_blank" rel="noopener" aria-label="Abrir ' + esc(p.titulo) + ' no Google Maps">' + I.ext + 'Maps</a>' +
+      '</div></div>';
+  }
+  function geoNotes(list) {
+    var semGeo = list.filter(function (p) { return !hasGeo(p); });
+    var falhou = semGeo.filter(function (p) { return p.geo === 'falhou'; });
+    var buscando = semGeo.length - falhou.length;
+    var out = [];
+    if (buscando) out.push('<p>Procurando ' + buscando + (buscando === 1 ? ' lugar' : ' lugares') + ' no mapa…</p>');
+    if (falhou.length) {
+      out.push('<p>Não achei no mapa: ' + falhou.map(function (p) {
+        return '<button type="button" class="inline-link" data-action="edit" data-id="' + esc(p.id) + '">' + esc(p.titulo) + '</button>';
+      }).join(', ') + '. Confira o endereço.</p>');
+    }
+    return out;
+  }
+  function mapaTodos(vis) {
+    var shown = vis.filter(function (p) { return !diaOk(p.dia); });
+    var hidden = vis.length - shown.length;
+    var sel = S.mapSel ? shown.find(function (p) { return p.id === S.mapSel; }) : null;
+    if (!sel) S.mapSel = null;
+    MAPDATA = { modo: 'todos', sel: S.mapSel, pins: shown.filter(hasGeo).map(function (p) { return { p: p, n: 0 }; }) };
+    var h = '<div class="mapwrap"><div class="map-slot" id="map-slot"></div>' + mapMsg() + (sel ? placeCard(sel) : '') + '</div>';
+    var notes = [];
+    if (!vis.length) notes.push('<p>Nenhum lugar com esses filtros. <button type="button" class="inline-link" data-action="mf-limpar">Limpar filtros</button></p>');
+    if (hidden) {
+      notes.push('<p>' + hidden + (hidden === 1 ? ' lugar de dia confirmado saiu' : ' lugares de dias confirmados saíram') + ' do mapa. ' +
+        '<button type="button" class="inline-link" data-action="map-mode" data-m="dias">Ver os dias</button></p>');
+    }
+    notes = notes.concat(geoNotes(shown));
+    if (notes.length) h += '<div class="map-notes">' + notes.join('') + '</div>';
+    return h;
+  }
+  function placeRow(p) {
+    var per = perOf(p);
+    var meta = [catOf(p)];
+    if (per) meta.push(PERIODOS[per].label);
+    if (isDate(p.dia)) meta.push(dayLabel(p.dia) + (diaOk(p.dia) ? ' (confirmado)' : ''));
+    return '<li class="place' + (diaOk(p.dia) ? ' done' : '') + '">' +
+      '<button type="button" class="body place-body" data-action="edit" data-id="' + esc(p.id) + '">' + catDot(p, 36) +
+      '<span class="grow"><span class="stop-name">' + pname(p, 't') + freeBadge(p) + '</span><span class="m">' + esc(meta.join(' · ')) + '</span></span></button>' +
+      (hasGeo(p) && !diaOk(p.dia) ? '<button type="button" class="icon-btn soft" data-action="ver-no-mapa" data-id="' + esc(p.id) + '" aria-label="Ver ' + esc(p.titulo) + ' no mapa do app">' + I.lugar + '</button>' : '') +
+      '<a class="icon-btn soft" href="' + gmaps(p) + '" target="_blank" rel="noopener" aria-label="Abrir ' + esc(p.titulo) + ' no Google Maps">' + I.map + '</a></li>';
+  }
+  function listaLugares(vis) {
+    if (!vis.length) return '<div class="map-notes"><p>Nenhum lugar com esses filtros. <button type="button" class="inline-link" data-action="mf-limpar">Limpar filtros</button></p></div>';
+    var abertos = vis.filter(function (p) { return !diaOk(p.dia); }).sort(byTitulo);
+    var feitos = vis.filter(function (p) { return diaOk(p.dia); }).sort(byWhen);
+    var h = '<ul class="list">' + abertos.map(placeRow).join('') + '</ul>';
+    if (feitos.length) h += '<section aria-labelledby="sec-feitos"><h2 class="sec" id="sec-feitos">De dias confirmados</h2><ul class="list">' + feitos.map(placeRow).join('') + '</ul></section>';
+    return h;
+  }
+  function defaultMapDay(days) {
+    var t = todayStr();
+    if (days.indexOf(t) >= 0) return t;
+    var comLugar = days.filter(function (d) { return lugaresDoDia(d).length && !diaOk(d); });
+    return comLugar[0] || days[0] || null;
+  }
+  function stopRow(p, i) {
+    var per = perOf(p), c = CAT_INFO[catOf(p)];
+    var meta = [catOf(p)];
+    if (per) meta.unshift(PERIODOS[per].label);
+    if (!hasGeo(p)) meta.push(p.geo === 'falhou' ? 'fora do mapa' : 'procurando no mapa…');
+    return '<li data-id="' + esc(p.id) + '">' +
+      '<button type="button" class="drag-handle" id="h-' + esc(p.id) + '" data-id="' + esc(p.id) + '" aria-label="Mover ' + esc(p.titulo) + ', parada ' + (i + 1) + '. Use as setas pra cima e pra baixo.">' + I.grip + '</button>' +
+      '<span class="stop-n" style="background:' + c.color + '" aria-hidden="true">' + (i + 1) + '</span>' +
+      '<button type="button" class="stop-body" data-action="edit" data-id="' + esc(p.id) + '">' +
+      '<span class="stop-name">' + pname(p) + freeBadge(p) + '</span>' +
+      '<span class="m' + (per ? ' per-' + per : '') + '">' + (per ? pathSvg(PERIODOS[per].d, 13, 2.2) : '') + '<span class="muted">' + esc(meta.join(' · ')) + '</span></span></button></li>';
+  }
+  function viewDias(all) {
+    var days = diasMapa();
+    var h = '<header class="top"><div class="top-text"><button type="button" class="link-btn back-btn" data-action="map-mode" data-m="todos">' + I.back + 'Todos os lugares</button>' +
+      '<h1>Roteiro por dia</h1></div><div class="actions">' + (S.mapDay ? addBtn('lugar', S.mapDay, 'Novo lugar neste dia') : '') + '</div></header>';
+    h += statusBlock();
+    if (isLoading()) return h + loadingLine();
+    if (!days.length) return h + empty('Coloque as datas da viagem', 'Os dias aparecem aqui depois que a viagem tiver começo e fim nos ajustes.', 'Abrir ajustes', 'data-action="settings"');
+    if (!S.mapDay || days.indexOf(S.mapDay) < 0) S.mapDay = defaultMapDay(days);
+    var d = S.mapDay, stops = lugaresDoDia(d), ok = diaOk(d);
+    h += '<div class="day-strip" role="group" aria-label="Escolher o dia">' + days.map(function (x, i) {
+      var n = all.filter(function (p) { return p.dia === x; }).length;
+      var mark = diaOk(x) ? I.checkSm : (n ? '<i></i>' : '');
+      var aria = 'Dia ' + (i + 1) + ', ' + longDate(x) + ', ' + (n ? n + (n === 1 ? ' lugar' : ' lugares') : 'sem lugares') + (diaOk(x) ? ', confirmado' : '');
+      return '<button type="button" class="day-chip" data-action="map-day" data-dia="' + x + '" aria-pressed="' + (x === d) + '" aria-label="' + esc(aria) + '">' +
+        '<span class="dn">Dia ' + (i + 1) + '</span><span class="dd">' + esc(shortDate(x)) + '</span><span class="dm">' + mark + '</span></button>';
+    }).join('') + '</div>';
+    MAPDATA = { modo: 'dias', dia: d, sel: null, pins: stops.map(function (p, i) { return { p: p, n: i + 1 }; }).filter(function (x) { return hasGeo(x.p); }) };
+    h += '<div class="mapwrap compact"><div class="map-slot" id="map-slot"></div>' + mapMsg() + '</div>';
+    h += '<section class="dia-painel" aria-labelledby="dia-titulo"><div class="sec-head"><h2 class="sec" id="dia-titulo">' + esc(longDate(d)) + '</h2>' +
+      '<span class="m">' + (stops.length ? stops.length + (stops.length === 1 ? ' parada' : ' paradas') : 'Sem paradas') + '</span></div>';
+    if (ok) h += '<div class="notice" role="note"><span>Dia confirmado. Os lugares dele saíram do mapa geral.</span></div>';
+    if (stops.length) {
+      h += '<p class="legend-per"><span class="per-manha">Manhã</span><span class="per-tarde">Tarde</span><span class="per-noite">Noite</span>' +
+        (stops.length > 1 ? '<span class="muted" style="font-weight:500">· arraste pela alça pra mudar a ordem</span>' : '') + '</p>';
+      h += '<ol class="stops" id="stops" aria-label="Paradas do dia, em ordem">' + stops.map(stopRow).join('') + '</ol>';
+    } else {
+      h += empty('Nada marcado nesse dia', 'Use "Adicionar parada" ou toque num lugar no mapa e escolha "Pôr num dia".', '', '');
+    }
+    h += '<div class="dia-acts"><button type="button" class="btn ghost" data-action="parada">' + I.plus + 'Adicionar parada</button>' +
+      '<button type="button" class="btn' + (ok ? ' ghost' : '') + '" data-action="confirmar-dia" data-dia="' + d + '">' + (ok ? 'Reabrir dia' : I.check + 'Confirmar dia') + '</button></div>';
+    if (!ok) h += '<p class="hint">Confirmar o dia tira os lugares dele do mapa geral. Dá pra reabrir depois.</p>';
+    h += '</section>';
+    return h;
+  }
+  function viewLugares() {
+    var all = of('lugar');
+    if (S.lugaresView === 'mapa') loadLeaflet();
+    if (S.lugaresView === 'mapa' && S.mapModo === 'dias' && all.length) return viewDias(all);
+    var h = lugaresHeader(all);
+    h += statusBlock();
+    if (isLoading()) return h + loadingLine();
+    if (!all.length) {
+      return h + empty('Sua lista de lugares está vazia', 'Museus, lojas, passeios, bares. Cada um aparece no mapa com um ícone do tipo dele.', 'Adicionar lugar', 'data-action="new" data-tipo="lugar"');
+    }
+    h += lugaresTools();
+    var vis = all.filter(passaFiltro);
+    if (S.lugaresView === 'lista') return h + listaLugares(vis);
+    return h + mapaTodos(vis);
+  }
+
+  /* ---------- motor do mapa (Leaflet) ---------- */
+  var LEAFLET_JS = 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js';
+  var METRO_LINHAS = 'https://data.ny.gov/resource/s692-irgq.geojson?$limit=5000';
+  var METRO_ESTACOES = 'https://data.ny.gov/resource/39hk-dx4f.json?$limit=1000';
+  var MAP = { map: null, host: null, pins: null, rota: null, metro: null, estacoes: null, linhasOk: false, estacoesOk: false, buscandoMetro: false, fitKey: '', drawKey: '', lastSel: null, focarCard: false };
+  var MAPDATA = null;
+  var leafletState = window.L ? 'ok' : 'idle';
+  function loadLeaflet() {
+    if (leafletState !== 'idle') return;
+    leafletState = 'loading';
+    var s = document.createElement('script');
+    s.src = LEAFLET_JS;
+    s.crossOrigin = 'anonymous';
+    s.onload = function () { leafletState = window.L ? 'ok' : 'erro'; render(); };
+    s.onerror = function () { leafletState = 'erro'; s.remove(); render(); };
+    document.head.appendChild(s);
+  }
+  function pinIcon(p, n, sel) {
+    var c = CAT_INFO[catOf(p)];
+    var size = sel ? 38 : 32;
+    var inner = n ? String(n) : pathSvg(c.d, sel ? 19 : 16, 2.2);
+    return L.divIcon({
+      className: 'pin-wrap',
+      html: '<div class="pin' + (sel ? ' sel' : '') + '" style="background:' + c.color + '">' + inner + '</div>',
+      iconSize: [size, size], iconAnchor: [size / 2, size / 2]
+    });
+  }
+  function corLinha(props) {
+    var keys = ['service', 'route', 'route_id', 'rt_symbol', 'line', 'service_name', 'name', 'routes'];
+    var cands = [];
+    keys.forEach(function (k) { if (props[k] != null) cands.push(String(props[k])); });
+    Object.keys(props).forEach(function (k) { if (typeof props[k] === 'string' && props[k].length <= 12) cands.push(props[k]); });
+    for (var i = 0; i < cands.length; i++) {
+      var tok = cands[i].trim().toUpperCase().split(/[\s,\-\/]+/)[0];
+      if (MTA_CORES[tok]) return MTA_CORES[tok];
+    }
+    return '#808183';
+  }
+  function carregarMetro() {
+    if (MAP.buscandoMetro || (MAP.linhasOk && MAP.estacoesOk) || !MAP.map) return;
+    MAP.buscandoMetro = true;
+    var jobs = [];
+    if (!MAP.linhasOk) {
+      jobs.push(fetch(METRO_LINHAS).then(function (r) { if (!r.ok) throw 0; return r.json(); }).then(function (gj) {
+        if (!gj || !gj.features || !gj.features.length) throw 0;
+        L.geoJSON(gj, {
+          interactive: false,
+          style: function (f) { return { color: corLinha((f && f.properties) || {}), weight: 3, opacity: 0.75 }; }
+        }).addTo(MAP.metro);
+        MAP.linhasOk = true;
+      }).catch(function () {}));
+    }
+    if (!MAP.estacoesOk) {
+      jobs.push(fetch(METRO_ESTACOES).then(function (r) { if (!r.ok) throw 0; return r.json(); }).then(function (rows) {
+        if (!Array.isArray(rows) || !rows.length) throw 0;
+        var vistos = {};
+        rows.forEach(function (r) {
+          var lat = Number(r.gtfs_latitude || r.latitude), lng = Number(r.gtfs_longitude || r.longitude);
+          var nome = r.stop_name || r.station_name || r.name || '';
+          if (!isFinite(lat) || !isFinite(lng) || !lat || !nome) return;
+          var k = nome + '|' + lat.toFixed(3) + ',' + lng.toFixed(3);
+          if (vistos[k]) return;
+          vistos[k] = true;
+          var linhas = String(r.daytime_routes || r.routes || '').trim();
+          L.circleMarker([lat, lng], { radius: 4.5, color: '#14151A', weight: 1.5, fillColor: '#FFFFFF', fillOpacity: 1 })
+            .bindTooltip(esc(nome) + (linhas ? ' · ' + esc(linhas) : ''), { direction: 'top', offset: [0, -4] })
+            .addTo(MAP.estacoes);
+        });
+        MAP.estacoesOk = true;
+        mostrarEstacoes();
+      }).catch(function () {}));
+    }
+    Promise.all(jobs).then(function () { MAP.buscandoMetro = false; });
+  }
+  function mostrarEstacoes() {
+    if (!MAP.map) return;
+    var on = MAP.map.getZoom() >= 14;
+    if (on && !MAP.map.hasLayer(MAP.estacoes)) MAP.estacoes.addTo(MAP.map);
+    else if (!on && MAP.map.hasLayer(MAP.estacoes)) MAP.map.removeLayer(MAP.estacoes);
+  }
+  function criarMapa() {
+    var map = L.map(MAP.host, { zoomControl: true, minZoom: 10, maxZoom: 18 });
+    map.setView([40.754, -73.984], 13);
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> · metrô: MTA'
+    }).addTo(map);
+    MAP.metro = L.layerGroup().addTo(map);
+    MAP.estacoes = L.layerGroup();
+    MAP.rota = L.layerGroup().addTo(map);
+    MAP.pins = L.layerGroup().addTo(map);
+    map.on('click', function () { if (S.mapSel) { S.mapSel = null; render(); } });
+    map.on('zoomend', mostrarEstacoes);
+    MAP.map = map;
+  }
+  function pinClick(id) {
+    if (MAPDATA && MAPDATA.modo === 'dias') {
+      var li = document.querySelector('#stops li[data-id="' + id + '"]');
+      if (li) {
+        li.classList.add('flash');
+        setTimeout(function () { li.classList.remove('flash'); }, 1200);
+        var b = li.querySelector('.stop-body');
+        li.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+        if (b) b.focus({ preventScroll: true });
+      }
+      return;
+    }
+    S.mapSel = id;
+    MAP.focarCard = true;
+    render();
+  }
+  function desenharMapa() {
+    var d = MAPDATA, map = MAP.map;
+    var key = d.modo + '|' + (d.dia || '') + '|' + (d.sel || '') + '|' + d.pins.map(function (x) {
+      return x.p.id + ':' + x.p.lat + ',' + x.p.lng + ':' + catOf(x.p) + ':' + x.n + ':' + x.p.titulo;
+    }).join(';');
+    if (key !== MAP.drawKey) {
+      MAP.drawKey = key;
+      MAP.pins.clearLayers();
+      MAP.rota.clearLayers();
+      d.pins.forEach(function (x) {
+        var sel = x.p.id === d.sel;
+        var m = L.marker([x.p.lat, x.p.lng], { icon: pinIcon(x.p, x.n, sel), title: (x.n ? x.n + '. ' : '') + x.p.titulo, riseOnHover: true, zIndexOffset: sel ? 1000 : 0 });
+        m.on('click', function () { pinClick(x.p.id); });
+        MAP.pins.addLayer(m);
+      });
+      if (d.modo === 'dias' && d.pins.length > 1) {
+        L.polyline(d.pins.map(function (x) { return [x.p.lat, x.p.lng]; }), { color: '#14151A', weight: 3, opacity: 0.8, dashArray: '6 7', interactive: false }).addTo(MAP.rota);
+      }
+    }
+    var fitKey = d.modo + '|' + (d.dia || '') + '|' + d.pins.map(function (x) { return x.p.id; }).sort().join(',');
+    if (fitKey !== MAP.fitKey) {
+      MAP.fitKey = fitKey;
+      var pts = d.pins.map(function (x) { return [x.p.lat, x.p.lng]; });
+      if (pts.length === 1) map.setView(pts[0], 15);
+      else if (pts.length) map.fitBounds(L.latLngBounds(pts), { padding: [36, 36], maxZoom: 15 });
+      else map.setView([40.754, -73.984], 12);
+    }
+    if (d.sel && d.sel !== MAP.lastSel) {
+      var sp = d.pins.find(function (x) { return x.p.id === d.sel; });
+      if (sp) map.panInside([sp.p.lat, sp.p.lng], { paddingTopLeft: [24, 24], paddingBottomRight: [24, 250] });
+    }
+    MAP.lastSel = d.sel;
+  }
+  function syncMap() {
+    var slot = document.getElementById('map-slot');
+    if (!slot || !MAPDATA || leafletState !== 'ok' || !window.L) return;
+    if (!MAP.host) { MAP.host = document.createElement('div'); MAP.host.className = 'map-host'; }
+    slot.appendChild(MAP.host);
+    if (!MAP.map) criarMapa();
+    MAP.map.invalidateSize(false);
+    desenharMapa();
+    carregarMetro();
+  }
+
+  /* ---------- achar endereço no mapa (OpenStreetMap / Nominatim) ---------- */
+  var GEO = { busy: false, tried: {} };
+  function distM(a1, o1, a2, o2) {
+    var r = Math.PI / 180, x = (o2 - o1) * r * Math.cos((a1 + a2) / 2 * r), y = (a2 - a1) * r;
+    return Math.sqrt(x * x + y * y) * 6371000;
+  }
+  function precisaGeo(p) { return p.tipo === 'lugar' && ((!hasGeo(p) && p.geo !== 'falhou') || p.geo === 'aprox'); }
+  function esperar(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+  async function geocodeFila() {
+    if (GEO.busy || !dbRef || (typeof navigator.onLine === 'boolean' && !navigator.onLine)) return;
+    GEO.busy = true;
+    try {
+      for (var guard = 0; guard < 80; guard++) {
+        var p = S.items.find(function (x) { return precisaGeo(x) && !GEO.tried[x.id + '|' + (x.local || '') + '|' + x.titulo]; });
+        if (!p) break;
+        GEO.tried[p.id + '|' + (p.local || '') + '|' + p.titulo] = true;
+        var base = String(p.local || '').trim() || p.titulo;
+        var q = /new york|brooklyn|queens|bronx|staten|\bny\b|manhattan/i.test(base) ? base : base + ', New York';
+        var hit = null, ok = true;
+        try {
+          var r = await fetchJson('https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&countrycodes=us&viewbox=-74.26,40.92,-73.68,40.49&bounded=1&q=' + encodeURIComponent(q));
+          hit = Array.isArray(r) && r[0] ? r[0] : null;
+        } catch (e) { ok = false; }
+        if (ok) {
+          var upd;
+          var lat = hit ? Number(hit.lat) : NaN, lng = hit ? Number(hit.lon) : NaN;
+          if (hit && isFinite(lat) && isFinite(lng)) {
+            if (hasGeo(p) && distM(p.lat, p.lng, lat, lng) > 1500) upd = { geo: 'ok' };
+            else upd = { lat: lat, lng: lng, geo: 'ok' };
+          } else {
+            upd = hasGeo(p) ? { geo: 'ok' } : { geo: 'falhou' };
+          }
+          try { await dbRef.doc('itens/' + p.id).update(upd); } catch (e) {}
+        }
+        await esperar(1100);
+      }
+    } finally { GEO.busy = false; }
+  }
+
+  /* ---------- lugares da lista do Google Maps ---------- */
+  function normTitulo(s) { return String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, ' ').trim(); }
+  async function importarSeed() {
+    var v = 0;
+    try { v = Number(localStorage.getItem('viagem.seed')) || 0; } catch (e) {}
+    if (v >= SEED_VERSAO || !SEED_LUGARES.length || !dbRef) return;
+    remember('viagem.seed', String(SEED_VERSAO));
+    var existentes = of('lugar').map(function (p) { return normTitulo(p.titulo); });
+    var now = Date.now(), n = 0;
+    S.pausa = true;
+    try {
+      for (var k = 0; k < SEED_LUGARES.length; k++) {
+        var s = SEED_LUGARES[k], nn = normTitulo(s.titulo);
+        var dup = existentes.some(function (e) { return e === nn || (e.length > 5 && nn.length > 5 && (e.indexOf(nn) >= 0 || nn.indexOf(e) >= 0)); });
+        if (dup) continue;
+        var out = Object.assign({ tipo: 'lugar', nota: '', dia: '', ordem: 0, periodo: '', entrada: '', preco: '', criadoEm: now + k, atualizadoEm: now + k }, clone(s));
+        await dbRef.collection('itens').doc().set(out);
+        n++;
+      }
+    } catch (e) { toast(writeError(e)); }
+    S.pausa = false;
+    render();
+    if (n) toast(n + (n === 1 ? ' lugar da sua lista entrou' : ' lugares da sua lista entraram') + ' no app');
+  }
+
+  /* ---------- ações dos lugares ---------- */
+  async function setDia(id, dia) {
+    var it = S.items.find(function (x) { return x.id === id; });
+    if (!it) return false;
+    var upd = { dia: isDate(dia) ? dia : '', ordem: isDate(dia) ? proximaOrdem(dia, id) : 0, atualizadoEm: Date.now() };
+    try { await dbRef.doc('itens/' + id).update(upd); return true; }
+    catch (e) { toast(writeError(e)); return false; }
+  }
+  async function salvarOrdem(ids, campo) {
+    if (!dbRef) return;
+    campo = campo === 'rank' ? 'rank' : 'ordem';
+    S.pausa = true;
+    try {
+      for (var k = 0; k < ids.length; k++) {
+        var it = S.items.find(function (x) { return x.id === ids[k]; });
+        var upd = {}; upd[campo] = k + 1;
+        if (it && Number(it[campo]) !== k + 1) await dbRef.doc('itens/' + ids[k]).update(upd);
+      }
+    } catch (e) { toast(writeError(e)); }
+    S.pausa = false;
+    render();
+  }
+  async function toggleDiaOk(d) {
+    if (!dbRef || !isDate(d)) return;
+    var next = clone(S.diasOk || {});
+    var vai = !next[d];
+    if (vai) next[d] = true; else delete next[d];
+    try {
+      await dbRef.doc('viagem/dias').set({ confirmados: next, atualizadoEm: Date.now() });
+      toast(vai ? 'Dia confirmado. Os lugares saíram do mapa.' : 'Dia reaberto. Os lugares voltaram pro mapa.');
+    } catch (e) { toast(writeError(e)); }
+  }
+  function renumerar(ol) {
+    Array.prototype.forEach.call(ol.children, function (li, i) {
+      var n = li.querySelector('.stop-n');
+      if (n) n.textContent = String(i + 1);
+    });
+  }
+
+  /* ---------- render ---------- */
+  var appEl = document.getElementById('app');
+  function render() {
+    if (S.pausa || DRAG) { S.renderPendente = true; return; }
+    S.renderPendente = false;
+    var fn = { hoje: viewHoje, roteiro: viewRoteiro, shows: viewShows, gastos: viewGastos, lugares: viewLugares }[S.view] || viewHoje;
+    // guarda o que está sendo digitado e o foco, para não perder ao redesenhar
+    var keep = {}, focusId = null, selS = null, selE = null;
+    Array.prototype.forEach.call(appEl.querySelectorAll('[data-keep]'), function (el) { keep[el.id] = el.value; });
+    var ae = document.activeElement;
+    if (ae && ae.id && appEl.contains(ae)) {
+      focusId = ae.id;
+      try { selS = ae.selectionStart; selE = ae.selectionEnd; } catch (x) {}
+    }
+    var oldStrip = appEl.querySelector('.day-strip');
+    var stripX = oldStrip ? oldStrip.scrollLeft : null, stripDay = MAPDATA && MAPDATA.dia;
+    MAPDATA = null;
+    appEl.innerHTML = fn();
+    syncMap();
+    var strip = appEl.querySelector('.day-strip');
+    if (strip) {
+      var on = strip.querySelector('[aria-pressed="true"]');
+      if (stripX != null && stripDay === S.mapDay) strip.scrollLeft = stripX;
+      else if (on) strip.scrollLeft = on.offsetLeft - strip.clientWidth / 2 + on.offsetWidth / 2;
+    }
+    if (MAP.focarCard) {
+      MAP.focarCard = false;
+      var card = appEl.querySelector('.map-card');
+      if (card) { try { card.focus({ preventScroll: true }); } catch (x) {} focusId = null; }
+    }
+    Object.keys(keep).forEach(function (id) { var el = document.getElementById(id); if (el) el.value = keep[id]; });
+    if (focusId) {
+      var fe = document.getElementById(focusId);
+      if (fe && appEl.contains(fe)) {
+        try { fe.focus({ preventScroll: true }); } catch (x) { fe.focus(); }
+        try { if (selS != null) fe.setSelectionRange(selS, selE); } catch (x) {}
+      }
+    }
+    Array.prototype.forEach.call(document.querySelectorAll('.tab'), function (a) {
+      if (a.getAttribute('data-tab') === S.view) a.setAttribute('aria-current', 'page');
+      else a.removeAttribute('aria-current');
+    });
+  }
+  function setViewFromHash() {
+    var v = (location.hash || '').replace('#', '');
+    S.view = VIEWS.indexOf(v) >= 0 ? v : 'hoje';
+  }
+
+  /* ---------- folha de item ---------- */
+  var sheetRoot = document.getElementById('sheet-root');
+  function defaultsFor(tipo, d) {
+    if (tipo === 'gasto' && GASTO_CATS.indexOf(d.categoria) < 0) d.categoria = 'Comida';
+    if (tipo === 'lugar' && !CAT_INFO[d.categoria]) d.categoria = d.categoria ? catOf(d) : 'Passeio';
+    if (!d.moeda) d.moeda = 'USD';
+    if (!STATUS[d.status]) d.status = 'quero';
+    if (d.contaGasto == null) d.contaGasto = true;
+    if (d.cota == null) d.cota = true;
+    return d;
+  }
+  function openItem(id, preset) {
+    var it = id ? S.items.find(function (x) { return x.id === id; }) : null;
+    var d = it ? clone(it) : { tipo: (preset && preset.tipo) || 'show', dia: (preset && preset.dia) || '' };
+    sheet = { kind: 'item', id: it ? it.id : null, draft: defaultsFor(d.tipo, d), opener: document.activeElement, armed: false };
+    renderSheet(true);
+  }
+  function openSettings() {
+    sheet = { kind: 'settings', draft: clone(S.config), opener: document.activeElement };
+    if (!sheet.draft.trechos || !sheet.draft.trechos.length) sheet.draft.trechos = [{ cidade: '', desde: '' }];
+    renderSheet(true);
+  }
+  function closeSheet() {
+    if (!sheet) return;
+    var opener = sheet.opener;
+    sheet = null;
+    sheetRoot.innerHTML = '';
+    document.body.style.overflow = '';
+    if (opener && document.body.contains(opener)) { try { opener.focus(); } catch (e) {} }
+  }
+  function fieldWrap(id, label, control, hint) {
+    return '<div class="field"><label for="' + id + '">' + esc(label) + '</label>' + control + (hint ? '<p class="hint">' + esc(hint) + '</p>' : '') + '</div>';
+  }
+  function txt(id, name, val, ph, extra) {
+    return '<input id="' + id + '" name="' + name + '" type="text" autocomplete="off" value="' + esc(val || '') + '"' + (ph ? ' placeholder="' + esc(ph) + '"' : '') + (extra || '') + '>';
+  }
+  function sel(id, name, opts, val) {
+    return '<select id="' + id + '" name="' + name + '">' + opts.map(function (o) {
+      var v = Array.isArray(o) ? o[0] : o, l = Array.isArray(o) ? o[1] : o;
+      return '<option value="' + esc(v) + '"' + (v === val ? ' selected' : '') + '>' + esc(l) + '</option>';
+    }).join('') + '</select>';
+  }
+  function dateTime(d, optional) {
+    return '<div class="two">' +
+      fieldWrap('f-dia', optional ? 'Dia (opcional)' : 'Dia', '<input id="f-dia" name="dia" type="date" value="' + esc(isDate(d.dia) ? d.dia : '') + '">') +
+      fieldWrap('f-hora', 'Horário', '<input id="f-hora" name="hora" type="time" value="' + esc(d.hora || '') + '">') + '</div>';
+  }
+  function valueRow(d, label, second) {
+    return '<div class="two">' +
+      fieldWrap('f-valor', label, txt('f-valor', 'valor', moneyInput(d.valor), '0,00', ' inputmode="decimal"')) +
+      (second || fieldWrap('f-moeda', 'Moeda', sel('f-moeda', 'moeda', [['USD', 'US$ (dólar)'], ['BRL', 'R$ (real)']], d.moeda))) + '</div>';
+  }
+  function itemForm(d) {
+    var tipo = d.tipo;
+    var h = '<fieldset class="fs"><legend class="legend">Tipo</legend><div class="tiles">' + TIPOS.map(function (t) {
+      var on = t.id === tipo;
+      return '<label class="tile' + (on ? ' on' : '') + '"><input type="radio" name="tipo" value="' + t.id + '"' + (on ? ' checked' : '') + '>' + I[t.id] + '<span>' + t.label + '</span></label>';
+    }).join('') + '</div></fieldset>';
+    var L = {
+      show: ['Nome do show', 'Ex.: Galileo'], programa: ['O que vai fazer', 'Ex.: Top of the Rock'],
+      gasto: ['Descrição', 'Ex.: Almoço'], lugar: ['Nome do lugar', 'Ex.: Strand Book Store'], lembrete: ['Lembrete', 'Ex.: Levar o passaporte']
+    }[tipo];
+    h += fieldWrap('f-titulo', L[0], txt('f-titulo', 'titulo', d.titulo, L[1]));
+    h += '<p class="err" id="f-err" role="alert" hidden></p>';
+
+    if (tipo === 'show') {
+      h += dateTime(d, true);
+      h += fieldWrap('f-local', 'Teatro ou local', txt('f-local', 'local', d.local, 'Ex.: Shubert Theatre'));
+      h += '<fieldset class="fs"><legend class="legend">Situação do ingresso</legend><div class="pills">' + Object.keys(STATUS).map(function (k) {
+        var on = d.status === k;
+        return '<label class="pill-opt' + (on ? ' on' : '') + '"><input type="radio" name="status" value="' + k + '"' + (on ? ' checked' : '') + '>' + STATUS[k] + '</label>';
+      }).join('') + '</div></fieldset>';
+      h += valueRow(d, 'Valor (opcional)');
+      h += fieldWrap('f-assento', 'Setor e assento', txt('f-assento', 'assento', d.assento, 'Ex.: Mezzanine, fila C, 104'));
+      h += '<label class="check" for="f-conta"><input id="f-conta" name="contaGasto" type="checkbox"' + (d.contaGasto !== false ? ' checked' : '') + '>Contar o valor em Gastos (Ingressos)</label>';
+    } else if (tipo === 'programa') {
+      h += dateTime(d, true);
+      h += fieldWrap('f-local', 'Onde', txt('f-local', 'local', d.local, 'Endereço ou ponto de encontro'));
+    } else if (tipo === 'gasto') {
+      h += valueRow(d, 'Valor');
+      h += '<div class="two">' + fieldWrap('f-cat', 'Categoria', sel('f-cat', 'categoria', GASTO_CATS, d.categoria)) +
+        fieldWrap('f-dia', 'Dia', '<input id="f-dia" name="dia" type="date" value="' + esc(isDate(d.dia) ? d.dia : '') + '">') + '</div>';
+      if (d.categoria === 'Compras') {
+        h += '<label class="check" for="f-cota"><input id="f-cota" name="cota" type="checkbox"' + (d.cota !== false ? ' checked' : '') + '>Conta na cota da alfândega (desmarque para livros e roupa)</label>';
+      }
+    } else if (tipo === 'lugar') {
+      var catAtual = catOf(d);
+      h += '<fieldset class="fs"><legend class="legend">Ícone no mapa</legend><div class="tiles tiles4">' + LUGAR_CATS.map(function (c) {
+        var on = c === catAtual;
+        return '<label class="tile' + (on ? ' on' : '') + '"><input type="radio" name="categoria" value="' + c + '"' + (on ? ' checked' : '') + '>' + catDot(d, 30, c) + '<span>' + c + '</span></label>';
+      }).join('') + '</div></fieldset>';
+      h += fieldWrap('f-local', 'Endereço', txt('f-local', 'local', d.local, 'Ex.: 828 Broadway'), 'O app acha o lugar no mapa por esse endereço. Sem endereço, ele tenta pelo nome.');
+      h += '<fieldset class="fs"><legend class="legend">Quando pretende ir</legend><div class="pills">' + [['manha', 'Manhã'], ['tarde', 'Tarde'], ['noite', 'Noite'], ['', 'Tanto faz']].map(function (o) {
+        var on = (perOf(d) || '') === o[0];
+        return '<label class="pill-opt' + (o[0] ? ' per-' + o[0] : '') + (on ? ' on' : '') + '"><input type="radio" name="periodo" value="' + o[0] + '"' + (on ? ' checked' : '') + '>' + o[1] + '</label>';
+      }).join('') + '</div></fieldset>';
+      h += '<fieldset class="fs"><legend class="legend">Entrada</legend><div class="pills">' + [['gratis', 'Grátis'], ['pago', 'Pago'], ['', 'Não sei']].map(function (o) {
+        var on = (d.entrada === 'gratis' || d.entrada === 'pago' ? d.entrada : '') === o[0];
+        return '<label class="pill-opt' + (on ? ' on' : '') + '"><input type="radio" name="entrada" value="' + o[0] + '"' + (on ? ' checked' : '') + '>' + o[1] + '</label>';
+      }).join('') + '</div></fieldset>';
+      if (d.entrada === 'pago') h += fieldWrap('f-preco', 'Quanto custa (opcional)', txt('f-preco', 'preco', d.preco, 'Ex.: US$ 30'));
+      var diasOpt = diasMapa();
+      if (isDate(d.dia) && diasOpt.indexOf(d.dia) < 0) diasOpt.push(d.dia);
+      h += fieldWrap('f-dia', 'Dia do roteiro', sel('f-dia', 'dia', [['', 'Ainda sem dia']].concat(diasOpt.map(function (x) {
+        return [x, dayLabel(x) + (diaOk(x) ? ' (confirmado)' : '')];
+      })), isDate(d.dia) ? d.dia : ''));
+    } else if (tipo === 'lembrete') {
+      h += dateTime(d, true);
+    }
+    h += fieldWrap('f-nota', 'Anotação', '<textarea id="f-nota" name="nota" rows="3" placeholder="Link, código da reserva, o que levar…">' + esc(d.nota || '') + '</textarea>');
+    return h;
+  }
+  function settingsForm(c) {
+    var h = fieldWrap('s-nome', 'Nome da viagem', txt('s-nome', 'nome', c.nome, 'Ex.: Nova York + Orlando'));
+    h += '<p class="err" id="f-err" role="alert" hidden></p>';
+    h += '<div class="two">' +
+      fieldWrap('s-inicio', 'Começa em', '<input id="s-inicio" name="inicio" type="date" value="' + esc(c.inicio || '') + '">') +
+      fieldWrap('s-fim', 'Termina em', '<input id="s-fim" name="fim" type="date" value="' + esc(c.fim || '') + '">') + '</div>';
+    h += '<fieldset class="fs"><legend class="legend">Cidades</legend><div style="display:flex;flex-direction:column;gap:8px" id="trechos">' +
+      (c.trechos || []).map(function (t, i) {
+        return '<div class="trecho">' +
+          '<input type="text" class="tr-cidade" aria-label="Cidade ' + (i + 1) + '" placeholder="Cidade" value="' + esc(t.cidade || '') + '">' +
+          '<input type="date" class="tr-desde" aria-label="Chegada na cidade ' + (i + 1) + '" value="' + esc(t.desde || '') + '">' +
+          '<button type="button" class="icon-btn soft" data-action="rm-trecho" data-i="' + i + '" aria-label="Remover cidade ' + (i + 1) + '">' + I.x + '</button></div>';
+      }).join('') + '</div>' +
+      '<p class="hint" style="margin-top:6px">Cada cidade vale do dia de chegada até a chegada na próxima.</p>' +
+      '<button type="button" class="link-btn" data-action="add-trecho" style="align-self:flex-start">Adicionar cidade</button></fieldset>';
+    h += '<fieldset class="fs"><legend class="legend">Cotação do dólar</legend>' +
+      '<label class="check" for="s-auto"><input id="s-auto" name="cotacaoAuto" type="checkbox"' + (c.cotacaoAuto !== false ? ' checked' : '') + '>Atualizar sozinha pela internet</label>' +
+      '<p class="hint num" style="margin-bottom:10px">' + esc(cambioInfo()) + '</p>' +
+      '<div class="two">' +
+      fieldWrap('s-iof', 'IOF do cartão (%)', txt('s-iof', 'iof', moneyInput(c.iof == null ? DEFAULT_CONFIG.iof : c.iof), '3,5', ' inputmode="decimal"')) +
+      fieldWrap('s-cot', 'Cotação fixa (R$)', txt('s-cot', 'cotacao', moneyInput(c.cotacao), '5,38', ' inputmode="decimal"')) +
+      '</div>' +
+      '<p class="hint" style="margin-top:6px">A fixa vale com a opção desligada ou enquanto o app não consegue buscar o dólar. Cada gasto guarda a cotação do dia em que foi lançado.</p>' +
+      '<button type="button" class="link-btn" data-action="refresh-rate" style="align-self:flex-start">Atualizar agora</button></fieldset>';
+    h += '<fieldset class="fs"><legend class="legend">Orçamento por categoria (US$)</legend><div class="two">' +
+      GASTO_CATS.map(function (cat, i) {
+        var v = c.orcamento && num(c.orcamento[cat]) > 0 ? moneyInput(num(c.orcamento[cat])) : '';
+        return fieldWrap('s-orc' + i, cat, txt('s-orc' + i, 'orc' + i, v, '0', ' inputmode="decimal"'));
+      }).join('') + '</div></fieldset>';
+    h += '<fieldset class="fs"><legend class="legend">Backup</legend>' +
+      '<p class="hint" style="margin-bottom:10px">Seus dados ficam salvos só neste celular, neste navegador. Baixe um backup de vez em quando, principalmente antes de viajar.</p>' +
+      (sheet && sheet.importData ?
+        '<div class="notice" style="flex-direction:column;align-items:stretch"><span>Restaurar troca tudo o que está no app pelo backup (' + sheet.importData.count + (sheet.importData.count === 1 ? ' item' : ' itens') + '). Quer continuar?</span>' +
+        '<div class="two"><button type="button" class="btn" data-action="import-confirm">Restaurar</button><button type="button" class="btn ghost" data-action="import-cancel">Cancelar</button></div></div>'
+      :
+        '<div class="two"><button type="button" class="btn ghost" data-action="export">Baixar backup</button>' +
+        '<label class="btn ghost" for="s-import">Restaurar backup</label></div>' +
+        '<input id="s-import" type="file" accept="application/json,.json" class="sr">') +
+      '</fieldset>';
+    return h;
+  }
+  function lancarForm() {
+    var items = sheet.ids.map(function (id) { return S.sim.find(function (x) { return x.id === id; }); }).filter(Boolean);
+    var total = items.reduce(function (a, i) { return a + simBRL(i); }, 0);
+    var h = '<p class="sub">Eles entram em Gastos com a cotação de hoje (R$ ' + esc(fmtNum(rate(), 2)) + '). Escolha a categoria de cada um.</p>';
+    h += '<p class="err" id="f-err" role="alert" hidden></p>';
+    h += '<ul class="list">' + items.map(function (i, k) {
+      return '<li class="lanc-item"><div class="sec-head"><span class="t">' + esc(i.nome) + '</span><span class="amt">' + esc(money(i.valor, i.moeda, 2)) + '</span></div>' +
+        '<label class="sr" for="l-cat-' + k + '">Categoria de ' + esc(i.nome) + '</label>' +
+        sel('l-cat-' + k, 'cat' + k, GASTO_CATS, 'Compras') + '</li>';
+    }).join('') + '</ul>';
+    h += fieldWrap('l-dia', 'Dia da compra', '<input id="l-dia" name="dia" type="date" value="' + todayStr() + '">');
+    h += '<label class="check" for="l-tirar"><input id="l-tirar" name="tirar" type="checkbox" checked>Tirar da simulação depois de lançar</label>';
+    h += '<div class="sec-head"><span class="m">Total</span><span class="amt">' + esc(money(total, 'BRL', 2)) + '</span></div>';
+    return h;
+  }
+  function openLancar() {
+    var marked = S.sim.filter(function (i) { return i.marcado; }).sort(byCreated);
+    if (!marked.length) return;
+    sheet = { kind: 'lancar', ids: marked.map(function (i) { return i.id; }), opener: document.activeElement };
+    renderSheet(true);
+  }
+  function filtrosBody() {
+    var f = S.mapFilter, all = of('lugar');
+    function chip(g, k, label, icon, cls) {
+      var on = !!f[g][k];
+      return '<button type="button" class="chip' + (icon ? ' chip-ic' : '') + (cls ? ' ' + cls : '') + '" data-action="mf" data-g="' + g + '" data-k="' + k + '" aria-pressed="' + on + '">' + (icon || '') + esc(label) + '</button>';
+    }
+    function grupo(title, chips) {
+      return '<fieldset class="fs"><legend class="legend">' + title + '</legend><div class="chips-wrap">' + chips.join('') + '</div></fieldset>';
+    }
+    var cats = LUGAR_CATS.filter(function (c) { return f.cat[c] || all.some(function (p) { return catOf(p) === c; }); });
+    return grupo('Tipo de lugar', cats.map(function (c) { return chip('cat', c, c, catDot({}, 26, c)); })) +
+      grupo('Entrada', [chip('preco', 'gratis', 'Grátis'), chip('preco', 'pago', 'Pago')]) +
+      grupo('Quando pretendo ir', Object.keys(PERIODOS).map(function (k) { return chip('per', k, PERIODOS[k].label, pathSvg(PERIODOS[k].d, 16, 2.2), 'per-' + k); })) +
+      grupo('Roteiro', [chip('rot', 'com', 'Já tem dia'), chip('rot', 'sem', 'Ainda sem dia')]);
+  }
+  function porDiaBody(p) {
+    var days = diasMapa();
+    var h = '<p class="sub sub-sheet">' + esc(p.titulo) + '</p><ul class="list">';
+    h += days.map(function (x) {
+      var n = lugaresDoDia(x).filter(function (q) { return q.id !== p.id; }).length;
+      var on = p.dia === x;
+      return '<li><button type="button" class="row" data-action="set-dia" data-dia="' + x + '" aria-pressed="' + on + '">' +
+        '<span class="grow"><span class="t">' + esc(dayLabel(x)) + '</span><span class="m">' + (n ? n + (n === 1 ? ' outro lugar' : ' outros lugares') : 'Nada marcado ainda') + (diaOk(x) ? ' · confirmado' : '') + '</span></span>' +
+        (on ? I.check : '') + '</button></li>';
+    }).join('');
+    if (isDate(p.dia)) h += '<li><button type="button" class="row" data-action="set-dia" data-dia=""><span class="grow"><span class="t">Tirar do roteiro</span><span class="m">Fica sem dia</span></span></button></li>';
+    return h + '</ul>';
+  }
+  function paradaBody() {
+    var d = sheet.dia;
+    var outros = of('lugar').filter(function (p) { return p.dia !== d; });
+    var sem = outros.filter(function (p) { return !isDate(p.dia); }).sort(byTitulo);
+    var com = outros.filter(function (p) { return isDate(p.dia); }).sort(byWhen);
+    function row(p) {
+      return '<li><button type="button" class="row" data-action="add-parada" data-id="' + esc(p.id) + '">' + catDot(p, 32) +
+        '<span class="grow"><span class="stop-name">' + pname(p, 't') + freeBadge(p) + '</span><span class="m">' + esc(isDate(p.dia) ? 'Está no ' + dayLabel(p.dia) : catOf(p)) + '</span></span>' + I.plus + '</button></li>';
+    }
+    var h = '<p class="sub sub-sheet">Toque pra pôr no ' + esc(dayLabel(d)) + '. Pode escolher vários.</p>';
+    if (!outros.length) return h + '<p class="hint">Todos os lugares já estão neste dia.</p>';
+    if (sem.length) h += '<section aria-labelledby="pd-sem"><h3 class="legend" id="pd-sem" style="margin:0">Ainda sem dia</h3><ul class="list">' + sem.map(row).join('') + '</ul></section>';
+    if (com.length) h += '<section aria-labelledby="pd-com"><h3 class="legend" id="pd-com" style="margin:0">Em outros dias</h3><ul class="list">' + com.map(row).join('') + '</ul></section>';
+    return h;
+  }
+  function renderPickSheet(first) {
+    var title, body, foot;
+    if (sheet.kind === 'filtros') {
+      var n = of('lugar').filter(passaFiltro).length;
+      title = 'Filtrar lugares';
+      body = filtrosBody();
+      foot = '<button type="button" class="btn ghost" data-action="mf-limpar">Limpar</button>' +
+        '<button type="button" class="btn save" data-action="close-sheet">' + (n ? 'Mostrar ' + n + (n === 1 ? ' lugar' : ' lugares') : 'Nenhum lugar com esses filtros') + '</button>';
+    } else if (sheet.kind === 'pordia') {
+      var p = S.items.find(function (x) { return x.id === sheet.id; });
+      if (!p) { closeSheet(); return; }
+      title = isDate(p.dia) ? 'Trocar o dia' : 'Pôr num dia';
+      body = porDiaBody(p);
+      foot = '';
+    } else {
+      title = 'Adicionar parada';
+      body = paradaBody();
+      foot = '<button type="button" class="btn save" data-action="close-sheet">Pronto</button>';
+    }
+    var scroll = 0;
+    var oldBody = sheetRoot.querySelector('.sheet-body');
+    if (oldBody && !first) scroll = oldBody.scrollTop;
+    sheetRoot.innerHTML = '<div class="overlay"><div class="scrim" data-action="close-sheet"></div>' +
+      '<section class="sheet' + (first ? ' anim' : '') + '" role="dialog" aria-modal="true" aria-labelledby="sheet-title">' +
+      '<div class="grip" aria-hidden="true"></div>' +
+      '<div class="sheet-head"><h2 id="sheet-title" tabindex="-1">' + title + '</h2>' +
+      '<button type="button" class="link-btn" data-action="close-sheet">Fechar</button></div>' +
+      '<div class="sheet-body">' + body + '</div>' +
+      (foot ? '<div class="sheet-foot">' + foot + '</div>' : '') +
+      '</section></div>';
+    document.body.style.overflow = 'hidden';
+    var nb = sheetRoot.querySelector('.sheet-body');
+    if (nb && scroll) nb.scrollTop = scroll;
+    if (first) { var hd = document.getElementById('sheet-title'); if (hd) hd.focus(); }
+  }
+  function openPick(kind, extra) {
+    sheet = Object.assign({ kind: kind, opener: document.activeElement }, extra || {});
+    renderSheet(true);
+  }
+  function renderSheet(first) {
+    if (!sheet) return;
+    if (sheet.kind === 'filtros' || sheet.kind === 'pordia' || sheet.kind === 'parada') return renderPickSheet(first);
+    var isItem = sheet.kind === 'item', isLanc = sheet.kind === 'lancar';
+    var n = isLanc ? sheet.ids.length : 0;
+    var title = isLanc ? 'Lançar ' + n + (n === 1 ? ' item' : ' itens') : isItem ? (sheet.id ? 'Editar item' : 'Novo item') : 'Ajustes da viagem';
+    var body = isLanc ? lancarForm() : isItem ? itemForm(sheet.draft) : settingsForm(sheet.draft);
+    var saveLabel = isLanc ? 'Lançar ' + n + (n === 1 ? ' gasto' : ' gastos') : 'Salvar';
+    var del = (isItem && sheet.id) ? '<button type="button" class="btn danger' + (sheet.armed ? ' armed' : '') + '" data-action="delete">' + (sheet.armed ? 'Confirmar' : 'Apagar') + '</button>' : '';
+    var scroll = 0;
+    var oldBody = sheetRoot.querySelector('.sheet-body');
+    if (oldBody && !first) scroll = oldBody.scrollTop;
+    sheetRoot.innerHTML = '<div class="overlay"><div class="scrim" data-action="close-sheet"></div>' +
+      '<section class="sheet' + (first ? ' anim' : '') + '" role="dialog" aria-modal="true" aria-labelledby="sheet-title">' +
+      '<div class="grip" aria-hidden="true"></div>' +
+      '<div class="sheet-head"><h2 id="sheet-title" tabindex="-1">' + title + '</h2>' +
+      '<button type="button" class="link-btn" data-action="close-sheet">Cancelar</button></div>' +
+      '<form id="sheet-form" class="sheet-body" novalidate>' + body + '</form>' +
+      '<div class="sheet-foot">' + del + '<button type="submit" form="sheet-form" class="btn save" id="save-btn" data-label="' + saveLabel + '">' + saveLabel + '</button></div>' +
+      '</section></div>';
+    document.body.style.overflow = 'hidden';
+    var nb = sheetRoot.querySelector('.sheet-body');
+    if (nb && scroll) nb.scrollTop = scroll;
+    if (first) { var hd = document.getElementById('sheet-title'); if (hd) hd.focus(); }
+  }
+  function readItemForm() {
+    var f = document.getElementById('sheet-form');
+    var d = clone(sheet.draft);
+    if (!f) return d;
+    var tipoEl = f.querySelector('input[name="tipo"]:checked');
+    if (tipoEl) d.tipo = tipoEl.value;
+    ['titulo', 'dia', 'hora', 'local', 'valor', 'moeda', 'assento', 'categoria', 'nota', 'preco', 'periodo', 'entrada'].forEach(function (k) {
+      var el = f.elements.namedItem(k);
+      if (el && el.value !== undefined) d[k] = el.value;
+    });
+    var stEl = f.querySelector('input[name="status"]:checked');
+    if (stEl) d.status = stEl.value;
+    ['contaGasto', 'cota', 'feito'].forEach(function (k) {
+      var el = f.elements.namedItem(k);
+      if (el) d[k] = el.checked;
+    });
+    return d;
+  }
+  function readSettingsForm() {
+    var f = document.getElementById('sheet-form');
+    var c = clone(sheet.draft);
+    if (!f) return c;
+    c.nome = f.elements.namedItem('nome').value;
+    c.inicio = f.elements.namedItem('inicio').value;
+    c.fim = f.elements.namedItem('fim').value;
+    c.cotacao = f.elements.namedItem('cotacao').value;
+    c.cotacaoAuto = f.elements.namedItem('cotacaoAuto').checked;
+    c.iof = f.elements.namedItem('iof').value;
+    c.trechos = Array.prototype.map.call(f.querySelectorAll('.trecho'), function (row) {
+      return { cidade: row.querySelector('.tr-cidade').value, desde: row.querySelector('.tr-desde').value };
+    });
+    c.orcamento = {};
+    GASTO_CATS.forEach(function (cat, i) { var v = f.elements.namedItem('orc' + i).value; c.orcamento[cat] = v; });
+    return c;
+  }
+  function showErr(msg) {
+    var e = document.getElementById('f-err');
+    if (e) { e.textContent = msg; e.hidden = false; e.scrollIntoView({ block: 'center' }); }
+  }
+  function setSaving(on) {
+    var b = document.getElementById('save-btn');
+    if (b) { b.disabled = on; b.textContent = on ? 'Salvando…' : (b.getAttribute('data-label') || 'Salvar'); }
+  }
+  function writeError(e) {
+    var code = e && e.code;
+    if (code === 'quota_exceeded') return 'O celular não deixou salvar (espaço cheio ou navegador bloqueando). Tente de novo.';
+    if (code === 'revoked' || code === 'not_granted') return 'Você não tem permissão para salvar neste app.';
+    return 'Não deu para salvar. Confira a conexão e tente de novo.';
+  }
+  async function getDb() {
+    var db = await dbReady;
+    if (!db) { toast('Este navegador não está deixando o app salvar dados. Abra no Chrome, fora da aba anônima.'); }
+    return db;
+  }
+  async function saveItem() {
+    var d = readItemForm();
+    sheet.draft = d;
+    var titulo = String(d.titulo || '').trim();
+    if (!titulo) return showErr('Dê um nome para o item.');
+    var out = { tipo: d.tipo, titulo: titulo, nota: String(d.nota || '').trim(), criadoEm: d.criadoEm || Date.now(), atualizadoEm: Date.now() };
+    var t = d.tipo;
+    if (t === 'show' || t === 'programa' || t === 'lembrete' || t === 'gasto' || t === 'lugar') out.dia = isDate(d.dia) ? d.dia : '';
+    if (t === 'show' || t === 'programa' || t === 'lembrete') out.hora = /^\d{2}:\d{2}$/.test(d.hora || '') ? d.hora : '';
+    if (t === 'show' || t === 'programa' || t === 'lugar') out.local = String(d.local || '').trim();
+    if (t === 'show') {
+      out.status = STATUS[d.status] ? d.status : 'quero';
+      out.valor = parseMoney(d.valor);
+      out.moeda = d.moeda === 'BRL' ? 'BRL' : 'USD';
+      out.assento = String(d.assento || '').trim();
+      out.contaGasto = d.contaGasto !== false;
+      out.cotacao = num(d.cotacao) > 0 ? num(d.cotacao) : rate();
+      var origS = sheet.id ? S.items.find(function (x) { return x.id === sheet.id; }) : null;
+      if (origS && origS.catalogo) out.catalogo = origS.catalogo;
+      out.rank = origS && Number(origS.rank) > 0 ? Number(origS.rank) : proximoRank();
+    }
+    if (t === 'gasto') {
+      var v = parseMoney(d.valor);
+      if (!(v > 0)) return showErr('Coloque o valor do gasto.');
+      out.valor = v;
+      out.moeda = d.moeda === 'BRL' ? 'BRL' : 'USD';
+      out.categoria = GASTO_CATS.indexOf(d.categoria) >= 0 ? d.categoria : 'Outros';
+      if (out.categoria === 'Compras') out.cota = d.cota !== false;
+      out.cotacao = num(d.cotacao) > 0 ? num(d.cotacao) : rate();
+    }
+    if (t === 'lugar') {
+      out.categoria = CAT_INFO[d.categoria] ? d.categoria : catOf(d);
+      out.periodo = PERIODOS[d.periodo] ? d.periodo : '';
+      out.entrada = d.entrada === 'gratis' || d.entrada === 'pago' ? d.entrada : '';
+      out.preco = out.entrada === 'pago' ? String(d.preco || '').trim() : '';
+      var orig = sheet.id ? S.items.find(function (x) { return x.id === sheet.id; }) : null;
+      var mesmoLugar = orig && orig.tipo === 'lugar' && String(orig.local || '').trim() === out.local &&
+        (out.local || String(orig.titulo || '').trim() === titulo);
+      if (mesmoLugar && hasGeo(orig)) { out.lat = orig.lat; out.lng = orig.lng; out.geo = orig.geo === 'aprox' ? 'aprox' : 'ok'; }
+      else if (mesmoLugar && orig.geo === 'falhou') out.geo = 'falhou';
+      if (out.dia && orig && orig.dia === out.dia && Number(orig.ordem) > 0) out.ordem = Number(orig.ordem);
+      else out.ordem = out.dia ? proximaOrdem(out.dia, sheet.id) : 0;
+    }
+    if (t === 'lembrete') out.feito = !!d.feito;
+    var db = await getDb();
+    if (!db) return;
+    setSaving(true);
+    var wasEdit = !!sheet.id;
+    try {
+      var ref = wasEdit ? db.doc('itens/' + sheet.id) : db.collection('itens').doc();
+      await ref.set(out);
+      if (t === 'show' || t === 'programa' || t === 'lembrete' || t === 'lugar') { if (out.dia) S.day = out.dia; }
+      closeSheet();
+      toast(wasEdit ? 'Atualizado' : 'Salvo');
+    } catch (e) {
+      setSaving(false);
+      showErr(writeError(e));
+    }
+  }
+  async function saveSettings() {
+    var c = readSettingsForm();
+    sheet.draft = c;
+    if (!isDate(c.inicio) || !isDate(c.fim)) return showErr('Preencha o começo e o fim da viagem.');
+    if (c.fim < c.inicio) return showErr('O fim precisa ser depois do começo.');
+    if (diffDays(c.inicio, c.fim) > 119) return showErr('A viagem pode ter no máximo 120 dias.');
+    var out = {
+      nome: String(c.nome || '').trim() || 'Minha viagem',
+      inicio: c.inicio, fim: c.fim,
+      trechos: c.trechos.filter(function (t) { return String(t.cidade || '').trim(); })
+        .map(function (t) { return { cidade: String(t.cidade).trim(), desde: isDate(t.desde) ? t.desde : c.inicio }; }),
+      cotacao: parseMoney(c.cotacao) > 0 ? parseMoney(c.cotacao) : DEFAULT_CONFIG.cotacao,
+      cotacaoAuto: !!c.cotacaoAuto,
+      iof: (parseMoney(c.iof) !== null && parseMoney(c.iof) >= 0) ? parseMoney(c.iof) : DEFAULT_CONFIG.iof,
+      orcamento: {},
+      atualizadoEm: Date.now()
+    };
+    GASTO_CATS.forEach(function (cat) { var v = parseMoney(c.orcamento[cat]); if (v > 0) out.orcamento[cat] = v; });
+    var db = await getDb();
+    if (!db) return;
+    setSaving(true);
+    try {
+      await db.doc('viagem/config').set(out);
+      closeSheet();
+      toast('Ajustes salvos');
+    } catch (e) {
+      setSaving(false);
+      showErr(writeError(e));
+    }
+  }
+  async function deleteItem() {
+    if (!sheet || !sheet.id) return;
+    if (!sheet.armed) {
+      sheet.draft = readItemForm();
+      sheet.armed = true;
+      renderSheet(false);
+      var b = sheetRoot.querySelector('[data-action="delete"]');
+      if (b) b.focus();
+      setTimeout(function () {
+        if (sheet && sheet.armed) { sheet.draft = readItemForm(); sheet.armed = false; renderSheet(false); }
+      }, 4000);
+      return;
+    }
+    var db = await getDb();
+    if (!db) return;
+    var id = sheet.id;
+    try {
+      await db.doc('itens/' + id).delete();
+      closeSheet();
+      toast('Apagado');
+    } catch (e) {
+      showErr(writeError(e));
+    }
+  }
+  async function toggleFeito(id) {
+    var it = S.items.find(function (x) { return x.id === id; });
+    if (!it) return;
+    var db = await getDb();
+    if (!db) return;
+    try { await db.doc('itens/' + id).update({ feito: !it.feito, atualizadoEm: Date.now() }); }
+    catch (e) { toast(writeError(e)); }
+  }
+
+  /* ---------- simulação ---------- */
+  async function simAdd() {
+    var nomeEl = document.getElementById('sim-nome'), valEl = document.getElementById('sim-valor'), err = document.getElementById('sim-err');
+    if (!nomeEl || !valEl) return;
+    var nome = String(nomeEl.value || '').trim(), v = parseMoney(valEl.value);
+    function fail(m, el) { if (err) { err.textContent = m; err.hidden = false; } el.focus(); }
+    if (!nome) return fail('Escreva o nome do item.', nomeEl);
+    if (!(v > 0)) return fail('Coloque o valor.', valEl);
+    var db = await getDb();
+    if (!db) return;
+    nomeEl.value = ''; valEl.value = '';
+    if (err) err.hidden = true;
+    nomeEl.focus();
+    try { await db.collection('simulacao').doc().set({ nome: nome, valor: v, moeda: S.simCur, marcado: true, criadoEm: Date.now() }); }
+    catch (e) { toast(writeError(e)); }
+  }
+  async function simSet(id, val) {
+    var db = await getDb();
+    if (!db) return;
+    try { await db.doc('simulacao/' + id).update({ marcado: !!val }); } catch (e) { toast(writeError(e)); }
+  }
+  async function simAll(val) {
+    var db = await getDb();
+    if (!db) return;
+    var ids = S.sim.filter(function (i) { return !!i.marcado !== val; }).map(function (i) { return i.id; });
+    try { for (var k = 0; k < ids.length; k++) await db.doc('simulacao/' + ids[k]).update({ marcado: val }); }
+    catch (e) { toast(writeError(e)); }
+  }
+  async function simRm(id) {
+    var db = await getDb();
+    if (!db) return;
+    try { await db.doc('simulacao/' + id).delete(); toast('Item tirado da simulação'); } catch (e) { toast(writeError(e)); }
+  }
+  async function saveLancar() {
+    var f = document.getElementById('sheet-form');
+    var items = sheet.ids.map(function (id) { return S.sim.find(function (x) { return x.id === id; }); }).filter(Boolean);
+    if (!f || !items.length) { closeSheet(); return; }
+    var dia = f.elements.namedItem('dia').value;
+    var tirar = f.elements.namedItem('tirar').checked;
+    var cats = items.map(function (i, k) { var c = f.elements.namedItem('cat' + k).value; return GASTO_CATS.indexOf(c) >= 0 ? c : 'Outros'; });
+    var db = await getDb();
+    if (!db) return;
+    setSaving(true);
+    var r = rate(), now = Date.now();
+    try {
+      for (var k = 0; k < items.length; k++) {
+        var i = items[k];
+        var out = {
+          tipo: 'gasto', titulo: i.nome, nota: '', dia: isDate(dia) ? dia : '',
+          valor: num(i.valor), moeda: i.moeda === 'BRL' ? 'BRL' : 'USD', categoria: cats[k],
+          cotacao: r, criadoEm: now + k, atualizadoEm: now + k
+        };
+        if (out.categoria === 'Compras') out.cota = true;
+        await db.collection('itens').doc().set(out);
+        if (tirar) await db.doc('simulacao/' + i.id).delete();
+      }
+      var n = items.length;
+      closeSheet();
+      S.gastosTab = 'lancados'; remember('viagem.gastosTab', 'lancados');
+      render();
+      toast(n === 1 ? '1 gasto lançado' : n + ' gastos lançados');
+    } catch (e) {
+      setSaving(false);
+      showErr(writeError(e));
+    }
+  }
+
+  /* ---------- backup ---------- */
+  async function exportBackup() {
+    var db = await getDb();
+    if (!db) return;
+    var payload = { app: 'viagem-ny', versao: 1, exportadoEm: new Date().toISOString(), dados: db.exportAll() };
+    var blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'viagem-backup-' + todayStr() + '.json';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1500);
+    toast('Backup baixado');
+  }
+  function readImport(file) {
+    var reader = new FileReader();
+    reader.onload = function () {
+      var obj = null;
+      try { obj = JSON.parse(String(reader.result || '')); } catch (e) {}
+      if (!obj || obj.app !== 'viagem-ny' || !obj.dados || typeof obj.dados !== 'object') {
+        showErr('Esse arquivo não é um backup deste app.');
+        return;
+      }
+      var count = Object.keys(obj.dados).filter(function (k) { return k.indexOf('itens/') === 0; }).length;
+      sheet.draft = readSettingsForm();
+      sheet.importData = { dados: obj.dados, count: count };
+      renderSheet(false);
+    };
+    reader.onerror = function () { showErr('Não consegui ler o arquivo.'); };
+    reader.readAsText(file);
+  }
+  async function confirmImport() {
+    if (!sheet || !sheet.importData) return;
+    var db = await getDb();
+    if (!db) return;
+    try {
+      await db.importAll(sheet.importData.dados);
+      closeSheet();
+      toast('Backup restaurado');
+    } catch (e) { showErr(writeError(e)); }
+  }
+
+  /* ---------- aviso rápido ---------- */
+  var toastEl = document.getElementById('toast'), toastT;
+  function toast(msg) {
+    toastEl.textContent = msg;
+    toastEl.hidden = false;
+    clearTimeout(toastT);
+    toastT = setTimeout(function () { toastEl.hidden = true; }, 2600);
+  }
+
+  /* ---------- eventos ---------- */
+  document.addEventListener('click', function (e) {
+    var el = e.target.closest('[data-action]');
+    if (!el) return;
+    var a = el.getAttribute('data-action');
+    if (a === 'new') { openItem(null, { tipo: el.getAttribute('data-tipo') || 'show', dia: el.getAttribute('data-dia') || '' }); }
+    else if (a === 'edit') { openItem(el.getAttribute('data-id')); }
+    else if (a === 'settings') { openSettings(); }
+    else if (a === 'close-sheet') { closeSheet(); }
+    else if (a === 'delete') { deleteItem(); }
+    else if (a === 'toggle-feito') { toggleFeito(el.getAttribute('data-id')); }
+    else if (a === 'toggle-done') { S.showDone = !S.showDone; render(); }
+    else if (a === 'day') { S.day = el.getAttribute('data-dia'); render(); var b = appEl.querySelector('[data-action="day"][data-dia="' + S.day + '"]'); if (b) b.focus(); }
+    else if (a === 'show-filter') { S.showFilter = el.getAttribute('data-f'); render(); }
+    else if (a === 'place-filter') { S.placeFilter = el.getAttribute('data-f'); render(); }
+    else if (a === 'shows-tab') {
+      var tt = el.getAttribute('data-t');
+      S.showsTab = tt === 'buscar' || tt === 'interesse' ? tt : 'meus';
+      remember('viagem.showsTab', S.showsTab);
+      render();
+      var tb = appEl.querySelector('[data-action="shows-tab"][data-t="' + S.showsTab + '"]'); if (tb) tb.focus();
+    }
+    else if (a === 'busca-tipo') {
+      S.buscaTipo = el.getAttribute('data-t');
+      render();
+      var bt = appEl.querySelector('[data-action="busca-tipo"][data-t="' + S.buscaTipo + '"]'); if (bt) bt.focus();
+    }
+    else if (a === 'interesse') {
+      var cid = el.getAttribute('data-cat');
+      toggleInteresse(cid).then(function () {
+        var ib = appEl.querySelector('[data-action="interesse"][data-cat="' + cid + '"]'); if (ib) ib.focus({ preventScroll: true });
+      });
+    }
+    else if (a === 'interesse-novo') {
+      var nq = String(S.buscaShow || '').trim();
+      if (nq) novoInteresse(nq, null).then(function () { S.buscaShow = ''; render(); });
+    }
+    else if (a === 'lug-view') {
+      S.lugaresView = el.getAttribute('data-v') === 'lista' ? 'lista' : 'mapa';
+      remember('viagem.lugaresView', S.lugaresView);
+      render();
+      var vb = appEl.querySelector('[data-action="lug-view"][data-v="' + S.lugaresView + '"]'); if (vb) vb.focus();
+    }
+    else if (a === 'map-mode') {
+      S.mapModo = el.getAttribute('data-m') === 'dias' ? 'dias' : 'todos';
+      if (S.mapModo === 'dias') S.lugaresView = 'mapa';
+      S.mapSel = null;
+      render();
+      window.scrollTo(0, 0);
+      var mh = appEl.querySelector('h1'); if (mh) { mh.setAttribute('tabindex', '-1'); mh.focus({ preventScroll: true }); }
+    }
+    else if (a === 'map-day') {
+      S.mapDay = el.getAttribute('data-dia');
+      render();
+      var db2 = appEl.querySelector('[data-action="map-day"][data-dia="' + S.mapDay + '"]'); if (db2) db2.focus({ preventScroll: true });
+    }
+    else if (a === 'map-unsel') { S.mapSel = null; render(); }
+    else if (a === 'ver-no-mapa') {
+      S.lugaresView = 'mapa'; S.mapModo = 'todos'; S.mapSel = el.getAttribute('data-id'); MAP.focarCard = true;
+      remember('viagem.lugaresView', 'mapa');
+      render();
+      window.scrollTo(0, 0);
+    }
+    else if (a === 'pordia') { openPick('pordia', { id: el.getAttribute('data-id') }); }
+    else if (a === 'set-dia') {
+      var alvoDia = el.getAttribute('data-dia');
+      if (!sheet || !sheet.id) return;
+      setDia(sheet.id, alvoDia).then(function (ok) {
+        if (!ok) return;
+        closeSheet();
+        toast(alvoDia ? 'Foi pro ' + dayLabel(alvoDia) : 'Saiu do roteiro');
+      });
+    }
+    else if (a === 'parada') { if (S.mapDay) openPick('parada', { dia: S.mapDay }); }
+    else if (a === 'add-parada') {
+      var pid = el.getAttribute('data-id');
+      if (!sheet || sheet.kind !== 'parada') return;
+      setDia(pid, sheet.dia).then(function (ok) {
+        if (!ok || !sheet || sheet.kind !== 'parada') return;
+        renderSheet(false);
+        var nx = sheetRoot.querySelector('[data-action="add-parada"]') || sheetRoot.querySelector('.sheet-foot .btn');
+        if (nx) nx.focus();
+        var it = S.items.find(function (x) { return x.id === pid; });
+        toast((it ? it.titulo : 'Lugar') + ' entrou no dia');
+      });
+    }
+    else if (a === 'confirmar-dia') { toggleDiaOk(el.getAttribute('data-dia')); }
+    else if (a === 'filtros') { openPick('filtros'); }
+    else if (a === 'mf') {
+      var g = el.getAttribute('data-g'), k = el.getAttribute('data-k');
+      if (!S.mapFilter[g]) return;
+      S.mapFilter[g][k] = !S.mapFilter[g][k];
+      if (!S.mapFilter[g][k]) delete S.mapFilter[g][k];
+      remember('viagem.mapFilter', JSON.stringify(S.mapFilter));
+      S.mapSel = null;
+      render();
+      if (sheet && sheet.kind === 'filtros') {
+        renderSheet(false);
+        var fb = sheetRoot.querySelector('[data-action="mf"][data-g="' + g + '"][data-k="' + k + '"]'); if (fb) fb.focus();
+      }
+    }
+    else if (a === 'mf-limpar') {
+      S.mapFilter = { cat: {}, preco: {}, per: {}, rot: {} };
+      remember('viagem.mapFilter', JSON.stringify(S.mapFilter));
+      render();
+      if (sheet && sheet.kind === 'filtros') renderSheet(false);
+    }
+    else if (a === 'cur') { S.cur = el.getAttribute('data-cur'); try { localStorage.setItem('viagem.cur', S.cur); } catch (x) {} render(); }
+    else if (a === 'goto') { location.hash = el.getAttribute('data-view'); }
+    else if (a === 'gastos-tab') { S.gastosTab = el.getAttribute('data-t') === 'simular' ? 'simular' : 'lancados'; remember('viagem.gastosTab', S.gastosTab); render(); }
+    else if (a === 'sim-cur') { S.simCur = el.getAttribute('data-cur') === 'BRL' ? 'BRL' : 'USD'; remember('viagem.simCur', S.simCur); render(); }
+    else if (a === 'sim-all') { simAll(true); }
+    else if (a === 'sim-none') { simAll(false); }
+    else if (a === 'sim-rm') { simRm(el.getAttribute('data-id')); }
+    else if (a === 'lancar') { openLancar(); }
+    else if (a === 'refresh-rate') { refreshRate(); }
+    else if (a === 'export') { exportBackup(); }
+    else if (a === 'import-confirm') { confirmImport(); }
+    else if (a === 'import-cancel') { sheet.draft = readSettingsForm(); sheet.importData = null; renderSheet(false); }
+    else if (a === 'add-trecho') {
+      sheet.draft = readSettingsForm(); sheet.draft.trechos.push({ cidade: '', desde: '' }); renderSheet(false);
+      var rows = sheetRoot.querySelectorAll('.tr-cidade'); if (rows.length) rows[rows.length - 1].focus();
+    }
+    else if (a === 'rm-trecho') {
+      sheet.draft = readSettingsForm(); sheet.draft.trechos.splice(Number(el.getAttribute('data-i')), 1);
+      if (!sheet.draft.trechos.length) sheet.draft.trechos.push({ cidade: '', desde: '' });
+      renderSheet(false);
+    }
+  });
+  document.addEventListener('input', function (e) {
+    if (e.target && e.target.id === 'busca-show') {
+      S.buscaShow = e.target.value;
+      var box = document.getElementById('busca-res');
+      if (box) box.innerHTML = buscaResultados();
+    }
+  });
+  document.addEventListener('change', function (e) {
+    var simId = e.target.getAttribute && e.target.getAttribute('data-sim-toggle');
+    if (simId) { simSet(simId, e.target.checked); return; }
+    if (sheet && sheet.kind === 'settings' && e.target.id === 's-import') {
+      if (e.target.files && e.target.files[0]) readImport(e.target.files[0]);
+      return;
+    }
+    if (!sheet || sheet.kind !== 'item') return;
+    var n = e.target.name;
+    if (n === 'tipo' || n === 'categoria' || n === 'entrada') {
+      sheet.draft = defaultsFor(readItemForm().tipo, readItemForm());
+      renderSheet(false);
+      var focusEl = n === 'tipo' ? sheetRoot.querySelector('input[name="tipo"]:checked')
+        : (n === 'categoria' && document.getElementById('f-cat')) || sheetRoot.querySelector('input[name="' + n + '"]:checked');
+      if (focusEl) focusEl.focus();
+    } else if (n === 'status' || n === 'periodo') {
+      Array.prototype.forEach.call(sheetRoot.querySelectorAll('.pill-opt'), function (p) {
+        p.classList.toggle('on', p.querySelector('input').checked);
+      });
+    }
+  });
+  document.addEventListener('submit', function (e) {
+    if (e.target.id === 'sim-form') { e.preventDefault(); simAdd(); return; }
+    if (e.target.id !== 'sheet-form') return;
+    e.preventDefault();
+    if (!sheet) return;
+    if (sheet.kind === 'item') saveItem();
+    else if (sheet.kind === 'lancar') saveLancar();
+    else saveSettings();
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && sheet) { closeSheet(); return; }
+    var hd = e.target && e.target.closest && e.target.closest('.drag-handle');
+    if (hd && (e.key === 'ArrowUp' || e.key === 'ArrowDown')) {
+      e.preventDefault();
+      var ol = hd.closest('ol');
+      if (!ol) return;
+      var ids = Array.prototype.map.call(ol.children, function (x) { return x.getAttribute('data-id'); });
+      var i = ids.indexOf(hd.getAttribute('data-id')), j = i + (e.key === 'ArrowUp' ? -1 : 1);
+      if (i < 0 || j < 0 || j >= ids.length) return;
+      ids.splice(j, 0, ids.splice(i, 1)[0]);
+      var noun = ol.getAttribute('data-noun') || 'Agora é a parada ';
+      salvarOrdem(ids, ol.getAttribute('data-campo')).then(function () {
+        var h2 = document.getElementById('h-' + ids[j]); if (h2) h2.focus();
+        toast(noun + (j + 1));
+      });
+    }
+  });
+
+  /* arrastar paradas (funciona com dedo e mouse) */
+  var DRAG = null;
+  document.addEventListener('pointerdown', function (e) {
+    var h = e.target && e.target.closest && e.target.closest('.drag-handle');
+    if (!h || (e.pointerType === 'mouse' && e.button !== 0)) return;
+    var li = h.closest('li'), ol = li && li.parentNode;
+    if (!li || !ol) return;
+    e.preventDefault();
+    try { h.setPointerCapture(e.pointerId); } catch (x) {}
+    DRAG = { li: li, ol: ol, y0: e.clientY, pid: e.pointerId, moved: false };
+    li.classList.add('dragging');
+  });
+  document.addEventListener('pointermove', function (e) {
+    if (!DRAG || e.pointerId !== DRAG.pid) return;
+    e.preventDefault();
+    var li = DRAG.li, gap = 6, dy = e.clientY - DRAG.y0;
+    var next = li.nextElementSibling, prev = li.previousElementSibling;
+    if (next && dy > next.offsetHeight / 2 + gap / 2) {
+      DRAG.ol.insertBefore(next, li); DRAG.y0 += next.offsetHeight + gap; DRAG.moved = true; renumerar(DRAG.ol);
+    } else if (prev && dy < -(prev.offsetHeight / 2 + gap / 2)) {
+      DRAG.ol.insertBefore(li, prev); DRAG.y0 -= prev.offsetHeight + gap; DRAG.moved = true; renumerar(DRAG.ol);
+    }
+    li.style.transform = 'translateY(' + (e.clientY - DRAG.y0) + 'px)';
+  }, { passive: false });
+  function endDrag(e) {
+    if (!DRAG || (e && e.pointerId !== DRAG.pid)) return;
+    var d = DRAG;
+    DRAG = null;
+    d.li.style.transform = '';
+    d.li.classList.remove('dragging');
+    var ids = Array.prototype.map.call(d.ol.children, function (x) { return x.getAttribute('data-id'); });
+    if (d.moved) salvarOrdem(ids, d.ol.getAttribute('data-campo'));
+    else if (S.renderPendente) render();
+  }
+  document.addEventListener('pointerup', endDrag);
+  document.addEventListener('pointercancel', endDrag);
+  window.addEventListener('hashchange', function () { setViewFromHash(); render(); window.scrollTo(0, 0); });
+
+  if ('serviceWorker' in navigator && location.protocol === 'https:') {
+    navigator.serviceWorker.register('sw.js').catch(function () {});
+  }
+
+  /* ---------- dados ---------- */
+  setViewFromHash();
+  render();
+
+  atualizarCambio(false);
+  window.addEventListener('online', function () {
+    atualizarCambio(false);
+    if (leafletState === 'erro') { leafletState = 'idle'; render(); }
+    GEO.tried = {};
+    geocodeFila();
+  });
+  document.addEventListener('visibilitychange', function () {
+    if (document.visibilityState === 'visible') atualizarCambio(false);
+  });
+
+  dbReady = Promise.resolve(makeLocalDb());
+  dbReady.then(function (db) {
+    if (!db) { S.dbState = 'off'; render(); return; }
+    dbRef = db;
+    S.dbState = 'ready';
+    render();
+    db.doc('viagem/config').onSnapshot(function (snap) {
+      S.configLoaded = true;
+      if (snap.exists) {
+        var d = snap.data() || {};
+        S.config = Object.assign(clone(DEFAULT_CONFIG), clone(d));
+        S.configSaved = true;
+      } else {
+        S.config = clone(DEFAULT_CONFIG);
+        S.configSaved = false;
+      }
+      render();
+    }, function () { S.dbState = 'error'; render(); });
+    var primeira = true;
+    db.collection('itens').onSnapshot(function (qs) {
+      S.items = qs.docs.map(function (d) { var o = clone(d.data() || {}); o.id = d.id; return o; })
+        .filter(function (o) { return o.tipo && o.titulo; });
+      S.loaded = true;
+      render();
+      if (primeira) { primeira = false; importarSeed(); }
+      setTimeout(geocodeFila, 400);
+    }, function () { S.dbState = 'error'; render(); });
+    db.doc('viagem/dias').onSnapshot(function (snap) {
+      var d = snap.exists ? (snap.data() || {}) : {};
+      S.diasOk = (d.confirmados && typeof d.confirmados === 'object') ? d.confirmados : {};
+      render();
+    }, function () {});
+    db.collection('simulacao').onSnapshot(function (qs) {
+      S.sim = qs.docs.map(function (d) { var o = clone(d.data() || {}); o.id = d.id; return o; })
+        .filter(function (o) { return o.nome; });
+      render();
+    }, function () { S.dbState = 'error'; render(); });
+  });
+})();
+</script>
+</body>
+</html>
